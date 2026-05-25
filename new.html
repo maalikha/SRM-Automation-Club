@@ -1,0 +1,2112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SRM Automation Club</title>
+    <meta name="description" content="SRM Automation Club builds robotics, embedded systems, AI, and intelligent automation projects through hands-on engineering.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Sora:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #07111f;
+            --bg-soft: #0d1b31;
+            --panel: rgba(10, 22, 40, 0.7);
+            --panel-strong: rgba(9, 18, 34, 0.88);
+            --line: rgba(124, 212, 255, 0.18);
+            --line-strong: rgba(124, 212, 255, 0.34);
+            --text: #f4fbff;
+            --muted: #95aeca;
+            --accent: #7ce6ff;
+            --accent-strong: #18a6ff;
+            --accent-warm: #ffd36e;
+            --shadow: 0 24px 70px rgba(0, 0, 0, 0.35);
+            --radius-xl: 30px;
+            --radius-lg: 22px;
+            --radius-md: 16px;
+            --max-width: 1200px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            min-height: 100vh;
+            background:
+                radial-gradient(circle at top left, rgba(24, 166, 255, 0.16), transparent 28%),
+                radial-gradient(circle at 85% 12%, rgba(255, 211, 110, 0.12), transparent 18%),
+                linear-gradient(180deg, #030814 0%, #07111f 35%, #081322 100%);
+            color: var(--text);
+            font-family: "Space Grotesk", sans-serif;
+            overflow-x: hidden;
+        }
+
+        body.menu-open {
+            overflow: hidden;
+        }
+
+        img {
+            max-width: 100%;
+            display: block;
+        }
+
+        a {
+            color: inherit;
+        }
+
+        button,
+        input,
+        textarea {
+            font: inherit;
+        }
+
+        #mesh {
+            position: fixed;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+            opacity: 0.75;
+        }
+
+        .site-shell {
+            position: relative;
+            z-index: 1;
+        }
+
+        .noise {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 0;
+            opacity: 0.06;
+            background-image:
+                linear-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.08) 1px, transparent 1px);
+            background-size: 90px 90px;
+            mask-image: radial-gradient(circle at center, black 35%, transparent 92%);
+        }
+
+        .container {
+            width: min(var(--max-width), calc(100% - 40px));
+            margin: 0 auto;
+        }
+
+        .glass {
+            background: var(--panel);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+            border: 1px solid var(--line);
+            box-shadow: var(--shadow);
+        }
+
+        .eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 9px 16px;
+            border-radius: 999px;
+            border: 1px solid rgba(124, 212, 255, 0.22);
+            background: rgba(124, 212, 255, 0.08);
+            color: var(--accent);
+            font-size: 12px;
+            letter-spacing: 0.22em;
+            text-transform: uppercase;
+        }
+
+        .eyebrow::before {
+            content: "";
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--accent-warm);
+            box-shadow: 0 0 16px rgba(255, 211, 110, 0.8);
+        }
+
+        .section {
+            padding: 110px 0;
+        }
+
+        .section-header {
+            max-width: 760px;
+            margin: 0 auto 52px;
+            text-align: center;
+        }
+
+        .section-title {
+            margin-top: 18px;
+            font-family: "Sora", sans-serif;
+            font-size: clamp(2.1rem, 5vw, 3.8rem);
+            line-height: 1.05;
+            letter-spacing: -0.04em;
+        }
+
+        .section-title span,
+        .hero-title span,
+        .brand-word {
+            background: linear-gradient(135deg, #86edff 0%, #1ea9ff 55%, #ffe08a 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .section-copy {
+            margin-top: 18px;
+            color: var(--muted);
+            font-size: 1.05rem;
+            line-height: 1.8;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            min-height: 54px;
+            padding: 0 24px;
+            border: 1px solid transparent;
+            border-radius: 999px;
+            font-weight: 700;
+            text-decoration: none;
+            transition: transform 0.25s ease, box-shadow 0.25s ease, background 0.25s ease, border-color 0.25s ease;
+            cursor: pointer;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .btn-primary {
+            color: #03101f;
+            background: linear-gradient(135deg, #86edff 0%, #43c6ff 45%, #ffd36e 100%);
+            box-shadow: 0 18px 38px rgba(60, 177, 255, 0.28);
+        }
+
+        .btn-secondary {
+            color: var(--text);
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(124, 212, 255, 0.24);
+        }
+
+        .btn-secondary:hover {
+            border-color: rgba(124, 212, 255, 0.48);
+            box-shadow: 0 16px 28px rgba(0, 0, 0, 0.16);
+        }
+
+        .site-header {
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            padding: 18px 0;
+            background: linear-gradient(180deg, rgba(3, 8, 20, 0.88), rgba(3, 8, 20, 0.35));
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+            border-bottom: 1px solid rgba(124, 212, 255, 0.08);
+        }
+
+        .site-header.scrolled {
+            border-bottom-color: rgba(124, 212, 255, 0.16);
+        }
+
+        .nav-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 28px;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            text-decoration: none;
+        }
+
+        .brand-mark {
+            width: 46px;
+            height: 46px;
+            border-radius: 15px;
+            display: grid;
+            place-items: center;
+            padding: 8px;
+            background: linear-gradient(145deg, rgba(124, 212, 255, 0.18), rgba(255, 211, 110, 0.12));
+            border: 1px solid rgba(124, 212, 255, 0.2);
+        }
+
+        .brand-text {
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+        }
+
+        .brand-title {
+            font-family: "Sora", sans-serif;
+            font-size: 1rem;
+            letter-spacing: -0.02em;
+        }
+
+        .brand-subtitle {
+            font-size: 0.75rem;
+            color: var(--muted);
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 22px;
+        }
+
+        .nav-links a {
+            position: relative;
+            color: var(--muted);
+            font-size: 0.96rem;
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+
+        .nav-links a::after {
+            content: "";
+            position: absolute;
+            left: 0;
+            bottom: -8px;
+            width: 100%;
+            height: 2px;
+            border-radius: 999px;
+            transform: scaleX(0);
+            transform-origin: left;
+            background: linear-gradient(90deg, #86edff, #ffd36e);
+            transition: transform 0.25s ease;
+        }
+
+        .nav-links a:hover,
+        .nav-links a.active {
+            color: var(--text);
+        }
+
+        .nav-links a:hover::after,
+        .nav-links a.active::after {
+            transform: scaleX(1);
+        }
+
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .menu-toggle {
+            display: none;
+            width: 48px;
+            height: 48px;
+            border-radius: 14px;
+            border: 1px solid rgba(124, 212, 255, 0.24);
+            background: rgba(255, 255, 255, 0.04);
+            color: var(--text);
+        }
+
+        .menu-toggle span {
+            display: block;
+            width: 18px;
+            height: 2px;
+            margin: 4px auto;
+            border-radius: 999px;
+            background: currentColor;
+            transition: transform 0.2s ease, opacity 0.2s ease;
+        }
+
+        .mobile-panel {
+            display: none;
+        }
+
+        .hero {
+            padding: 74px 0 40px;
+        }
+
+        .hero-grid {
+            display: grid;
+            grid-template-columns: minmax(0, 1.2fr) minmax(340px, 0.8fr);
+            align-items: center;
+            gap: 34px;
+        }
+
+        .hero-copy {
+            position: relative;
+            padding: 36px 0 22px;
+        }
+
+        .hero-title {
+            margin-top: 24px;
+            font-family: "Sora", sans-serif;
+            font-size: clamp(3rem, 6.8vw, 5.8rem);
+            line-height: 0.96;
+            letter-spacing: -0.06em;
+            max-width: 11ch;
+        }
+
+        .hero-description {
+            max-width: 620px;
+            margin-top: 24px;
+            color: var(--muted);
+            font-size: 1.08rem;
+            line-height: 1.85;
+        }
+
+        .hero-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            margin-top: 34px;
+        }
+
+        .hero-metrics {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 14px;
+            margin-top: 38px;
+            max-width: 720px;
+        }
+
+        .metric {
+            padding: 20px;
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(124, 212, 255, 0.12);
+        }
+
+        .metric strong {
+            display: block;
+            font-family: "Sora", sans-serif;
+            font-size: 1.55rem;
+            margin-bottom: 8px;
+        }
+
+        .metric span {
+            color: var(--muted);
+            font-size: 0.92rem;
+            line-height: 1.6;
+        }
+
+        .hero-stage {
+            position: relative;
+            min-height: 680px;
+        }
+
+        .hero-orbit {
+            position: absolute;
+            inset: 12% 6% 4% 10%;
+            border-radius: 36px;
+            overflow: hidden;
+            background:
+                linear-gradient(180deg, rgba(6, 16, 32, 0.42), rgba(6, 16, 32, 0.9)),
+                url("clubbbb.png") center/cover no-repeat;
+            border: 1px solid rgba(124, 212, 255, 0.2);
+            box-shadow: var(--shadow);
+        }
+
+        .hero-orbit::before {
+            content: "";
+            position: absolute;
+            inset: auto -10% -18% auto;
+            width: 220px;
+            height: 220px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(255, 211, 110, 0.32), transparent 70%);
+            filter: blur(10px);
+        }
+
+        .hero-orbit::after {
+            content: "";
+            position: absolute;
+            inset: 18px;
+            border-radius: 28px;
+            border: 1px solid rgba(124, 212, 255, 0.12);
+        }
+
+        .floating-card {
+            position: absolute;
+            padding: 20px;
+            border-radius: 22px;
+        }
+
+        .hero-logo-card {
+            top: 8%;
+            right: 0;
+            width: min(320px, 74%);
+        }
+
+        .hero-logo-stack {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .hero-logo-stack img {
+            width: 86px;
+            height: 86px;
+            border-radius: 22px;
+            object-fit: cover;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(124, 212, 255, 0.15);
+            padding: 8px;
+        }
+
+        .hero-logo-copy strong,
+        .spotlight-card h3,
+        .contact-card h3,
+        .footer-brand h3 {
+            font-family: "Sora", sans-serif;
+        }
+
+        .hero-logo-copy strong {
+            display: block;
+            font-size: 1.05rem;
+        }
+
+        .hero-logo-copy span,
+        .spotlight-card p,
+        .project-card p,
+        .info-card p,
+        .member-card p,
+        .event-card p,
+        .contact-card p,
+        .footer-brand p,
+        .footer-links a,
+        .footer-notes {
+            color: var(--muted);
+            line-height: 1.7;
+        }
+
+        .spotlight-card {
+            left: 0;
+            bottom: 7%;
+            width: min(320px, 82%);
+        }
+
+        .spotlight-card h3 {
+            font-size: 1.12rem;
+            margin-bottom: 10px;
+        }
+
+        .spotlight-card ul {
+            list-style: none;
+            margin-top: 14px;
+            display: grid;
+            gap: 10px;
+        }
+
+        .spotlight-card li {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #ddecf9;
+            font-size: 0.95rem;
+        }
+
+        .spotlight-card li::before {
+            content: "";
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #86edff, #ffd36e);
+        }
+
+        .marquee {
+            margin-top: 36px;
+            overflow: hidden;
+            border-top: 1px solid rgba(124, 212, 255, 0.12);
+            border-bottom: 1px solid rgba(124, 212, 255, 0.12);
+            background: rgba(255, 255, 255, 0.025);
+        }
+
+        .marquee-track {
+            display: flex;
+            gap: 28px;
+            width: max-content;
+            padding: 18px 0;
+            animation: marquee 24s linear infinite;
+        }
+
+        .marquee-item {
+            display: inline-flex;
+            align-items: center;
+            gap: 14px;
+            color: #d7e5f3;
+            font-size: 0.95rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
+        .marquee-item::before {
+            content: "";
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: var(--accent-warm);
+            box-shadow: 0 0 12px rgba(255, 211, 110, 0.75);
+        }
+
+        .about-grid,
+        .project-grid,
+        .team-grid,
+        .event-grid,
+        .contact-grid {
+            display: grid;
+            gap: 22px;
+        }
+
+        .about-grid {
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+        }
+
+        .info-card,
+        .project-card,
+        .member-card,
+        .event-card,
+        .contact-card {
+            position: relative;
+            padding: 26px;
+            border-radius: var(--radius-lg);
+        }
+
+        .info-card::before,
+        .project-card::before,
+        .member-card::before,
+        .event-card::before,
+        .contact-card::before,
+        .faculty-panel::before,
+        .join-panel::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+            padding: 1px;
+            background: linear-gradient(135deg, rgba(134, 237, 255, 0.3), rgba(255, 211, 110, 0.12), rgba(134, 237, 255, 0.08));
+            -webkit-mask:
+                linear-gradient(#fff 0 0) content-box,
+                linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            pointer-events: none;
+        }
+
+        .card-icon {
+            width: 56px;
+            height: 56px;
+            border-radius: 18px;
+            display: grid;
+            place-items: center;
+            margin-bottom: 18px;
+            background: linear-gradient(145deg, rgba(124, 212, 255, 0.18), rgba(255, 211, 110, 0.08));
+            border: 1px solid rgba(124, 212, 255, 0.16);
+            font-size: 1.45rem;
+        }
+
+        .info-card h3,
+        .project-card h3,
+        .member-card h3,
+        .event-card h3,
+        .contact-card h3,
+        .faculty-copy h3 {
+            font-family: "Sora", sans-serif;
+            font-size: 1.22rem;
+            margin-bottom: 12px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 18px;
+            margin-top: 28px;
+        }
+
+        .stat-card {
+            padding: 26px;
+            border-radius: 22px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(124, 212, 255, 0.12);
+            text-align: center;
+        }
+
+        .stat-value {
+            display: inline-flex;
+            align-items: baseline;
+            gap: 4px;
+            font-family: "Sora", sans-serif;
+            font-size: clamp(2rem, 4vw, 3rem);
+            letter-spacing: -0.06em;
+        }
+
+        .stat-card p {
+            margin-top: 10px;
+            color: var(--muted);
+            line-height: 1.6;
+        }
+
+        .projects-layout {
+            display: grid;
+            grid-template-columns: 1.05fr 0.95fr;
+            gap: 22px;
+            align-items: start;
+        }
+
+        .project-grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .project-feature {
+            min-height: 100%;
+            padding: 32px;
+            border-radius: var(--radius-xl);
+            background:
+                linear-gradient(180deg, rgba(7, 16, 31, 0.36), rgba(7, 16, 31, 0.9)),
+                url("coding.png") center/cover no-repeat;
+        }
+
+        .project-feature .eyebrow {
+            margin-bottom: 18px;
+        }
+
+        .project-feature h3 {
+            font-family: "Sora", sans-serif;
+            font-size: clamp(1.8rem, 4vw, 2.8rem);
+            line-height: 1.08;
+            max-width: 12ch;
+        }
+
+        .project-feature p {
+            max-width: 46ch;
+            margin-top: 18px;
+            color: #d5e5f5;
+            line-height: 1.8;
+        }
+
+        .feature-badges,
+        .project-tags,
+        .member-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .badge,
+        .project-tags span,
+        .member-tags span {
+            display: inline-flex;
+            align-items: center;
+            min-height: 34px;
+            padding: 0 13px;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(124, 212, 255, 0.16);
+            color: #dcefff;
+            font-size: 0.82rem;
+        }
+
+        .faculty-panel {
+            position: relative;
+            display: grid;
+            grid-template-columns: 320px 1fr;
+            gap: 30px;
+            padding: 28px;
+            border-radius: 30px;
+        }
+
+        .faculty-visual {
+            position: relative;
+            border-radius: 26px;
+            overflow: hidden;
+            min-height: 360px;
+            background:
+                linear-gradient(180deg, rgba(8, 18, 34, 0.18), rgba(8, 18, 34, 0.92)),
+                url("faculty.png") center/cover no-repeat;
+            border: 1px solid rgba(124, 212, 255, 0.14);
+        }
+
+        .faculty-badge {
+            position: absolute;
+            top: 18px;
+            left: 18px;
+            display: inline-flex;
+            align-items: center;
+            min-height: 36px;
+            padding: 0 14px;
+            border-radius: 999px;
+            background: rgba(3, 8, 20, 0.72);
+            border: 1px solid rgba(124, 212, 255, 0.18);
+            color: var(--accent);
+            font-size: 0.8rem;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+        }
+
+        .faculty-copy {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .faculty-copy h2 {
+            margin: 16px 0 10px;
+            font-family: "Sora", sans-serif;
+            font-size: clamp(2rem, 4vw, 3.2rem);
+            line-height: 1.04;
+        }
+
+        .faculty-role {
+            color: #d7ecff;
+            font-size: 1rem;
+            line-height: 1.75;
+        }
+
+        .faculty-copy p {
+            margin-top: 18px;
+            color: var(--muted);
+            line-height: 1.9;
+            max-width: 58ch;
+        }
+
+        .faculty-points {
+            margin-top: 24px;
+            display: grid;
+            gap: 12px;
+        }
+
+        .faculty-points div {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: #dcecff;
+        }
+
+        .faculty-points div::before {
+            content: "";
+            width: 9px;
+            height: 9px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #86edff, #ffd36e);
+        }
+
+        .team-grid {
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+        }
+
+        .member-portrait {
+            width: 72px;
+            height: 72px;
+            border-radius: 22px;
+            display: grid;
+            place-items: center;
+            margin-bottom: 20px;
+            background: linear-gradient(145deg, rgba(124, 212, 255, 0.2), rgba(255, 211, 110, 0.12));
+            border: 1px solid rgba(124, 212, 255, 0.18);
+            font-family: "Sora", sans-serif;
+            font-size: 1.25rem;
+        }
+
+        .member-role {
+            color: var(--accent);
+            font-size: 0.86rem;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+        }
+
+        .team-note {
+            margin-top: 24px;
+            padding: 20px 24px;
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(124, 212, 255, 0.1);
+            color: var(--muted);
+            line-height: 1.8;
+        }
+
+        .event-grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .event-topline {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            margin-bottom: 18px;
+        }
+
+        .event-pill {
+            display: inline-flex;
+            align-items: center;
+            min-height: 34px;
+            padding: 0 13px;
+            border-radius: 999px;
+            font-size: 0.8rem;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+        }
+
+        .event-pill.upcoming {
+            background: rgba(134, 237, 255, 0.1);
+            color: var(--accent);
+            border: 1px solid rgba(134, 237, 255, 0.22);
+        }
+
+        .event-pill.completed {
+            background: rgba(255, 255, 255, 0.06);
+            color: #d0dae5;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .event-meta {
+            margin-top: 18px;
+            display: grid;
+            gap: 8px;
+            color: #d7e7f6;
+            font-size: 0.95rem;
+        }
+
+        .gallery-shell {
+            position: relative;
+            padding: 20px;
+            border-radius: 30px;
+        }
+
+        .gallery-stage {
+            position: relative;
+            min-height: 600px;
+            border-radius: 24px;
+            overflow: hidden;
+            border: 1px solid rgba(124, 212, 255, 0.12);
+        }
+
+        .gallery-slide {
+            position: absolute;
+            inset: 0;
+            opacity: 0;
+            transition: opacity 0.45s ease;
+        }
+
+        .gallery-slide.active {
+            opacity: 1;
+        }
+
+        .gallery-slide img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .gallery-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(180deg, rgba(5, 12, 24, 0.08) 0%, rgba(5, 12, 24, 0.86) 100%);
+        }
+
+        .gallery-caption {
+            position: absolute;
+            left: 28px;
+            right: 28px;
+            bottom: 28px;
+            display: flex;
+            align-items: end;
+            justify-content: space-between;
+            gap: 20px;
+        }
+
+        .gallery-caption-copy {
+            max-width: 560px;
+        }
+
+        .gallery-caption h3 {
+            font-family: "Sora", sans-serif;
+            font-size: clamp(1.7rem, 3vw, 2.5rem);
+            margin-bottom: 12px;
+        }
+
+        .gallery-caption p {
+            color: #d7e5f2;
+            line-height: 1.75;
+        }
+
+        .gallery-controls {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .gallery-btn {
+            width: 52px;
+            height: 52px;
+            border-radius: 16px;
+            border: 1px solid rgba(124, 212, 255, 0.2);
+            background: rgba(4, 12, 24, 0.5);
+            color: var(--text);
+            cursor: pointer;
+            transition: transform 0.2s ease, background 0.2s ease, border-color 0.2s ease;
+        }
+
+        .gallery-btn:hover {
+            transform: translateY(-2px);
+            background: rgba(124, 212, 255, 0.14);
+            border-color: rgba(124, 212, 255, 0.44);
+        }
+
+        .gallery-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 18px;
+            margin-top: 20px;
+        }
+
+        .gallery-dots {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .gallery-dot {
+            width: 11px;
+            height: 11px;
+            padding: 0;
+            border: 0;
+            border-radius: 50%;
+            background: rgba(124, 212, 255, 0.22);
+            cursor: pointer;
+            transition: transform 0.2s ease, background 0.2s ease;
+        }
+
+        .gallery-dot.active {
+            background: linear-gradient(135deg, #86edff, #ffd36e);
+            transform: scale(1.15);
+        }
+
+        .gallery-counter {
+            color: var(--muted);
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            font-size: 0.82rem;
+        }
+
+        .contact-grid {
+            grid-template-columns: 1fr 1.08fr;
+            align-items: start;
+        }
+
+        .contact-stack {
+            display: grid;
+            gap: 22px;
+        }
+
+        .contact-item {
+            display: grid;
+            gap: 10px;
+        }
+
+        .contact-item strong {
+            color: #dff0ff;
+        }
+
+        .join-panel {
+            position: relative;
+            padding: 28px;
+            border-radius: 28px;
+        }
+
+        .contact-form {
+            display: grid;
+            gap: 16px;
+        }
+
+        .contact-form label {
+            display: grid;
+            gap: 8px;
+            color: #d8ebff;
+            font-size: 0.92rem;
+        }
+
+        .contact-form input,
+        .contact-form textarea {
+            width: 100%;
+            border-radius: 16px;
+            border: 1px solid rgba(124, 212, 255, 0.16);
+            background: rgba(255, 255, 255, 0.04);
+            color: var(--text);
+            padding: 14px 16px;
+            outline: none;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .contact-form input:focus,
+        .contact-form textarea:focus {
+            border-color: rgba(134, 237, 255, 0.48);
+            box-shadow: 0 0 0 4px rgba(124, 212, 255, 0.08);
+        }
+
+        .contact-form textarea {
+            min-height: 160px;
+            resize: vertical;
+        }
+
+        .footer {
+            padding: 30px 0 44px;
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 1.2fr 0.8fr 0.8fr;
+            gap: 28px;
+            padding: 30px;
+            border-radius: 28px;
+        }
+
+        .footer-brand h3 {
+            font-size: 1.35rem;
+            margin-bottom: 12px;
+        }
+
+        .footer-links h4 {
+            margin-bottom: 14px;
+            font-family: "Sora", sans-serif;
+            font-size: 1rem;
+        }
+
+        .footer-links ul {
+            list-style: none;
+            display: grid;
+            gap: 10px;
+        }
+
+        .footer-links a {
+            text-decoration: none;
+        }
+
+        .footer-note-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            margin-top: 18px;
+            color: var(--muted);
+            font-size: 0.9rem;
+        }
+
+        .socials {
+            display: flex;
+            gap: 12px;
+            margin-top: 18px;
+        }
+
+        .socials a {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 44px;
+            height: 44px;
+            border-radius: 14px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(124, 212, 255, 0.16);
+            text-decoration: none;
+        }
+
+        .socials a:hover {
+            background: rgba(124, 212, 255, 0.12);
+        }
+
+        .reveal {
+            opacity: 0;
+            transform: translateY(24px);
+            transition: opacity 0.7s ease, transform 0.7s ease;
+        }
+
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        @keyframes marquee {
+            from { transform: translateX(0); }
+            to { transform: translateX(-50%); }
+        }
+
+        @media (max-width: 1120px) {
+            .hero-grid,
+            .projects-layout,
+            .faculty-panel,
+            .contact-grid,
+            .footer-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .about-grid,
+            .stats-grid,
+            .team-grid,
+            .event-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .hero-stage {
+                min-height: 520px;
+            }
+
+            .hero-orbit {
+                inset: 10% 2% 6% 2%;
+            }
+
+            .gallery-stage {
+                min-height: 520px;
+            }
+        }
+
+        @media (max-width: 860px) {
+            .site-header {
+                padding: 14px 0;
+            }
+
+            .nav-links,
+            .nav-actions .btn {
+                display: none;
+            }
+
+            .menu-toggle {
+                display: inline-block;
+            }
+
+            .mobile-panel {
+                position: fixed;
+                inset: 82px 20px auto 20px;
+                z-index: 45;
+                display: grid;
+                gap: 10px;
+                padding: 18px;
+                border-radius: 24px;
+                opacity: 0;
+                pointer-events: none;
+                transform: translateY(-10px);
+                transition: opacity 0.25s ease, transform 0.25s ease;
+            }
+
+            .mobile-panel.open {
+                opacity: 1;
+                pointer-events: auto;
+                transform: translateY(0);
+            }
+
+            .mobile-panel a {
+                min-height: 52px;
+                padding: 0 16px;
+                display: flex;
+                align-items: center;
+                border-radius: 16px;
+                text-decoration: none;
+                color: #d9eaf8;
+                background: rgba(255, 255, 255, 0.03);
+                border: 1px solid rgba(124, 212, 255, 0.12);
+            }
+
+            .hero {
+                padding-top: 44px;
+            }
+
+            .hero-copy {
+                text-align: center;
+                padding-top: 16px;
+            }
+
+            .hero-title,
+            .hero-description {
+                max-width: none;
+                margin-left: auto;
+                margin-right: auto;
+            }
+
+            .hero-actions,
+            .hero-metrics {
+                justify-content: center;
+            }
+
+            .hero-metrics {
+                grid-template-columns: 1fr;
+            }
+
+            .hero-stage {
+                min-height: 460px;
+            }
+
+            .hero-logo-card {
+                right: 18px;
+                left: 18px;
+                width: auto;
+            }
+
+            .spotlight-card {
+                left: 18px;
+                right: 18px;
+                width: auto;
+            }
+
+            .project-grid,
+            .about-grid,
+            .stats-grid,
+            .team-grid,
+            .event-grid,
+            .footer-note-row {
+                grid-template-columns: 1fr;
+            }
+
+            .gallery-caption {
+                display: grid;
+            }
+
+            .gallery-stage {
+                min-height: 460px;
+            }
+        }
+
+        @media (max-width: 560px) {
+            .container {
+                width: min(var(--max-width), calc(100% - 28px));
+            }
+
+            .section {
+                padding: 88px 0;
+            }
+
+            .brand-title {
+                font-size: 0.94rem;
+            }
+
+            .brand-subtitle {
+                letter-spacing: 0.12em;
+            }
+
+            .hero-title {
+                font-size: clamp(2.5rem, 14vw, 3.6rem);
+            }
+
+            .hero-orbit {
+                inset: 4% 0 4% 0;
+                border-radius: 26px;
+            }
+
+            .gallery-shell,
+            .faculty-panel,
+            .footer-grid,
+            .join-panel {
+                padding: 18px;
+            }
+
+            .gallery-stage {
+                min-height: 380px;
+            }
+
+            .gallery-caption {
+                left: 18px;
+                right: 18px;
+                bottom: 18px;
+            }
+
+            .gallery-caption h3 {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <canvas id="mesh"></canvas>
+    <div class="noise" aria-hidden="true"></div>
+
+    <div class="site-shell">
+        <header class="site-header" id="siteHeader">
+            <div class="container nav-bar">
+                <a href="#home" class="brand">
+                    <div class="brand-mark">
+                        <img src="srm automation club logo1.png" alt="SRM Automation Club logo" onerror="this.style.display='none'">
+                    </div>
+                    <div class="brand-text">
+                        <div class="brand-title">SRM <span class="brand-word">Automation Club</span></div>
+                        <div class="brand-subtitle">Robotics • AI • Systems</div>
+                    </div>
+                </a>
+
+                <nav class="nav-links" aria-label="Primary">
+                    <a href="#home" class="active">Home</a>
+                    <a href="#about">About</a>
+                    <a href="#projects">Projects</a>
+                    <a href="#faculty">Faculty</a>
+                    <a href="#team">Team</a>
+                    <a href="#events">Events</a>
+                    <a href="#gallery">Gallery</a>
+                    <a href="#contact">Contact</a>
+                </nav>
+
+                <div class="nav-actions">
+                    <a class="btn btn-primary" href="#join">Join Us</a>
+                    <button class="menu-toggle" id="menuToggle" aria-label="Open menu" aria-expanded="false" aria-controls="mobileMenu">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <div class="mobile-panel glass" id="mobileMenu">
+            <a href="#home">Home</a>
+            <a href="#about">About</a>
+            <a href="#projects">Projects</a>
+            <a href="#faculty">Faculty</a>
+            <a href="#team">Team</a>
+            <a href="#events">Events</a>
+            <a href="#gallery">Gallery</a>
+            <a href="#contact">Contact</a>
+            <a href="#join">Join Us</a>
+        </div>
+
+        <main>
+            <section class="hero" id="home">
+                <div class="container hero-grid">
+                    <div class="hero-copy reveal">
+                        <div class="eyebrow">Innovation Through Technology</div>
+                        <h1 class="hero-title">Building the next generation of <span>robotics and intelligent automation</span></h1>
+                        <p class="hero-description">
+                            SRM Automation Club is where ambitious students turn engineering curiosity into real systems:
+                            autonomous robots, embedded platforms, control systems, and AI-driven products built with discipline,
+                            collaboration, and a strong maker culture.
+                        </p>
+                        <div class="hero-actions">
+                            <a class="btn btn-primary" href="#projects">Explore Projects</a>
+                            <a class="btn btn-secondary" href="#contact">Work With Us</a>
+                        </div>
+                        <div class="hero-metrics">
+                            <div class="metric glass">
+                                <strong>150+</strong>
+                                <span>Members learning, prototyping, and shipping together.</span>
+                            </div>
+                            <div class="metric glass">
+                                <strong>24</strong>
+                                <span>Club-built systems spanning robotics, IoT, and AI.</span>
+                            </div>
+                            <div class="metric glass">
+                                <strong>12+</strong>
+                                <span>Competition wins, showcases, and campus recognitions.</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="hero-stage reveal">
+                        <div class="hero-orbit"></div>
+
+                        <div class="floating-card hero-logo-card glass">
+                            <div class="hero-logo-stack">
+                                <img src="srm automation club logo1.png" alt="Automation Club logo" onerror="this.style.display='none'">
+                                <img src="srm logo.png" alt="SRM logo" onerror="this.style.display='none'">
+                                <div class="hero-logo-copy">
+                                    <strong>Designing systems that move.</strong>
+                                    <span>Robotics, intelligence, fabrication, and control engineering under one roof.</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="floating-card spotlight-card glass">
+                            <h3>Club focus areas</h3>
+                            <p>We train students to think like full-stack engineers across hardware, software, and execution.</p>
+                            <ul>
+                                <li>Autonomous robots and navigation</li>
+                                <li>Embedded systems and sensor networks</li>
+                                <li>AI-assisted decision making</li>
+                                <li>Competition-ready prototyping</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="marquee">
+                    <div class="marquee-track">
+                        <div class="marquee-item">Autonomous Rover</div>
+                        <div class="marquee-item">Industrial Robotics</div>
+                        <div class="marquee-item">Computer Vision</div>
+                        <div class="marquee-item">Embedded Systems</div>
+                        <div class="marquee-item">Smart Agriculture</div>
+                        <div class="marquee-item">Control Engineering</div>
+                        <div class="marquee-item">Autonomous Rover</div>
+                        <div class="marquee-item">Industrial Robotics</div>
+                        <div class="marquee-item">Computer Vision</div>
+                        <div class="marquee-item">Embedded Systems</div>
+                        <div class="marquee-item">Smart Agriculture</div>
+                        <div class="marquee-item">Control Engineering</div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="section" id="about">
+                <div class="container">
+                    <div class="section-header reveal">
+                        <div class="eyebrow">About The Club</div>
+                        <h2 class="section-title">A high-output student community built around <span>real engineering work</span></h2>
+                        <p class="section-copy">
+                            The club is designed to help students build depth, not just attendance. We blend workshop culture,
+                            rigorous project execution, and peer-led mentorship so members learn by shipping.
+                        </p>
+                    </div>
+
+                    <div class="about-grid">
+                        <article class="info-card glass reveal">
+                            <div class="card-icon">01</div>
+                            <h3>Systems Thinking</h3>
+                            <p>Members learn how hardware, code, data, and mechanical design fit together into one working product.</p>
+                        </article>
+                        <article class="info-card glass reveal">
+                            <div class="card-icon">02</div>
+                            <h3>Hands-On Builds</h3>
+                            <p>We prototype practical robots, industrial tools, and intelligent devices with measurable outcomes.</p>
+                        </article>
+                        <article class="info-card glass reveal">
+                            <div class="card-icon">03</div>
+                            <h3>Competition Mindset</h3>
+                            <p>Projects are shaped to perform under pressure at showcases, hackathons, and robotics challenges.</p>
+                        </article>
+                        <article class="info-card glass reveal">
+                            <div class="card-icon">04</div>
+                            <h3>Career Readiness</h3>
+                            <p>Students build portfolios that reflect applied skills in automation, controls, AI, and product delivery.</p>
+                        </article>
+                    </div>
+
+                    <div class="stats-grid reveal" id="statsRow">
+                        <article class="stat-card glass">
+                            <div class="stat-value"><span class="stat-number" data-target="150">0</span><span>+</span></div>
+                            <p>Active members across technical and operations domains.</p>
+                        </article>
+                        <article class="stat-card glass">
+                            <div class="stat-value"><span class="stat-number" data-target="24">0</span><span>+</span></div>
+                            <p>Club projects from navigation systems to smart automation.</p>
+                        </article>
+                        <article class="stat-card glass">
+                            <div class="stat-value"><span class="stat-number" data-target="12">0</span><span>+</span></div>
+                            <p>Recognitions in campus events and robotics competitions.</p>
+                        </article>
+                        <article class="stat-card glass">
+                            <div class="stat-value"><span class="stat-number" data-target="5">0</span><span> Domains</span></div>
+                            <p>Software, electronics, mechanics, AI, and corporate execution.</p>
+                        </article>
+                    </div>
+                </div>
+            </section>
+
+            <section class="section" id="projects">
+                <div class="container">
+                    <div class="section-header reveal">
+                        <div class="eyebrow">Flagship Builds</div>
+                        <h2 class="section-title">Projects that show what <span>disciplined student teams</span> can build</h2>
+                        <p class="section-copy">
+                            Our portfolio spans autonomous mobility, industrial precision, connected agriculture, and logistics automation.
+                        </p>
+                    </div>
+
+                    <div class="projects-layout">
+                        <article class="project-feature glass reveal">
+                            <div class="eyebrow">Featured System</div>
+                            <h3>Autonomous rover platform with navigation, sensing, and field intelligence.</h3>
+                            <p>
+                                A modular robotics stack combining real-time obstacle avoidance, mapping, telemetry, and computer vision,
+                                built to perform reliably in dynamic conditions.
+                            </p>
+                            <div class="feature-badges">
+                                <span class="badge">ROS</span>
+                                <span class="badge">LIDAR</span>
+                                <span class="badge">Computer Vision</span>
+                                <span class="badge">Telemetry</span>
+                            </div>
+                        </article>
+
+                        <div class="project-grid">
+                            <article class="project-card glass reveal">
+                                <div class="card-icon">AI</div>
+                                <h3>Industrial Arm</h3>
+                                <p>Six-degree robotic arm for precise movement planning, repeatable control, and manufacturing workflows.</p>
+                                <div class="project-tags">
+                                    <span>C++</span>
+                                    <span>Kinematics</span>
+                                    <span>Arduino</span>
+                                </div>
+                            </article>
+                            <article class="project-card glass reveal">
+                                <div class="card-icon">IoT</div>
+                                <h3>Smart Agriculture Bot</h3>
+                                <p>Automated crop monitoring and irrigation with environmental sensors and decision-support automation.</p>
+                                <div class="project-tags">
+                                    <span>IoT</span>
+                                    <span>ML</span>
+                                    <span>Sensors</span>
+                                </div>
+                            </article>
+                            <article class="project-card glass reveal">
+                                <div class="card-icon">RF</div>
+                                <h3>Drone Swarm System</h3>
+                                <p>Coordinated aerial agents designed for search, communication, and synchronized task execution.</p>
+                                <div class="project-tags">
+                                    <span>Networking</span>
+                                    <span>Flight Control</span>
+                                    <span>AI</span>
+                                </div>
+                            </article>
+                            <article class="project-card glass reveal">
+                                <div class="card-icon">OPS</div>
+                                <h3>Warehouse Automation</h3>
+                                <p>Inventory movement logic with robotic sorting patterns and delivery flow optimization.</p>
+                                <div class="project-tags">
+                                    <span>Automation</span>
+                                    <span>Logistics</span>
+                                    <span>Control</span>
+                                </div>
+                            </article>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="section" id="faculty">
+                <div class="container">
+                    <div class="faculty-panel glass reveal">
+                        <div class="faculty-visual">
+                            <div class="faculty-badge">Faculty Advisor</div>
+                        </div>
+                        <div class="faculty-copy">
+                            <div class="eyebrow">Leadership & Mentorship</div>
+                            <h2>Mr. Joselin Retna Kumar</h2>
+                            <div class="faculty-role">Head of Department, EIE • SRM Institute of Science and Technology</div>
+                            <p>
+                                The club’s progress is grounded in strong academic guidance and strategic mentorship. His support has helped
+                                create a culture where students are encouraged to experiment boldly, execute thoughtfully, and pursue
+                                engineering excellence with confidence.
+                            </p>
+                            <div class="faculty-points">
+                                <div>Encourages cross-domain collaboration between hardware and software teams.</div>
+                                <div>Supports competition participation and practical engineering exposure.</div>
+                                <div>Helps the club maintain a strong learning-to-execution pipeline.</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="section" id="team">
+                <div class="container">
+                    <div class="section-header reveal">
+                        <div class="eyebrow">Leadership Team</div>
+                        <h2 class="section-title">A structure built for <span>specialized ownership</span></h2>
+                        <p class="section-copy">
+                            Each lead owns a critical part of delivery, from software architecture to fabrication, electronics, and outreach.
+                        </p>
+                    </div>
+
+                    <div class="team-grid">
+                        <article class="member-card glass reveal">
+                            <div class="member-portrait">VD</div>
+                            <div class="member-role">Club President</div>
+                            <h3>Vishnu D</h3>
+                            <p>Driving club vision, coordination, and execution quality across every domain.</p>
+                            <div class="member-tags">
+                                <span>Leadership</span>
+                                <span>Strategy</span>
+                            </div>
+                        </article>
+                        <article class="member-card glass reveal">
+                            <div class="member-portrait">AM</div>
+                            <div class="member-role">Coding Lead</div>
+                            <h3>Aadi Mandavia</h3>
+                            <p>Oversees software systems, AI logic, control code, and platform architecture.</p>
+                            <div class="member-tags">
+                                <span>Algorithms</span>
+                                <span>AI</span>
+                            </div>
+                        </article>
+                        <article class="member-card glass reveal">
+                            <div class="member-portrait">AP</div>
+                            <div class="member-role">Electronics Lead</div>
+                            <h3>Abhineet Pathakh</h3>
+                            <p>Leads circuits, embedded design, sensor integration, and board-level reliability.</p>
+                            <div class="member-tags">
+                                <span>Embedded</span>
+                                <span>Sensors</span>
+                            </div>
+                        </article>
+                        <article class="member-card glass reveal">
+                            <div class="member-portrait">KJ</div>
+                            <div class="member-role">Mechanical Lead</div>
+                            <h3>Krishna Joshi</h3>
+                            <p>Owns structure, fabrication, CAD refinement, and real-world mechanical performance.</p>
+                            <div class="member-tags">
+                                <span>CAD</span>
+                                <span>Fabrication</span>
+                            </div>
+                        </article>
+                    </div>
+
+                    <div class="team-note reveal">
+                        The club also operates through domain contributors in coding, electronics, mechanical, and corporate teams,
+                        allowing members to develop both depth and cross-functional awareness as projects scale.
+                    </div>
+                </div>
+            </section>
+
+            <section class="section" id="events">
+                <div class="container">
+                    <div class="section-header reveal">
+                        <div class="eyebrow">Events & Workshops</div>
+                        <h2 class="section-title">Programs designed to turn <span>interest into capability</span></h2>
+                        <p class="section-copy">
+                            From robotics challenges to focused workshops, club events are built to create momentum, portfolio work, and confidence.
+                        </p>
+                    </div>
+
+                    <div class="event-grid">
+                        <article class="event-card glass reveal">
+                            <div class="event-topline">
+                                <span class="event-pill upcoming">Upcoming</span>
+                                <span class="badge">2026 Series</span>
+                            </div>
+                            <h3>Automation and Robotics Sprint</h3>
+                            <p>A practical multi-session program covering systems architecture, build reviews, and demo-day readiness for new members.</p>
+                            <div class="event-meta">
+                                <div>Venue: SRM Main Campus</div>
+                                <div>Format: Workshops + team build sessions</div>
+                                <div>Status: Schedule announcement coming soon</div>
+                            </div>
+                        </article>
+                        <article class="event-card glass reveal">
+                            <div class="event-topline">
+                                <span class="event-pill completed">Completed</span>
+                                <span class="badge">Flagship Event</span>
+                            </div>
+                            <h3>Automation and Robotics Challenge 2025</h3>
+                            <p>Inter-college robotics challenge with competitive teams, live demos, and hands-on exposure to real automation workflows.</p>
+                            <div class="event-meta">
+                                <div>Date: December 5, 2024</div>
+                                <div>Location: Main Campus</div>
+                                <div>Audience: 300+ attendees</div>
+                            </div>
+                        </article>
+                    </div>
+                </div>
+            </section>
+
+            <section class="section" id="gallery">
+                <div class="container">
+                    <div class="section-header reveal">
+                        <div class="eyebrow">Visual Archive</div>
+                        <h2 class="section-title">The club in motion, captured through <span>events and builds</span></h2>
+                        <p class="section-copy">
+                            A look at workshops, team sessions, showcases, and the energy behind every system we build.
+                        </p>
+                    </div>
+
+                    <div class="gallery-shell glass reveal">
+                        <div class="gallery-stage">
+                            <article class="gallery-slide active">
+                                <img src="gallery1.jpeg" alt="Robotics challenge participants" onerror="this.src='gallery2.jpeg'">
+                                <div class="gallery-overlay"></div>
+                                <div class="gallery-caption">
+                                    <div class="gallery-caption-copy">
+                                        <h3>Robotics Challenge 2024</h3>
+                                        <p>Teams presenting tactical builds, performance tests, and competition-ready engineering under pressure.</p>
+                                    </div>
+                                    <div class="gallery-controls">
+                                        <button class="gallery-btn" id="galleryPrev" aria-label="Previous slide">&#8249;</button>
+                                        <button class="gallery-btn" id="galleryNext" aria-label="Next slide">&#8250;</button>
+                                    </div>
+                                </div>
+                            </article>
+                            <article class="gallery-slide">
+                                <img src="gallery4.jpeg" alt="Students collaborating in a workshop">
+                                <div class="gallery-overlay"></div>
+                                <div class="gallery-caption">
+                                    <div class="gallery-caption-copy">
+                                        <h3>Workshop Sessions</h3>
+                                        <p>Peer-led learning that moves from explanation to prototyping, iteration, and immediate hands-on practice.</p>
+                                    </div>
+                                </div>
+                            </article>
+                            <article class="gallery-slide">
+                                <img src="gallery5.jpeg" alt="SRM Techfest innovation booth">
+                                <div class="gallery-overlay"></div>
+                                <div class="gallery-caption">
+                                    <div class="gallery-caption-copy">
+                                        <h3>Showcase Moments</h3>
+                                        <p>Projects move beyond internal builds into public demos, review, and recognition at flagship campus events.</p>
+                                    </div>
+                                </div>
+                            </article>
+                            <article class="gallery-slide">
+                                <img src="gallery16.jpeg" alt="Club members during a group session">
+                                <div class="gallery-overlay"></div>
+                                <div class="gallery-caption">
+                                    <div class="gallery-caption-copy">
+                                        <h3>Team Culture</h3>
+                                        <p>A strong builder culture shaped by mentorship, reviews, ownership, and the excitement of creating things that work.</p>
+                                    </div>
+                                </div>
+                            </article>
+                        </div>
+
+                        <div class="gallery-footer">
+                            <div class="gallery-dots" id="galleryDots"></div>
+                            <div class="gallery-counter"><span id="galleryCurrent">01</span> / <span id="galleryTotal">04</span></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="section" id="contact">
+                <div class="container">
+                    <div class="section-header reveal">
+                        <div class="eyebrow">Get In Touch</div>
+                        <h2 class="section-title">For students, collaborators, and partners looking to <span>build something real</span></h2>
+                        <p class="section-copy">
+                            Whether you want to join, partner with the club, or ask about our work, the fastest route is right here.
+                        </p>
+                    </div>
+
+                    <div class="contact-grid">
+                        <div class="contact-stack">
+                            <article class="contact-card glass reveal">
+                                <h3>Contact Information</h3>
+                                <div class="contact-item">
+                                    <strong>Email</strong>
+                                    <p>srmautomationclub@gmail.com</p>
+                                </div>
+                                <div class="contact-item">
+                                    <strong>Location</strong>
+                                    <p>PG 301, Main Campus, SRM IST Kattankulathur, Chennai</p>
+                                </div>
+                                <div class="contact-item">
+                                    <strong>Club Focus</strong>
+                                    <p>Robotics, automation systems, AI integration, embedded design, and student innovation programs.</p>
+                                </div>
+                            </article>
+
+                            <article class="contact-card glass reveal" id="join">
+                                <h3>Join The Club</h3>
+                                <p>Applications are open for students who want structured exposure to robotics and automation through actual project work.</p>
+                                <div style="margin-top:20px;">
+                                    <a class="btn btn-primary" href="https://docs.google.com/forms/d/e/1FAIpQLSeAPRZf73SssV6-XCnSM2-Of2YzZsopnOdSvR6pfJZT_lovuA/viewform?usp=header" target="_blank" rel="noopener noreferrer">Apply Now</a>
+                                </div>
+                            </article>
+                        </div>
+
+                        <article class="join-panel glass reveal">
+                            <h3 style="font-family:'Sora',sans-serif;font-size:1.5rem;margin-bottom:12px;">Send a message</h3>
+                            <p style="color:var(--muted);line-height:1.8;margin-bottom:20px;">
+                                This form opens a prefilled WhatsApp message so inquiries reach the club quickly and in a structured format.
+                            </p>
+                            <form class="contact-form" id="contactForm">
+                                <label>
+                                    Your Name
+                                    <input type="text" id="contactName" placeholder="Enter your full name" required>
+                                </label>
+                                <label>
+                                    Your Email
+                                    <input type="email" id="contactEmail" placeholder="Enter your email address">
+                                </label>
+                                <label>
+                                    Message
+                                    <textarea id="contactMessage" placeholder="Tell us how you'd like to connect" required></textarea>
+                                </label>
+                                <button type="button" class="btn btn-secondary" id="whatsAppBtn">Send via WhatsApp</button>
+                            </form>
+                        </article>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <footer class="footer">
+            <div class="container">
+                <div class="footer-grid glass">
+                    <div class="footer-brand">
+                        <h3>SRM <span class="brand-word">Automation Club</span></h3>
+                        <p>Empowering the next generation of engineers through robotics, automation, intelligent systems, and hands-on execution.</p>
+                        <div class="socials">
+                            <a href="#" aria-label="LinkedIn">in</a>
+                            <a href="#" aria-label="Instagram">ig</a>
+                            <a href="#" aria-label="YouTube">yt</a>
+                        </div>
+                    </div>
+                    <div class="footer-links">
+                        <h4>Navigate</h4>
+                        <ul>
+                            <li><a href="#about">About</a></li>
+                            <li><a href="#projects">Projects</a></li>
+                            <li><a href="#events">Events</a></li>
+                            <li><a href="#gallery">Gallery</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-links">
+                        <h4>Connect</h4>
+                        <ul>
+                            <li><a href="mailto:srmautomationclub@gmail.com">srmautomationclub@gmail.com</a></li>
+                            <li><a href="#contact">Main Campus, SRM IST</a></li>
+                            <li><a href="#join">Membership Form</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="footer-note-row">
+                    <div class="footer-notes">© 2026 SRM Automation Club. All rights reserved.</div>
+                    <div class="footer-notes">Designed to feel like a modern engineering organization, not a template.</div>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        const body = document.body;
+        const siteHeader = document.getElementById("siteHeader");
+        const menuToggle = document.getElementById("menuToggle");
+        const mobileMenu = document.getElementById("mobileMenu");
+        const navLinks = document.querySelectorAll(".nav-links a, .mobile-panel a");
+        const sectionIds = ["home", "about", "projects", "faculty", "team", "events", "gallery", "contact", "join"];
+
+        const setMenuState = (open) => {
+            mobileMenu.classList.toggle("open", open);
+            body.classList.toggle("menu-open", open);
+            menuToggle.setAttribute("aria-expanded", String(open));
+        };
+
+        menuToggle.addEventListener("click", () => {
+            const isOpen = mobileMenu.classList.contains("open");
+            setMenuState(!isOpen);
+        });
+
+        navLinks.forEach((link) => {
+            link.addEventListener("click", () => setMenuState(false));
+        });
+
+        window.addEventListener("scroll", () => {
+            siteHeader.classList.toggle("scrolled", window.scrollY > 24);
+
+            let current = "home";
+            sectionIds.forEach((id) => {
+                const section = document.getElementById(id);
+                if (!section) return;
+                const top = section.offsetTop - 160;
+                if (window.scrollY >= top) current = id;
+            });
+
+            document.querySelectorAll(".nav-links a").forEach((link) => {
+                const isActive = link.getAttribute("href") === "#" + current;
+                link.classList.toggle("active", isActive);
+            });
+        });
+
+        const revealObserver = new IntersectionObserver((entries) => {
+            entries.forEach((entry) => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add("visible");
+                    revealObserver.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.12 });
+
+        document.querySelectorAll(".reveal").forEach((element) => revealObserver.observe(element));
+
+        const statsRow = document.getElementById("statsRow");
+        let statsPlayed = false;
+        const statsObserver = new IntersectionObserver((entries) => {
+            if (!entries[0].isIntersecting || statsPlayed) return;
+            statsPlayed = true;
+            document.querySelectorAll(".stat-number").forEach((node) => {
+                const target = Number(node.dataset.target || 0);
+                const duration = 1600;
+                const start = performance.now();
+
+                const tick = (now) => {
+                    const progress = Math.min((now - start) / duration, 1);
+                    node.textContent = Math.floor(progress * target);
+                    if (progress < 1) {
+                        requestAnimationFrame(tick);
+                    } else {
+                        node.textContent = target;
+                    }
+                };
+
+                requestAnimationFrame(tick);
+            });
+        }, { threshold: 0.4 });
+
+        if (statsRow) statsObserver.observe(statsRow);
+
+        const gallerySlides = Array.from(document.querySelectorAll(".gallery-slide"));
+        const galleryDots = document.getElementById("galleryDots");
+        const galleryCurrent = document.getElementById("galleryCurrent");
+        const galleryTotal = document.getElementById("galleryTotal");
+        const galleryPrev = document.getElementById("galleryPrev");
+        const galleryNext = document.getElementById("galleryNext");
+        let galleryIndex = 0;
+        let galleryTimer;
+
+        galleryTotal.textContent = String(gallerySlides.length).padStart(2, "0");
+
+        const renderGalleryDots = () => {
+            galleryDots.innerHTML = "";
+            gallerySlides.forEach((_, index) => {
+                const dot = document.createElement("button");
+                dot.className = "gallery-dot" + (index === galleryIndex ? " active" : "");
+                dot.type = "button";
+                dot.setAttribute("aria-label", "Go to slide " + (index + 1));
+                dot.addEventListener("click", () => goToSlide(index));
+                galleryDots.appendChild(dot);
+            });
+        };
+
+        const goToSlide = (index) => {
+            gallerySlides[galleryIndex].classList.remove("active");
+            galleryIndex = (index + gallerySlides.length) % gallerySlides.length;
+            gallerySlides[galleryIndex].classList.add("active");
+            galleryCurrent.textContent = String(galleryIndex + 1).padStart(2, "0");
+            renderGalleryDots();
+        };
+
+        const startGallery = () => {
+            clearInterval(galleryTimer);
+            galleryTimer = setInterval(() => goToSlide(galleryIndex + 1), 5000);
+        };
+
+        galleryPrev.addEventListener("click", () => {
+            goToSlide(galleryIndex - 1);
+            startGallery();
+        });
+
+        galleryNext.addEventListener("click", () => {
+            goToSlide(galleryIndex + 1);
+            startGallery();
+        });
+
+        const galleryShell = document.querySelector(".gallery-shell");
+        galleryShell.addEventListener("mouseenter", () => clearInterval(galleryTimer));
+        galleryShell.addEventListener("mouseleave", startGallery);
+
+        document.addEventListener("keydown", (event) => {
+            if (event.key === "Escape") setMenuState(false);
+            if (event.key === "ArrowRight") goToSlide(galleryIndex + 1);
+            if (event.key === "ArrowLeft") goToSlide(galleryIndex - 1);
+        });
+
+        renderGalleryDots();
+        startGallery();
+
+        const whatsAppBtn = document.getElementById("whatsAppBtn");
+        whatsAppBtn.addEventListener("click", () => {
+            const name = document.getElementById("contactName").value.trim();
+            const email = document.getElementById("contactEmail").value.trim();
+            const message = document.getElementById("contactMessage").value.trim();
+
+            if (!name || !message) {
+                alert("Please enter your name and message.");
+                return;
+            }
+
+            const text =
+                "Hello SRM Automation Club!%0A%0A" +
+                "*Name:* " + encodeURIComponent(name) + "%0A" +
+                "*Email:* " + encodeURIComponent(email || "Not provided") + "%0A%0A" +
+                "*Message:*%0A" + encodeURIComponent(message);
+
+            window.open("https://wa.me/919944755123?text=" + text, "_blank", "noopener");
+        });
+
+        const meshCanvas = document.getElementById("mesh");
+        const meshContext = meshCanvas.getContext("2d");
+        const particles = [];
+        const particleCount = 90;
+
+        const resizeMesh = () => {
+            meshCanvas.width = window.innerWidth;
+            meshCanvas.height = window.innerHeight;
+        };
+
+        class Particle {
+            constructor() {
+                this.reset();
+                this.x = Math.random() * meshCanvas.width;
+                this.y = Math.random() * meshCanvas.height;
+            }
+
+            reset() {
+                this.radius = Math.random() * 1.8 + 0.5;
+                this.vx = (Math.random() - 0.5) * 0.45;
+                this.vy = (Math.random() - 0.5) * 0.45;
+            }
+
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
+
+                if (this.x < 0 || this.x > meshCanvas.width) this.vx *= -1;
+                if (this.y < 0 || this.y > meshCanvas.height) this.vy *= -1;
+            }
+
+            draw() {
+                meshContext.beginPath();
+                meshContext.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                meshContext.fillStyle = "rgba(134, 237, 255, 0.58)";
+                meshContext.fill();
+            }
+        }
+
+        const initMesh = () => {
+            particles.length = 0;
+            for (let index = 0; index < particleCount; index += 1) {
+                particles.push(new Particle());
+            }
+        };
+
+        const animateMesh = () => {
+            meshContext.clearRect(0, 0, meshCanvas.width, meshCanvas.height);
+
+            particles.forEach((particle, index) => {
+                particle.update();
+                particle.draw();
+
+                for (let next = index + 1; next < particles.length; next += 1) {
+                    const other = particles[next];
+                    const dx = particle.x - other.x;
+                    const dy = particle.y - other.y;
+                    const distance = dx * dx + dy * dy;
+
+                    if (distance < 14000) {
+                        meshContext.beginPath();
+                        meshContext.strokeStyle = "rgba(124, 212, 255, " + (0.16 - distance / 120000) + ")";
+                        meshContext.lineWidth = 1;
+                        meshContext.moveTo(particle.x, particle.y);
+                        meshContext.lineTo(other.x, other.y);
+                        meshContext.stroke();
+                    }
+                }
+            });
+
+            requestAnimationFrame(animateMesh);
+        };
+
+        window.addEventListener("resize", () => {
+            resizeMesh();
+            initMesh();
+        });
+
+        resizeMesh();
+        initMesh();
+        animateMesh();
+    </script>
+</body>
+</html>

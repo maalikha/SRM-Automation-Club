@@ -1,0 +1,903 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>SRM Automation Club</title>
+<link href="https://fonts.googleapis.com/css2?family=Audiowide&family=Orbitron:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:#01061a;font-family:'Orbitron',sans-serif;}
+#mesh{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none;}
+#vignette{position:fixed;inset:0;z-index:1;pointer-events:none;background:radial-gradient(ellipse at center,transparent 60%,rgba(0,0,10,0.7) 100%);}
+
+/* NAVBAR */
+.navbar{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:14px 5%;background:rgba(1,6,20,0.85);backdrop-filter:blur(14px);border-bottom:1px solid rgba(0,191,255,0.15);}
+.nav-logo{font-family:'Audiowide',sans-serif;font-size:15px;color:#7af3ff;text-shadow:0 0 12px #00c3ff;letter-spacing:1px;white-space:nowrap;flex-shrink:0;}
+.navbar nav{display:flex;align-items:center;gap:22px;}
+.navbar nav a{color:#b8d9ff;text-decoration:none;font-size:11px;letter-spacing:2px;transition:0.3s;padding-bottom:2px;white-space:nowrap;}
+.navbar nav a:hover{color:#7af3ff;}
+.navbar nav a.active{color:#00bfff;border-bottom:2px solid #00bfff;}
+.navbar nav a.join-btn{background:linear-gradient(90deg,#1fb6ff,#008cff);color:white;padding:7px 16px;border-radius:30px;letter-spacing:1px;box-shadow:0 0 14px rgba(0,150,255,0.4);border-bottom:none!important;}
+
+/* HAMBURGER */
+.hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:4px;z-index:110;}
+.hamburger span{display:block;width:24px;height:2px;background:#7af3ff;border-radius:2px;transition:0.3s;}
+.hamburger.open span:nth-child(1){transform:translateY(7px) rotate(45deg);}
+.hamburger.open span:nth-child(2){opacity:0;}
+.hamburger.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg);}
+
+/* MOBILE NAV DRAWER */
+.mobile-nav{display:none;position:fixed;top:0;left:0;right:0;bottom:0;z-index:99;background:rgba(1,6,20,0.97);backdrop-filter:blur(20px);flex-direction:column;align-items:center;justify-content:center;gap:32px;padding:80px 20px 40px;}
+.mobile-nav.open{display:flex;}
+.mobile-nav a{color:#b8d9ff;text-decoration:none;font-size:16px;letter-spacing:3px;transition:0.3s;padding:8px 20px;border-radius:8px;border:1px solid transparent;text-align:center;}
+.mobile-nav a:hover,.mobile-nav a.active{color:#7af3ff;border-color:rgba(0,191,255,0.3);}
+.mobile-nav a.join-btn{background:linear-gradient(90deg,#1fb6ff,#008cff);color:white;border:none;box-shadow:0 0 18px rgba(0,150,255,0.5);margin-top:10px;}
+
+/* HERO */
+.hero{position:relative;z-index:5;height:100vh;min-height:600px;display:flex;align-items:center;justify-content:flex-end;padding:0;overflow:hidden;}
+.hero::before{content:'';position:absolute;inset:0;background-image:url('clubbbb.png');background-size:cover;background-position:center;background-repeat:no-repeat;filter:brightness(0.85) saturate(1.2);z-index:0;}
+.hero::after{content:'';position:absolute;inset:0;background:linear-gradient(to left,rgba(1,6,20,0.6) 0%,rgba(1,6,20,0.4) 50%,rgba(1,6,20,0.1) 100%);z-index:0;}
+#hero-canvas{position:absolute;top:0;left:0;width:100%;height:100%;z-index:1;pointer-events:none;}
+
+.hero-logos{position:absolute;top:80px;right:5%;z-index:3;display:flex;gap:14px;align-items:center;}
+.hero-logos img{width:130px;height:130px;object-fit:cover;border-radius:50%;border:2px solid rgba(0,191,255,0.6);filter:drop-shadow(0 0 10px rgba(0,191,255,0.7));background:rgba(0,10,30,0.6);backdrop-filter:blur(6px);transition:0.3s;}
+
+.hero-center{position:absolute;right:4%;top:0;bottom:0;z-index:3;text-align:right;color:white;display:flex;flex-direction:column;align-items:flex-end;justify-content:center;max-width:520px;padding-top:200px;}
+.hero-eyebrow{font-size:11px;letter-spacing:4px;color:#7af3ff;text-transform:uppercase;margin-bottom:14px;}
+.club-title{font-family:'Audiowide',sans-serif;font-size:clamp(26px,4.8vw,72px);letter-spacing:2px;white-space:nowrap;background:linear-gradient(90deg,#7af3ff,#00bfff,#008cff);background-clip:text;-webkit-background-clip:text;color:transparent;-webkit-text-fill-color:transparent;margin-bottom:14px;animation:glowPulse 2s infinite alternate;}
+@keyframes glowPulse{from{filter:drop-shadow(0 0 8px rgba(0,200,255,.6));}to{filter:drop-shadow(0 0 24px rgba(0,200,255,1));}}
+.hero-tagline{font-size:13px;letter-spacing:3px;color:#ffffff;margin-bottom:16px;}
+.hero-tagline span{color:#7af3ff;margin:0 5px;}
+.club-quote{font-size:14px;color:#ffffff;max-width:420px;line-height:1.8;margin-bottom:30px;text-align:right;background:rgba(0,10,30,0.5);padding:14px 20px;border-radius:12px;border-left:2px solid rgba(0,191,255,0.4);backdrop-filter:blur(4px);}
+.hero-buttons{display:flex;gap:14px;justify-content:flex-end;flex-wrap:wrap;}
+.btn{padding:14px 28px;border-radius:40px;text-decoration:none;font-size:13px;letter-spacing:2px;transition:.35s;backdrop-filter:blur(6px);cursor:pointer;font-family:'Orbitron',sans-serif;border:none;display:inline-block;white-space:nowrap;}
+.explore{color:#7fe4ff;border:1px solid #00c3ff!important;box-shadow:0 0 10px #00c3ff,inset 0 0 10px rgba(0,200,255,.2);background:transparent;}
+.explore:hover{transform:scale(1.05);}
+.join{background:linear-gradient(90deg,#1fb6ff,#008cff);color:white;box-shadow:0 0 18px rgba(0,150,255,.6);}
+.join:hover{transform:scale(1.05);}
+
+/* SECTIONS */
+section{position:relative;z-index:5;padding:100px 6%;color:white;max-width:1200px;margin:auto;}
+.section-title{font-family:'Audiowide',sans-serif;font-size:clamp(28px,5vw,50px);text-align:center;margin-bottom:20px;color:#2099bb;}
+.section-title span{color:#e2e4e5;text-shadow:0 0 15px #00c3ff;}
+.section-sub{text-align:center;max-width:700px;margin:auto;margin-bottom:50px;color:#b8d9ff;font-size:15px;line-height:1.7;}
+
+/* ABOUT */
+.about-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:24px;max-width:900px;margin:auto;}
+.about-card{padding:28px;border-radius:20px;background:rgba(0,30,60,.45);border:1px solid rgba(0,191,255,.25);backdrop-filter:blur(10px);box-shadow:0 0 20px rgba(0,200,255,.15);transition:.4s;}
+.about-card:hover{transform:translateY(-6px);box-shadow:0 0 35px rgba(0,191,255,.4);}
+.about-card h3{color:#1272bc;margin-bottom:10px;font-size:14px;}
+.about-card p{font-size:20px;line-height:1.7;color:#b8d9ff;}
+.about-icon{font-size:28px;margin-bottom:12px;display:inline-flex;align-items:center;justify-content:center;width:50px;height:50px;background:rgba(0,180,255,0.1);border:1px solid rgba(0,191,255,0.3);border-radius:12px;}
+
+/* STATS */
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;max-width:900px;margin:60px auto 0;}
+.stat-card{background:rgba(0,30,60,0.5);border:1px solid rgba(0,191,255,0.25);border-radius:20px;padding:28px 16px;text-align:center;box-shadow:0 0 20px rgba(0,180,255,0.15);transition:0.3s;display:flex;flex-direction:column;align-items:center;}
+.stat-card:hover{transform:translateY(-5px);}
+.stat-number{font-family:'Audiowide',sans-serif;font-size:40px;color:#7af3ff;text-shadow:0 0 20px #00c3ff;line-height:1;display:inline;}
+.stat-plus{font-family:'Audiowide',sans-serif;color:#7af3ff;display:inline;vertical-align:super;font-size:22px;margin-left:2px;}
+.stat-label{color:#b8d9ff;font-size:11px;letter-spacing:2px;margin-top:8px;}
+.stat-top{display:flex;align-items:baseline;justify-content:center;}
+.stat-icon{font-size:26px;margin-bottom:8px;width:48px;height:48px;background:rgba(0,180,255,0.1);border:1px solid rgba(0,191,255,0.3);border-radius:12px;display:flex;align-items:center;justify-content:center;}
+
+/* ACHIEVEMENTS */
+.achieve-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;max-width:1000px;margin:auto;}
+.achieve-card{background:rgba(0,30,60,0.45);border:1px solid rgba(0,191,255,0.2);border-radius:20px;overflow:hidden;text-align:center;box-shadow:0 0 20px rgba(0,180,255,0.1);transition:0.35s;display:flex;flex-direction:column;align-items:center;cursor:pointer;padding:0;}
+.achieve-card:hover{transform:translateY(-8px);box-shadow:0 0 35px rgba(0,191,255,0.35);}
+.achieve-cover{width:100%;height:160px;object-fit:cover;display:block;filter:brightness(0.85) saturate(1.2);transition:0.4s;}
+.achieve-bottom{padding:14px 16px 16px;display:flex;flex-direction:column;align-items:center;gap:8px;width:100%;}
+.achieve-event-name{color:#e0f4ff;font-size:12px;letter-spacing:0.5px;line-height:1.5;}
+.achieve-year{color:#7af3ff;font-size:11px;letter-spacing:3px;border:1px solid rgba(0,191,255,0.3);padding:3px 12px;border-radius:20px;}
+
+/* ACHIEVEMENT MODAL */
+.achieve-modal-overlay{display:none;position:fixed;inset:0;z-index:200;background:rgba(1,6,20,0.93);backdrop-filter:blur(12px);justify-content:center;align-items:center;padding:20px;}
+.achieve-modal-overlay.open{display:flex;}
+.achieve-modal-box{background:rgba(0,20,50,0.97);border:1px solid rgba(0,191,255,0.4);border-radius:24px;padding:24px;width:100%;max-width:900px;max-height:90vh;overflow-y:auto;box-shadow:0 0 60px rgba(0,180,255,0.25);position:relative;}
+.achieve-modal-close{position:absolute;top:14px;right:16px;background:none;border:none;color:#7af3ff;font-size:24px;cursor:pointer;}
+.achieve-modal-title{font-family:'Audiowide',sans-serif;font-size:18px;color:#7af3ff;text-align:center;margin-bottom:6px;}
+.achieve-modal-year{text-align:center;color:#b8d9ff;font-size:11px;letter-spacing:3px;margin-bottom:20px;}
+.achieve-modal-cover{width:100%;border-radius:16px;max-height:300px;object-fit:cover;margin-bottom:16px;border:1px solid rgba(0,191,255,0.25);}
+.achieve-modal-photos{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.achieve-modal-photos img{width:100%;border-radius:12px;object-fit:cover;aspect-ratio:4/3;border:1px solid rgba(0,191,255,0.2);}
+
+/* PROJECTS */
+#projects{max-width:1400px;padding:100px 4%;}
+.project-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;width:100%;margin:auto;align-items:stretch;}
+.project-card{padding:26px;border-radius:20px;background:rgba(0,30,60,.45);border:1px solid rgba(8,86,150,0.25);backdrop-filter:blur(10px);box-shadow:0 0 20px rgba(34,175,218,0.2);transition:.35s;display:flex;flex-direction:column;}
+.project-card:hover{transform:translateY(-8px);box-shadow:0 0 40px rgba(0,191,255,.5);}
+.project-card h3{color:#1272bc;margin-bottom:10px;font-size:14px;}
+.project-card p{font-size:13px;line-height:1.7;color:#b8d9ff;flex:1;}
+.project-icon{font-size:42px;margin-bottom:14px;animation:iconFloat 3s ease-in-out infinite;display:inline-block;}
+@keyframes iconFloat{0%,100%{transform:translateY(0);}50%{transform:translateY(-8px);}}
+.project-tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px;}
+.tag{padding:4px 10px;border-radius:20px;font-size:10px;letter-spacing:1px;border:1px solid rgba(0,191,255,0.5);color:#7af3ff;background:rgba(0,180,255,0.1);}
+.tag-purple{border-color:rgba(150,80,255,0.5);color:#c47aff;background:rgba(120,60,255,0.1);}
+
+/* FACULTY */
+.faculty-section{max-width:900px;margin:0 auto 60px;}
+.faculty-card{display:flex;align-items:center;gap:40px;background:linear-gradient(135deg,rgba(0,20,50,0.7),rgba(0,30,60,0.5));border:1px solid rgba(0,191,255,0.3);border-radius:24px;padding:36px 40px;box-shadow:0 0 50px rgba(0,180,255,0.15);position:relative;overflow:hidden;}
+.faculty-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,#00c3ff,#7af3ff,transparent);}
+.faculty-img-wrap-outer img{width:160px;height:180px;object-fit:cover;border-radius:16px;border:2px solid rgba(0,191,255,0.4);box-shadow:0 0 28px rgba(0,180,255,0.25);}
+.faculty-info{flex:1;}
+.faculty-badge{display:inline-block;background:linear-gradient(90deg,#1fb6ff,#008cff);color:white;font-size:10px;letter-spacing:3px;padding:4px 14px;border-radius:20px;margin-bottom:14px;}
+.faculty-name{font-family:'Audiowide',sans-serif;font-size:22px;color:#7af3ff;text-shadow:0 0 15px rgba(0,195,255,0.5);margin-bottom:8px;}
+.faculty-title{font-size:12px;color:#b8d9ff;letter-spacing:1px;line-height:1.6;margin-bottom:16px;border-left:2px solid rgba(0,191,255,0.4);padding-left:12px;}
+.faculty-desc{font-size:13px;color:rgba(180,210,240,0.8);line-height:1.8;margin-bottom:20px;}
+.faculty-socials{display:flex;gap:10px;}
+.faculty-social-btn{display:flex;align-items:center;gap:8px;padding:7px 16px;border-radius:20px;border:1px solid rgba(0,191,255,0.35);background:rgba(0,30,60,0.5);color:#7af3ff;font-size:11px;text-decoration:none;letter-spacing:1px;transition:0.3s;font-family:'Orbitron',sans-serif;}
+.faculty-social-btn:hover{background:rgba(0,180,255,0.2);box-shadow:0 0 16px #00c3ff;}
+
+/* TEAM */
+.president-row{display:flex;justify-content:center;margin-bottom:50px;}
+.president-card{display:flex;flex-direction:column;align-items:center;gap:14px;background:rgba(0,30,60,0.55);border:2px solid rgba(0,191,255,0.5);border-radius:24px;padding:32px 50px;box-shadow:0 0 40px rgba(0,191,255,0.3);position:relative;}
+.president-card::before{content:'★ Club President ★';position:absolute;top:-14px;left:50%;transform:translateX(-50%);background:linear-gradient(90deg,#1fb6ff,#008cff);color:white;font-size:10px;letter-spacing:3px;padding:4px 16px;border-radius:20px;white-space:nowrap;}
+.president-img-wrap{position:relative;display:inline-block;}
+.president-img-wrap img{width:180px;height:180px;border-radius:14px;border:3px solid #00c3ff;box-shadow:0 0 24px #00c3ff;object-fit:cover;transition:0.4s;display:block;}
+.president-img-wrap:hover img{filter:brightness(0.3) blur(2px);}
+.president-img-overlay{position:absolute;inset:0;border-radius:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;opacity:0;transition:0.4s;}
+.president-img-wrap:hover .president-img-overlay{opacity:1;}
+.president-img-overlay a{width:36px;height:36px;border-radius:8px;border:1px solid rgba(0,191,255,0.6);background:rgba(0,10,40,0.85);color:#7af3ff;display:flex;align-items:center;justify-content:center;font-size:12px;text-decoration:none;transition:0.3s;}
+.president-card .pres-name{font-size:20px;color:#7af3ff;text-shadow:0 0 12px #00c3ff;letter-spacing:2px;}
+.president-card .pres-role{font-size:12px;color:#b8d9ff;letter-spacing:1px;}
+
+/* DOMAIN GRID */
+.domain-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:24px;max-width:1100px;margin:auto;}
+.domain-card{background:rgba(0,30,60,0.45);border:1px solid rgba(0,191,255,0.25);border-radius:22px;overflow:hidden;box-shadow:0 0 20px rgba(0,180,255,0.15);transition:0.35s;display:flex;flex-direction:column;cursor:pointer;}
+.domain-card:hover{transform:translateY(-8px);box-shadow:0 0 40px rgba(0,191,255,0.5);}
+.domain-img-wrap{width:100%;height:140px;overflow:hidden;position:relative;}
+.domain-img-wrap img{width:100%;height:100%;object-fit:cover;filter:brightness(0.75) saturate(1.2);transition:0.4s;}
+.domain-card:hover .domain-img-wrap img{filter:brightness(0.95) saturate(1.5);transform:scale(1.05);}
+.domain-img-wrap::after{content:'';position:absolute;bottom:0;left:0;right:0;height:50%;background:linear-gradient(transparent,rgba(3,9,26,0.85));}
+.domain-info{padding:16px;flex:1;display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center;}
+.domain-info h3{color:#7af3ff;font-size:14px;text-shadow:0 0 10px #00c3ff;}
+.domain-info p{color:#b8d9ff;font-size:11px;line-height:1.5;}
+.tap-btn{margin-top:auto;padding:8px 16px;border-radius:30px;border:1px solid #00c3ff;background:transparent;color:#7af3ff;font-family:'Orbitron',sans-serif;font-size:10px;letter-spacing:1px;cursor:pointer;transition:0.3s;}
+.tap-btn:hover{background:rgba(0,180,255,0.15);}
+
+/* MODAL */
+.modal-overlay{display:none;position:fixed;inset:0;z-index:200;background:rgba(1,6,20,0.92);backdrop-filter:blur(12px);justify-content:center;align-items:center;padding:20px;}
+.modal-overlay.open{display:flex;}
+.modal-box{background:rgba(0,20,50,0.95);border:1px solid rgba(0,191,255,0.4);border-radius:24px;padding:36px 36px 32px;max-width:700px;width:100%;max-height:88vh;overflow-y:auto;box-shadow:0 0 60px rgba(0,180,255,0.25);position:relative;animation:modalIn 0.4s cubic-bezier(0.22,1,0.36,1);}
+@keyframes modalIn{from{transform:scale(0.85) translateY(40px);opacity:0;}to{transform:scale(1) translateY(0);opacity:1;}}
+.modal-close{position:absolute;top:14px;right:18px;background:none;border:none;color:#7af3ff;font-size:24px;cursor:pointer;}
+.modal-domain-title{font-family:'Audiowide',sans-serif;font-size:22px;color:#7af3ff;text-align:center;margin-bottom:28px;}
+.modal-lead{display:flex;flex-direction:column;align-items:center;gap:12px;margin-bottom:36px;padding-bottom:28px;border-bottom:1px solid rgba(0,191,255,0.2);}
+.modal-lead .lead-name{font-size:17px;color:#fff;letter-spacing:1px;}
+.modal-lead .lead-badge{background:linear-gradient(90deg,#1fb6ff,#008cff);color:white;font-size:11px;padding:4px 14px;border-radius:20px;letter-spacing:2px;}
+.modal-lead-img-wrap{width:220px;height:220px;border-radius:14px;overflow:hidden;position:relative;border:3px solid #00c3ff;box-shadow:0 0 28px rgba(0,191,255,0.4);}
+.modal-lead-img-wrap img{width:100%;height:100%;object-fit:cover;display:block;transition:0.4s;}
+.modal-lead-img-wrap:hover img{filter:brightness(0.35) blur(2px);}
+.modal-lead-img-wrap .member-hover-overlay{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;opacity:0;transition:0.4s;}
+.modal-lead-img-wrap:hover .member-hover-overlay{opacity:1;}
+.modal-members-title{color:#b8d9ff;font-size:12px;letter-spacing:3px;text-align:center;margin-bottom:20px;}
+.modal-members-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;}
+.member-card{display:flex;flex-direction:column;align-items:center;background:rgba(0,30,60,0.5);border:1px solid rgba(0,191,255,0.18);border-radius:14px;overflow:hidden;transition:0.3s;position:relative;}
+.member-card:hover{border-color:rgba(0,191,255,0.5);box-shadow:0 0 18px rgba(0,191,255,0.2);}
+.member-img-wrap{width:100%;position:relative;overflow:hidden;aspect-ratio:1/1;}
+.member-img-wrap img{width:100%;height:100%;object-fit:cover;display:block;transition:0.4s;filter:brightness(0.9);}
+.member-card:hover .member-img-wrap img{filter:brightness(0.35) blur(2px);}
+.member-hover-overlay{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;opacity:0;transition:0.4s;}
+.member-card:hover .member-hover-overlay{opacity:1;}
+.member-hover-overlay a{display:flex;align-items:center;gap:6px;padding:7px 16px;border-radius:20px;border:1px solid rgba(0,191,255,0.5);background:rgba(0,20,50,0.8);color:#7af3ff;font-size:10px;text-decoration:none;letter-spacing:1px;transition:0.3s;font-family:'Orbitron',sans-serif;}
+.member-name-bar{width:100%;padding:10px 12px;text-align:center;background:rgba(0,20,50,0.7);border-top:1px solid rgba(0,191,255,0.15);}
+.member-name-bar .member-name{color:#e0f4ff;font-size:11px;letter-spacing:0.5px;}
+
+/* EVENTS */
+.event-card{background:rgba(0,30,60,.45);border:1px solid rgba(0,191,255,.25);border-radius:20px;padding:26px;margin-bottom:30px;box-shadow:0 0 20px rgba(0,180,255,.2);display:flex;justify-content:space-between;align-items:center;gap:24px;}
+.event-info h3{margin-bottom:8px;color:#7af3ff;font-size:14px;}
+.event-info p{font-size:13px;color:#b8d9ff;}
+.event-meta{display:flex;gap:16px;margin-top:10px;color:#7af3ff;font-size:12px;flex-wrap:wrap;}
+.event-badge{padding:4px 12px;border-radius:20px;font-size:10px;letter-spacing:2px;white-space:nowrap;font-family:'Orbitron',sans-serif;}
+.event-badge.upcoming{background:rgba(0,180,255,0.15);border:1px solid #00c3ff;color:#7af3ff;}
+.event-badge.completed{background:rgba(100,100,100,0.2);border:1px solid rgba(180,180,180,0.3);color:#aaa;}
+
+/* GALLERY */
+.gallery-slider{position:relative;max-width:1000px;margin:0 auto;user-select:none;touch-action:pan-y;}
+.gallery-slider-track{position:relative;width:100%;min-height:400px;border-radius:20px;overflow:hidden;border:1px solid rgba(0,191,255,0.3);box-shadow:0 0 40px rgba(0,180,255,0.2);background:#01061a;display:flex;align-items:center;justify-content:center;}
+.gallery-slide{position:absolute;inset:0;opacity:0;transition:opacity 0.6s ease;display:flex;align-items:center;justify-content:center;}
+.gallery-slide.active{opacity:1;}
+.gallery-slide img{width:100%;height:auto;max-height:65vh;object-fit:contain;display:block;}
+.gallery-slide-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(1,6,20,0.5) 0%,transparent 50%);pointer-events:none;}
+.gallery-btn{position:absolute;top:50%;transform:translateY(-50%);z-index:10;background:rgba(0,10,30,0.6);border:1px solid rgba(0,191,255,0.5);color:#7af3ff;width:44px;height:44px;border-radius:50%;font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(8px);transition:0.3s;}
+.gallery-btn:hover{background:rgba(0,100,200,0.4);}
+.gallery-btn-prev{left:-22px;}
+.gallery-btn-next{right:-22px;}
+.gallery-counter{text-align:center;margin-top:16px;color:#7af3ff;font-size:11px;letter-spacing:3px;}
+.gallery-dots{display:flex;justify-content:center;gap:8px;margin-top:14px;flex-wrap:wrap;}
+.gallery-dot{width:7px;height:7px;border-radius:50%;background:rgba(0,191,255,0.3);border:1px solid rgba(0,191,255,0.4);cursor:pointer;transition:0.3s;}
+.gallery-dot.active{background:#00c3ff;box-shadow:0 0 8px #00c3ff;}
+.gallery-caption{position:absolute;bottom:16px;left:16px;z-index:5;background:rgba(0,10,30,0.65);backdrop-filter:blur(8px);border:1px solid rgba(0,191,255,0.25);border-radius:10px;padding:8px 14px;max-width:60%;}
+.gallery-caption-title{color:#7af3ff;font-size:11px;letter-spacing:2px;margin-bottom:3px;}
+.gallery-caption-desc{color:#b8d9ff;font-size:10px;line-height:1.5;}
+
+/* CONTACT */
+.contact-box{max-width:560px;margin:auto;display:flex;flex-direction:column;gap:16px;}
+.contact-box input,.contact-box textarea{background:rgba(0,30,60,.45);border:1px solid rgba(0,191,255,.3);border-radius:10px;padding:13px;color:white;font-family:'Orbitron',sans-serif;font-size:12px;outline:none;transition:0.3s;width:100%;}
+.contact-box input:focus,.contact-box textarea:focus{border-color:#00c3ff;box-shadow:0 0 10px rgba(0,195,255,0.3);}
+.contact-box input::placeholder,.contact-box textarea::placeholder{color:rgba(180,210,240,0.5);}
+
+/* FOOTER */
+.footer{position:relative;z-index:5;padding:60px 6%;border-top:1px solid rgba(0,191,255,.2);}
+.footer-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:36px;max-width:1200px;margin:auto;}
+.footer h3{color:#7af3ff;margin-bottom:12px;font-family:'Audiowide',sans-serif;font-size:15px;}
+.footer p{color:#b8d9ff;font-size:12px;line-height:1.8;}
+.footer ul{list-style:none;display:flex;flex-direction:column;gap:8px;}
+.footer ul li a{text-decoration:none;color:#b8d9ff;font-size:12px;transition:.3s;}
+.footer ul li a:hover{color:#7af3ff;}
+.footer-copy{text-align:center;margin-top:36px;color:#7af3ff;font-size:11px;letter-spacing:2px;border-top:1px solid rgba(0,191,255,.1);padding-top:26px;max-width:1200px;margin-left:auto;margin-right:auto;}
+.footer-logos{display:flex;gap:14px;align-items:center;margin-top:16px;margin-bottom:16px;}
+.footer-logo-img{width:52px;height:52px;object-fit:contain;border-radius:50%;border:1px solid rgba(0,191,255,0.3);padding:4px;filter:drop-shadow(0 0 6px rgba(0,191,255,0.3));transition:0.3s;}
+.footer-social-label{color:#7af3ff;font-size:12px;letter-spacing:3px;margin-bottom:10px;}
+.footer-socials{display:flex;gap:10px;margin-top:16px;}
+.social-btn{width:38px;height:38px;border-radius:10px;border:1px solid rgba(0,191,255,0.3);background:rgba(0,30,60,0.5);color:#7af3ff;display:flex;align-items:center;justify-content:center;font-size:15px;text-decoration:none;transition:0.3s;}
+.social-btn:hover{background:rgba(0,180,255,0.2);box-shadow:0 0 16px #00c3ff;border-color:#00c3ff;}
+
+html{scroll-behavior:smooth;}
+
+/* ========== MOBILE RESPONSIVE ========== */
+@media(max-width:900px){
+  .navbar nav{display:none;}
+  .hamburger{display:flex;}
+
+  .hero-logos img{width:70px;height:70px;}
+  .hero-logos{top:70px;right:4%;gap:10px;}
+  .hero-center{right:0;left:0;align-items:center;text-align:center;padding:180px 5% 0;max-width:100%;}
+  .club-title{white-space:normal;text-align:center;}
+  .club-quote{text-align:center;font-size:13px;}
+  .hero-buttons{justify-content:center;}
+  .hero::after{background:rgba(1,6,20,0.55);}
+
+  section{padding:80px 5%;}
+  #projects{padding:80px 5%;}
+
+  .about-grid{grid-template-columns:1fr;}
+  .stats-row{grid-template-columns:repeat(2,1fr);}
+  .achieve-grid{grid-template-columns:1fr 1fr;}
+  .project-grid{grid-template-columns:1fr;}
+  
+  .faculty-card{flex-direction:column;text-align:center;padding:28px 20px;gap:24px;}
+  .faculty-img-wrap-outer img{width:130px;height:150px;}
+  .faculty-title{border-left:none;border-top:2px solid rgba(0,191,255,0.4);padding-left:0;padding-top:10px;}
+  .faculty-socials{justify-content:center;}
+
+  .president-card{padding:28px 32px;}
+  .president-img-wrap img{width:150px;height:150px;}
+  .domain-grid{grid-template-columns:repeat(2,1fr);}
+
+  .event-card{flex-direction:column;align-items:flex-start;}
+  .event-action{width:100%;}
+  .event-action .btn{width:100%;text-align:center;}
+
+  .gallery-btn-prev{left:-16px;}
+  .gallery-btn-next{right:-16px;}
+
+  .footer-grid{grid-template-columns:1fr;gap:32px;}
+
+  .achieve-modal-photos{grid-template-columns:1fr;}
+  .modal-members-grid{grid-template-columns:1fr 1fr;}
+}
+
+@media(max-width:540px){
+  .nav-logo{font-size:12px;}
+  .hero-logos img{width:55px;height:55px;}
+  .btn{padding:12px 20px;font-size:11px;}
+  .achieve-grid{grid-template-columns:1fr;}
+  .domain-grid{grid-template-columns:1fr 1fr;}
+  .stats-row{grid-template-columns:repeat(2,1fr);}
+  .modal-box{padding:24px 18px 20px;}
+  .modal-members-grid{grid-template-columns:1fr 1fr;}
+  .gallery-btn{width:36px;height:36px;font-size:16px;}
+  .gallery-btn-prev{left:-12px;}
+  .gallery-btn-next{right:-12px;}
+  .gallery-slider-track{min-height:260px;}
+  .section-title{font-size:24px;}
+  .achieve-modal-box{padding:18px;}
+}
+</style>
+</head>
+<body>
+
+<header class="navbar">
+  <div class="nav-logo">SRM Automation Club</div>
+  <nav>
+    <a href="#home">Home</a>
+    <a href="#about">About</a>
+    <a href="#achievements">Achievements</a>
+    <a href="#projects">Projects</a>
+    <a href="#faculty">Faculty</a>
+    <a href="#team">Team</a>
+    <a href="#events">Events</a>
+    <a href="#contact">Contact</a>
+    <a class="join-btn" href="#join">Join Us</a>
+  </nav>
+  <div class="hamburger" id="hamburger" onclick="toggleMobileNav()">
+    <span></span><span></span><span></span>
+  </div>
+</header>
+
+<!-- MOBILE NAV DRAWER -->
+<div class="mobile-nav" id="mobile-nav">
+  <a href="#home" onclick="closeMobileNav()">Home</a>
+  <a href="#about" onclick="closeMobileNav()">About</a>
+  <a href="#achievements" onclick="closeMobileNav()">Achievements</a>
+  <a href="#projects" onclick="closeMobileNav()">Projects</a>
+  <a href="#faculty" onclick="closeMobileNav()">Faculty</a>
+  <a href="#team" onclick="closeMobileNav()">Team</a>
+  <a href="#events" onclick="closeMobileNav()">Events</a>
+  <a href="#contact" onclick="closeMobileNav()">Contact</a>
+  <a class="join-btn" href="#join" onclick="closeMobileNav()">Join Us</a>
+</div>
+
+<canvas id="mesh"></canvas>
+<div id="vignette"></div>
+
+<!-- HERO -->
+<div class="hero" id="home">
+  <canvas id="hero-canvas"></canvas>
+  <div class="hero-logos">
+    <img src="srm automation club logo1.png" alt="Club Logo">
+    <img src="srm logo.png" alt="SRM IST Logo">
+  </div>
+  <div class="hero-center">
+    <div class="hero-eyebrow">Innovation Through Technology</div>
+    <h1 class="club-title">SRM Automation Club</h1>
+    <div class="hero-tagline">Learn <span>·</span> Build <span>·</span> Automate</div>
+    <p class="club-quote">Engineering intelligent machines and building the future of robotics, automation and innovation through collaborative technology.</p>
+    <div class="hero-buttons">
+      <a class="btn explore" href="#projects">&lt; Explore Projects &gt;</a>
+      <a class="btn join" href="#join">Join Our Community</a>
+    </div>
+  </div>
+</div>
+
+<!-- ABOUT -->
+<section id="about">
+  <h2 class="section-title">About <span>Our Club</span></h2>
+  <p class="section-sub">Driving innovation in robotics and automation through passion, collaboration, and cutting-edge technology</p>
+  <div class="about-grid">
+    <div class="about-card"><div class="about-icon">👥</div><h3>Who We Are</h3><p>A vibrant community of passionate tech and robotics enthusiasts at SRM, united by our love for innovation and automation.</p></div>
+    <div class="about-card"><div class="about-icon">⚙️</div><h3>What We Do</h3><p>Building cutting-edge robots, automation systems, and AI-integrated projects that push the boundaries of technology.</p></div>
+    <div class="about-card"><div class="about-icon">🎯</div><h3>Our Mission</h3><p>Empowering students to transform ideas into reality through hands-on learning and collaboration.</p></div>
+    <div class="about-card"><div class="about-icon">⚡</div><h3>Innovation Hub</h3><p>Creating a space where creativity meets technology, fostering the next generation of engineers and innovators.</p></div>
+  </div>
+  <div class="stats-row" id="stats-row">
+    <div class="stat-card"><div class="stat-icon">👥</div><div class="stat-top"><span class="stat-number" data-target="25">0</span><span class="stat-plus">+</span></div><div class="stat-label">Members</div></div>
+    <div class="stat-card"><div class="stat-icon">🛠️</div><div class="stat-top"><span class="stat-number" data-target="10">0</span><span class="stat-plus">+</span></div><div class="stat-label">Projects</div></div>
+    <div class="stat-card"><div class="stat-icon">📅</div><div class="stat-top"><span class="stat-number" data-target="5">0</span><span class="stat-plus">+</span></div><div class="stat-label">Events</div></div>
+    <div class="stat-card"><div class="stat-icon">🏆</div><div class="stat-top"><span class="stat-number" data-target="5">0</span><span class="stat-plus">+</span></div><div class="stat-label">Awards</div></div>
+  </div>
+</section>
+
+<!-- ACHIEVEMENTS -->
+<section id="achievements">
+  <h2 class="section-title">Our <span>Achievements</span></h2>
+  <p class="section-sub">Growing stronger together, one innovation at a time</p>
+  <div class="achieve-grid">
+    <div class="achieve-card" onclick="openAchieveModal('achieve1')">
+      <img class="achieve-cover" src="achieve1_cover1.png" alt="India Engineers Elite Challenge">
+      <div class="achieve-bottom"><div class="achieve-event-name">India Engineers Elite Challenge</div><div class="achieve-year">2024</div></div>
+    </div>
+    <div class="achieve-card" onclick="openAchieveModal('achieve2')">
+      <img class="achieve-cover" src="achieve2_cover2.png" alt="Best Innovation Award">
+      <div class="achieve-bottom"><div class="achieve-event-name">Best Innovation Award — SRM Techfest</div><div class="achieve-year">2024</div></div>
+    </div>
+    <div class="achieve-card" onclick="openAchieveModal('achieve3')">
+      <img class="achieve-cover" src="achieve3_cover3.png" alt="Technoxian 25">
+      <div class="achieve-bottom"><div class="achieve-event-name">Technoxian'25</div><div class="achieve-year">2025</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ACHIEVEMENT MODALS -->
+<div class="achieve-modal-overlay" id="achievemodal-achieve1">
+  <div class="achieve-modal-box">
+    <button class="achieve-modal-close" onclick="closeAchieveModal('achieve1')">✕</button>
+    <div class="achieve-modal-title">India Engineers Elite Challenge</div>
+    <div class="achieve-modal-year">2024</div>
+    <img class="achieve-modal-cover" src="achieve1_cover.jpg" alt="India Engineers Elite Challenge">
+    <div class="achieve-modal-photos"><img src="achieve1.jpeg" alt="Event Photo 1"></div>
+  </div>
+</div>
+<div class="achieve-modal-overlay" id="achievemodal-achieve2">
+  <div class="achieve-modal-box">
+    <button class="achieve-modal-close" onclick="closeAchieveModal('achieve2')">✕</button>
+    <div class="achieve-modal-title">Best Innovation Award — SRM Techfest</div>
+    <div class="achieve-modal-year">2024</div>
+    <img class="achieve-modal-cover" src="achieve2_cover.jpg" alt="Best Innovation Award">
+    <div class="achieve-modal-photos"><img src="achieve2.jpeg" alt="Event Photo 1"><img src="achieve21.jpeg" alt="Event Photo 2"></div>
+  </div>
+</div>
+<div class="achieve-modal-overlay" id="achievemodal-achieve3">
+  <div class="achieve-modal-box">
+    <button class="achieve-modal-close" onclick="closeAchieveModal('achieve3')">✕</button>
+    <div class="achieve-modal-title">Technoxian'25</div>
+    <div class="achieve-modal-year">2025</div>
+    <img class="achieve-modal-cover" src="achieve3_cover.jpg" alt="Technoxian 25">
+    <div class="achieve-modal-photos"><img src="achieve3.jpeg" alt="Event Photo 1"><img src="achieve31.jpeg" alt="Event Photo 2"></div>
+  </div>
+</div>
+
+<!-- PROJECTS -->
+<section id="projects">
+  <h2 class="section-title">Our <span>Projects</span></h2>
+  <p class="section-sub">Explore our cutting-edge robotics and automation projects built by passionate students</p>
+  <div class="project-grid">
+    <div class="project-card"><div class="project-icon">🤖</div><h3>Autonomous Rover</h3><p>Self-navigating robot with obstacle detection and mapping using LIDAR and computer vision.</p><div class="project-tags"><span class="tag">ROS</span><span class="tag">Python</span><span class="tag tag-purple">Computer Vision</span></div></div>
+    <div class="project-card"><div class="project-icon">🦾</div><h3>Industrial Arm</h3><p>6-DOF robotic arm designed for precision manufacturing tasks with AI motion planning.</p><div class="project-tags"><span class="tag">Arduino</span><span class="tag">C++</span><span class="tag tag-purple">Kinematics</span></div></div>
+    <div class="project-card"><div class="project-icon">🌱</div><h3>Smart Agriculture Bot</h3><p>Automated farming solution with crop monitoring, irrigation control and pest detection using IoT sensors.</p><div class="project-tags"><span class="tag">IoT</span><span class="tag">Machine Learning</span><span class="tag tag-purple">Sensors</span></div></div>
+    <div class="project-card"><div class="project-icon">🚁</div><h3>Drone Swarm System</h3><p>Coordinated multi-drone system for search and rescue operations with real-time communication protocols.</p><div class="project-tags"><span class="tag">Flight Control</span><span class="tag">Networking</span><span class="tag tag-purple">AI</span></div></div>
+    <div class="project-card"><div class="project-icon">🏎️</div><h3>Line Following Bot</h3><p>High-speed line follower with PID control optimization for competitive racing and industrial applications.</p><div class="project-tags"><span class="tag">Embedded Systems</span><span class="tag tag-purple">Control Theory</span></div></div>
+    <div class="project-card"><div class="project-icon">📦</div><h3>Warehouse Automation</h3><p>Automated inventory management system with robotic sorting and package delivery mechanisms.</p><div class="project-tags"><span class="tag">Automation</span><span class="tag">Logistics</span><span class="tag tag-purple">AI</span></div></div>
+  </div>
+</section>
+
+<!-- FACULTY -->
+<section id="faculty">
+  <h2 class="section-title">Our <span>Faculty Advisor</span></h2>
+  <p class="section-sub">The guiding force behind SRM Automation Club</p>
+  <div class="faculty-section">
+    <div class="faculty-card">
+      <div class="faculty-img-wrap-outer">
+        <img src="faculty.png" alt="Mr. Joselin Retna Kumar">
+      </div>
+      <div class="faculty-info">
+        <div class="faculty-badge">★ FACULTY ADVISOR</div>
+        <div class="faculty-name">Mr. Joselin Retna Kumar</div>
+        <div class="faculty-title">Head of Department<br>EIE — Electronics and Instrumentation Engineering<br>SRM Institute of Science and Technology</div>
+        <p class="faculty-desc">A visionary mentor and dedicated educator who has been the guiding force behind SRM Automation Club. His unwavering support, technical expertise and passion for innovation has empowered our students to push the boundaries of robotics and automation.</p>
+        <div class="faculty-socials">
+          <a href="https://www.linkedin.com/in/joselin-retna-kumar-3947b913b/" target="_blank" class="faculty-social-btn">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+            LinkedIn
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TEAM -->
+<section id="team">
+  <h2 class="section-title">Our <span>Team</span></h2>
+  <p class="section-sub">Meet the passionate engineers behind SRM Automation Club</p>
+  <div class="president-row">
+    <div class="president-card">
+      <div class="president-img-wrap">
+        <img src="vishnu.jpg" alt="Vishnu D">
+        <div class="president-img-overlay">
+          <a href="#" target="_blank" title="LinkedIn">in</a>
+          <a href="#" target="_blank" title="Instagram">◎</a>
+        </div>
+      </div>
+      <div class="pres-name">Vishnu. D</div>
+      <div class="pres-role">Club President</div>
+    </div>
+  </div>
+  <div class="domain-grid">
+    <div class="domain-card" onclick="openModal('coding')">
+      <div class="domain-img-wrap"><img src="coding.png" alt="Coding Domain"></div>
+      <div class="domain-info"><h3>Coding Domain</h3><p>Software, algorithms & intelligent systems.</p><button class="tap-btn">Tap to See Members</button></div>
+    </div>
+    <div class="domain-card" onclick="openModal('electronics')">
+      <div class="domain-img-wrap"><img src="electronics.png" alt="Electronics Domain"></div>
+      <div class="domain-info"><h3>Electronics Domain</h3><p>Circuits, sensors & embedded systems.</p><button class="tap-btn">Tap to See Members</button></div>
+    </div>
+    <div class="domain-card" onclick="openModal('mechanical')">
+      <div class="domain-img-wrap"><img src="mechanical.png" alt="Mechanical Domain"></div>
+      <div class="domain-info"><h3>Mechanical Domain</h3><p>Design, fabrication & structural engineering.</p><button class="tap-btn">Tap to See Members</button></div>
+    </div>
+    <div class="domain-card" onclick="openModal('corporate')">
+      <div class="domain-img-wrap"><img src="corporate.png" alt="Corporate Domain"></div>
+      <div class="domain-info"><h3>Corporate Domain</h3><p>Outreach, events & industry partnerships.</p><button class="tap-btn">Tap to See Members</button></div>
+    </div>
+  </div>
+  <div class="mentors-row" style="margin-top:50px;">
+    <h3 style="text-align:center;color:#7af3ff;font-family:'Audiowide',sans-serif;font-size:18px;letter-spacing:3px;margin-bottom:30px;">Our <span style="color:#e2e4e5;">Mentors</span></h3>
+    <div style="display:flex;justify-content:center;">
+      <div class="domain-card" onclick="openModal('mentors')" style="max-width:240px;width:100%;">
+        <div class="domain-img-wrap"><img src="mentors.png" alt="Mentors"></div>
+        <div class="domain-info"><h3>Mentors</h3><p>Senior members guiding our club.</p><button class="tap-btn">Tap to See Mentors</button></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MODAL: CODING -->
+<div class="modal-overlay" id="modal-coding">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeModal('coding')">✕</button>
+    <div class="modal-domain-title">⟨ Coding Domain ⟩</div>
+    <div class="modal-lead">
+      <div class="modal-lead-img-wrap">
+        <img src="member1.jpg" alt="Domain Lead">
+        <div class="member-hover-overlay"><a href="#" target="_blank">in LinkedIn</a><a href="#" target="_blank">◎ Instagram</a></div>
+      </div>
+      <div class="lead-name">meeeeee</div>
+      <div class="lead-badge">Domain Lead</div>
+    </div>
+    <div class="modal-members-title">— TEAM MEMBERS —</div>
+    <div class="modal-members-grid">
+      <div class="member-card"><div class="member-img-wrap"><img src="Maalikha.jpg" alt="Maalikha G"><div class="member-hover-overlay"><a href="https://www.linkedin.com/in/maalikha-gunasekaran" target="_blank">in LinkedIn</a><a href="https://www.instagram.com/i.jkmaaly/?__pwa=1" target="_blank">◎ Instagram</a></div></div><div class="member-name-bar"><div class="member-name">Maalikha G</div></div></div>
+      <div class="member-card"><div class="member-img-wrap"><img src="infanta.jpg" alt="Infanta Jenita I"><div class="member-hover-overlay"><a href="https://www.linkedin.com/in/infanta-jenita-517a46364" target="_blank">in LinkedIn</a><a href="https://www.instagram.com/_jeni__2206" target="_blank">◎ Instagram</a></div></div><div class="member-name-bar"><div class="member-name">Infanta Jenita I</div></div></div>
+      <div class="member-card"><div class="member-img-wrap"><img src="reetu.jpg" alt="H Reetu"><div class="member-hover-overlay"><a href="https://www.linkedin.com/in/reetu-hariharan-8013a8356" target="_blank">in LinkedIn</a><a href="https://www.instagram.com/reetuhariharan_02" target="_blank">◎ Instagram</a></div></div><div class="member-name-bar"><div class="member-name">H Reetu</div></div></div>
+      <div class="member-card"><div class="member-img-wrap"><img src="darsshinee.jpg" alt="Darsshinee S"><div class="member-hover-overlay"><a href="https://in.linkedin.com/in/darsshinee-s-1307463a1" target="_blank">in LinkedIn</a><a href="https://www.instagram.com/ds_viz99" target="_blank">◎ Instagram</a></div></div><div class="member-name-bar"><div class="member-name">Darsshinee S</div></div></div>
+      <div class="member-card"><div class="member-img-wrap"><img src="ayushkumar.jpg" alt="Ayush Kumar"><div class="member-hover-overlay"></div></div><div class="member-name-bar"><div class="member-name">Ayush Kumar</div></div></div>
+      <div class="member-card"><div class="member-img-wrap"><img src="aryan.jpg" alt="Aryan Mishra"><div class="member-hover-overlay"><a href="https://www.linkedin.com/in/aryan-mishra-b79781399" target="_blank">in LinkedIn</a></div></div><div class="member-name-bar"><div class="member-name">Aryan Mishra</div></div></div>
+      <div class="member-card"><div class="member-img-wrap"><img src="mohansai.jpg" alt="Mohan Sai G"><div class="member-hover-overlay"></div></div><div class="member-name-bar"><div class="member-name">Mohan Sai G</div></div></div>
+      <div class="member-card"><div class="member-img-wrap"><img src="nayanika.jpg" alt="Nayanika"><div class="member-hover-overlay"></div></div><div class="member-name-bar"><div class="member-name">Nayanika</div></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: ELECTRONICS -->
+<div class="modal-overlay" id="modal-electronics">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeModal('electronics')">✕</button>
+    <div class="modal-domain-title">⟨ Electronics Domain ⟩</div>
+    <div class="modal-lead">
+      <div class="modal-lead-img-wrap"><img src="member3.jpg" alt="Domain Lead"><div class="member-hover-overlay"><a href="#" target="_blank">in LinkedIn</a><a href="#" target="_blank">◎ Instagram</a></div></div>
+      <div class="lead-name">meeeeeee</div>
+      <div class="lead-badge">Domain Lead</div>
+    </div>
+    <div class="modal-members-title">— TEAM MEMBERS —</div>
+    <div class="modal-members-grid">
+      <div class="member-card"><div class="member-img-wrap"><img src="pranavayogesh.jpg" alt="Pranavayogesh VG"><div class="member-hover-overlay"><a href="https://www.linkedin.com/in/vg-pranav-yogesh-42ab12256" target="_blank">in LinkedIn</a></div></div><div class="member-name-bar"><div class="member-name">Pranavayogesh VG</div></div></div>
+      <div class="member-card"><div class="member-img-wrap"><img src="roshni.jpg" alt="Roshni Sunil"><div class="member-hover-overlay"><a href="https://www.linkedin.com/in/roshni-sunil-43663b345" target="_blank">in LinkedIn</a><a href="https://www.instagram.com/val_dez197" target="_blank">◎ Instagram</a></div></div><div class="member-name-bar"><div class="member-name">Roshni Sunil</div></div></div>
+      <div class="member-card"><div class="member-img-wrap"><img src="tharun.jpg" alt="Tharun B"><div class="member-hover-overlay"><a href="https://www.linkedin.com/in/tharun-b-607908324" target="_blank">in LinkedIn</a></div></div><div class="member-name-bar"><div class="member-name">Tharun B</div></div></div>
+      <div class="member-card"><div class="member-img-wrap"><img src="ojesh.jpg" alt="Ojesh Singh"><div class="member-hover-overlay"></div></div><div class="member-name-bar"><div class="member-name">Ojesh Singh</div></div></div>
+      <div class="member-card"><div class="member-img-wrap"><img src="dhanishka.jpg" alt="Dhanishka C"><div class="member-hover-overlay"><a href="https://www.linkedin.com/in/dhanishka-chandrasekaran-8299313a1" target="_blank">in LinkedIn</a></div></div><div class="member-name-bar"><div class="member-name">Dhanishka C</div></div></div>
+      <div class="member-card"><div class="member-img-wrap"><img src="priyansh.jpg" alt="Priyansh"><div class="member-hover-overlay"><a href="https://www.linkedin.com/in/priyansh-sahu-39641824b" target="_blank">in LinkedIn</a><a href="https://www.instagram.com/_priyansh09._" target="_blank">◎ Instagram</a></div></div><div class="member-name-bar"><div class="member-name">Priyansh</div></div></div>
+      <div class="member-card"><div class="member-img-wrap"><img src="mihir.jpg" alt="Mihir Karthik"><div class="member-hover-overlay"><a href="https://www.linkedin.com/in/mihir-karthik-kota-0a541b27b/" target="_blank">in LinkedIn</a></div></div><div class="member-name-bar"><div class="member-name">Mihir Karthik</div></div></div>
+      <div class="member-card"><div class="member-img-wrap"><img src="lokesh.jpg" alt="Lokesh B"><div class="member-hover-overlay"></div></div><div class="member-name-bar"><div class="member-name">Lokesh B</div></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: MECHANICAL -->
+<div class="modal-overlay" id="modal-mechanical">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeModal('mechanical')">✕</button>
+    <div class="modal-domain-title">⟨ Mechanical Domain ⟩</div>
+    <div class="modal-lead">
+      <div class="modal-lead-img-wrap"><img src="member2.jpg" alt="Domain Lead"><div class="member-hover-overlay"><a href="#" target="_blank">in LinkedIn</a><a href="#" target="_blank">◎ Instagram</a></div></div>
+      <div class="lead-name">meeeee</div>
+      <div class="lead-badge">Domain Lead</div>
+    </div>
+    <div class="modal-members-title">— TEAM MEMBERS —</div>
+    <div class="modal-members-grid">
+      <div class="member-card"><div class="member-img-wrap"><img src="patric.jpg" alt="Patric A"><div class="member-hover-overlay"><a href="https://www.linkedin.com/in/patric-a-6b8843323" target="_blank">in LinkedIn</a><a href="https://www.instagram.com/patrickkk__05" target="_blank">◎ Instagram</a></div></div><div class="member-name-bar"><div class="member-name">Patric A</div></div></div>
+      <div class="member-card"><div class="member-img-wrap"><img src="monishkanna.jpg" alt="MonishKanna KM"><div class="member-hover-overlay"><a href="https://www.linkedin.com/in/monishkanna-k-m-b3846a320" target="_blank">in LinkedIn</a><a href="https://www.instagram.com/m0nish_pvt" target="_blank">◎ Instagram</a></div></div><div class="member-name-bar"><div class="member-name">MonishKanna KM</div></div></div>
+      <div class="member-card"><div class="member-img-wrap"><img src="pranesh.jpg" alt="Pranesh"><div class="member-hover-overlay"><a href="https://www.linkedin.com/in/praneshkumar-ramesh-191a03332" target="_blank">in LinkedIn</a><a href="https://www.instagram.com/pranesh_155" target="_blank">◎ Instagram</a></div></div><div class="member-name-bar"><div class="member-name">Pranesh</div></div></div>
+      <div class="member-card"><div class="member-img-wrap"><img src="jayakrishna.jpg" alt="Jayakrishna"><div class="member-hover-overlay"><a href="https://www.linkedin.com/in/jayakrishnan-s-233783324" target="_blank">in LinkedIn</a><a href="https://www.instagram.com/jaya._krish_" target="_blank">◎ Instagram</a></div></div><div class="member-name-bar"><div class="member-name">Jayakrishna</div></div></div>
+      <div class="member-card"><div class="member-img-wrap"><img src="brindha.jpg" alt="Brindamahalakshmi"><div class="member-hover-overlay"><a href="https://www.instagram.com/brinda_sk_" target="_blank">◎ Instagram</a></div></div><div class="member-name-bar"><div class="member-name">Brindamahalakshmi</div></div></div>
+      <div class="member-card"><div class="member-img-wrap"><img src="noid.jpg" alt="Shaik Noid Akbar"><div class="member-hover-overlay"><a href="https://www.linkedin.com/in/noid-akbar-shaik-256435381" target="_blank">in LinkedIn</a></div></div><div class="member-name-bar"><div class="member-name">Shaik Noid Akbar</div></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: CORPORATE -->
+<div class="modal-overlay" id="modal-corporate">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeModal('corporate')">✕</button>
+    <div class="modal-domain-title">⟨ Corporate Domain ⟩</div>
+    <div class="modal-lead">
+      <div class="modal-lead-img-wrap"><img src="member4.jpg" alt="Domain Lead"><div class="member-hover-overlay"><a href="#" target="_blank">in LinkedIn</a><a href="#" target="_blank">◎ Instagram</a></div></div>
+      <div class="lead-name">meeee</div>
+      <div class="lead-badge">Domain Lead</div>
+    </div>
+    <div class="modal-members-title">— TEAM MEMBERS —</div>
+    <div class="modal-members-grid">
+      <div class="member-card"><div class="member-img-wrap"><img src="priyadarshan.jpg" alt="Priyadharshan M"><div class="member-hover-overlay"><a href="https://www.linkedin.com/in/priya-dharshan-349940375" target="_blank">in LinkedIn</a><a href="https://www.instagram.com/invites/contact/?igsh=h7div7uw" target="_blank">◎ Instagram</a></div></div><div class="member-name-bar"><div class="member-name">Priyadharshan M</div></div></div>
+      <div class="member-card"><div class="member-img-wrap"><img src="akshaya.jpg" alt="Akshaya Padmanabhan"><div class="member-hover-overlay"></div></div><div class="member-name-bar"><div class="member-name">Akshaya Padmanabhan</div></div></div>
+      <div class="member-card"><div class="member-img-wrap"><img src="tarun.jpg" alt="Tarun Krishna"><div class="member-hover-overlay"></div></div><div class="member-name-bar"><div class="member-name">Tarun Krishna</div></div></div>
+      <div class="member-card"><div class="member-img-wrap"><img src="mihir.jpg" alt="Mihir Karthik"><div class="member-hover-overlay"><a href="https://www.linkedin.com/in/mihir-karthik-kota-0a541b27b/" target="_blank">in LinkedIn</a></div></div><div class="member-name-bar"><div class="member-name">Mihir Karthik</div></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: MENTORS -->
+<div class="modal-overlay" id="modal-mentors">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeModal('mentors')">✕</button>
+    <div class="modal-domain-title">⟨ Mentors ⟩</div>
+    <div class="modal-members-title">— OUR MENTORS —</div>
+    <div class="modal-members-grid">
+      <div class="member-card"><div class="member-img-wrap"><img src="mentor1.jpg" alt="Trisha S"><div class="member-hover-overlay"><a href="#" target="_blank">in LinkedIn</a><a href="#" target="_blank">◎ Instagram</a></div></div><div class="member-name-bar"><div class="member-name">Trisha. S</div></div></div>
+      <div class="member-card"><div class="member-img-wrap"><img src="mentor2.jpg" alt="Sanjay Ram"><div class="member-hover-overlay"><a href="#" target="_blank">in LinkedIn</a><a href="#" target="_blank">◎ Instagram</a></div></div><div class="member-name-bar"><div class="member-name">Sanjay Ram</div></div></div>
+      <div class="member-card"><div class="member-img-wrap"><img src="mentor3.jpg" alt="Mentor"><div class="member-hover-overlay"><a href="#" target="_blank">in LinkedIn</a><a href="#" target="_blank">◎ Instagram</a></div></div><div class="member-name-bar"><div class="member-name">Mentor Name</div></div></div>
+      <div class="member-card"><div class="member-img-wrap"><img src="mentor4.jpg" alt="Mentor"><div class="member-hover-overlay"><a href="#" target="_blank">in LinkedIn</a><a href="#" target="_blank">◎ Instagram</a></div></div><div class="member-name-bar"><div class="member-name">Mentor Name</div></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- EVENTS -->
+<section id="events">
+  <h2 class="section-title">Events & <span>Workshops</span></h2>
+  <p class="section-sub">Join our exciting events and level up your robotics skills</p>
+  <div class="event-card">
+    <div class="event-info">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:8px;flex-wrap:wrap;"><h3 style="margin:0;">More Events in 2026 — Stay Tuned</h3><span class="event-badge upcoming">Upcoming</span></div>
+      <p>Will be informed soon</p>
+      <div class="event-meta"><span>📅 SRM University</span><span>📍 Main Campus</span></div>
+    </div>
+    <div class="event-action"><a class="btn explore" style="display:block;text-align:center;">Register</a></div>
+  </div>
+  <div class="event-card">
+    <div class="event-info">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:8px;flex-wrap:wrap;"><h3 style="margin:0;">Automation and Robotics Challenge 2025</h3><span class="event-badge completed">Completed</span></div>
+      <p>Teams from different colleges compete in robotics challenge.</p>
+      <div class="event-meta"><span>📅 Dec 5, 2024</span><span>📍 Main Campus</span><span>👥 300+ Attendees</span></div>
+    </div>
+    <div class="event-action"><a class="btn explore" style="display:block;text-align:center;">View Recap</a></div>
+  </div>
+</section>
+
+<!-- GALLERY -->
+<section id="gallery">
+  <h2 class="section-title">Event <span>Gallery</span></h2>
+  <p class="section-sub">Moments captured from our events and workshops</p>
+  <div class="gallery-slider" id="gallery-slider">
+    <div class="gallery-slider-track" id="gallery-track">
+      <div class="gallery-slide active"><img src="gallery1.jpeg" alt="Event 1"><div class="gallery-slide-overlay"></div><div class="gallery-caption"><div class="gallery-caption-title">Robotics Challenge 2024</div><div class="gallery-caption-desc">Teams competing in the annual automation challenge</div></div></div>
+      <div class="gallery-slide"><img src="gallery2.jpeg" alt="Event 2"><div class="gallery-slide-overlay"></div><div class="gallery-caption"><div class="gallery-caption-title">Workshop Session</div><div class="gallery-caption-desc">Hands-on embedded systems training</div></div></div>
+      <div class="gallery-slide"><img src="gallery3.jpeg" alt="Event 3"><div class="gallery-slide-overlay"></div><div class="gallery-caption"><div class="gallery-caption-title">Project Showcase</div><div class="gallery-caption-desc">Students presenting their automation projects</div></div></div>
+      <div class="gallery-slide"><img src="gallery4.jpeg" alt="Event 4"><div class="gallery-slide-overlay"></div><div class="gallery-caption"><div class="gallery-caption-title">Team Building</div><div class="gallery-caption-desc">Club members collaborating on robotic systems</div></div></div>
+      <div class="gallery-slide"><img src="gallery5.jpeg" alt="Event 5"><div class="gallery-slide-overlay"></div><div class="gallery-caption"><div class="gallery-caption-title">SRM Techfest 2024</div><div class="gallery-caption-desc">Award-winning innovation at SRM's annual tech fest</div></div></div>
+      <div class="gallery-slide"><img src="gallery6.jpeg" alt="Event 6"><div class="gallery-slide-overlay"></div><div class="gallery-caption"><div class="gallery-caption-title">Club Meet</div><div class="gallery-caption-desc">Monthly meetup and knowledge sharing session</div></div></div>
+      <div class="gallery-slide"><img src="gallery7.jpeg" alt="Event 7"><div class="gallery-slide-overlay"></div><div class="gallery-caption"><div class="gallery-caption-title">Club Meet</div><div class="gallery-caption-desc">Monthly meetup and knowledge sharing session</div></div></div>
+      <div class="gallery-slide"><img src="gallery8.jpeg" alt="Event 8"><div class="gallery-slide-overlay"></div><div class="gallery-caption"><div class="gallery-caption-title">Club Meet</div><div class="gallery-caption-desc">Monthly meetup and knowledge sharing session</div></div></div>
+      <div class="gallery-slide"><img src="gallery9.jpeg" alt="Event 9"><div class="gallery-slide-overlay"></div><div class="gallery-caption"><div class="gallery-caption-title">Club Meet</div><div class="gallery-caption-desc">Monthly meetup and knowledge sharing session</div></div></div>
+      <div class="gallery-slide"><img src="gallery10.jpeg" alt="Event 10"><div class="gallery-slide-overlay"></div><div class="gallery-caption"><div class="gallery-caption-title">Club Meet</div><div class="gallery-caption-desc">Monthly meetup and knowledge sharing session</div></div></div>
+      <div class="gallery-slide"><img src="gallery11.jpeg" alt="Event 11"><div class="gallery-slide-overlay"></div><div class="gallery-caption"><div class="gallery-caption-title">Club Meet</div><div class="gallery-caption-desc">Monthly meetup and knowledge sharing session</div></div></div>
+      <div class="gallery-slide"><img src="gallery12.jpeg" alt="Event 12"><div class="gallery-slide-overlay"></div><div class="gallery-caption"><div class="gallery-caption-title">Club Meet</div><div class="gallery-caption-desc">Monthly meetup and knowledge sharing session</div></div></div>
+      <div class="gallery-slide"><img src="gallery13.jpeg" alt="Event 13"><div class="gallery-slide-overlay"></div><div class="gallery-caption"><div class="gallery-caption-title">Club Meet</div><div class="gallery-caption-desc">Monthly meetup and knowledge sharing session</div></div></div>
+      <div class="gallery-slide"><img src="gallery14.jpeg" alt="Event 14"><div class="gallery-slide-overlay"></div><div class="gallery-caption"><div class="gallery-caption-title">Club Meet</div><div class="gallery-caption-desc">Monthly meetup and knowledge sharing session</div></div></div>
+      <div class="gallery-slide"><img src="gallery15.jpeg" alt="Event 15"><div class="gallery-slide-overlay"></div><div class="gallery-caption"><div class="gallery-caption-title">Club Meet</div><div class="gallery-caption-desc">Monthly meetup and knowledge sharing session</div></div></div>
+      <div class="gallery-slide"><img src="gallery16.jpeg" alt="Event 16"><div class="gallery-slide-overlay"></div><div class="gallery-caption"><div class="gallery-caption-title">Club Meet</div><div class="gallery-caption-desc">Monthly meetup and knowledge sharing session</div></div></div>
+      <div class="gallery-slide"><img src="gallery17.jpeg" alt="Event 17"><div class="gallery-slide-overlay"></div><div class="gallery-caption"><div class="gallery-caption-title">Club Meet</div><div class="gallery-caption-desc">Monthly meetup and knowledge sharing session</div></div></div>
+      <div class="gallery-slide"><img src="gallery18.jpeg" alt="Event 18"><div class="gallery-slide-overlay"></div><div class="gallery-caption"><div class="gallery-caption-title">Club Meet</div><div class="gallery-caption-desc">Monthly meetup and knowledge sharing session</div></div></div>
+    </div>
+    <button class="gallery-btn gallery-btn-prev" onclick="galleryMove(-1)">&#8249;</button>
+    <button class="gallery-btn gallery-btn-next" onclick="galleryMove(1)">&#8250;</button>
+    <div class="gallery-counter"><span id="gallery-current">1</span> / <span id="gallery-total">18</span></div>
+    <div class="gallery-dots" id="gallery-dots"></div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <h2 class="section-title">Get In <span>Touch</span></h2>
+  <p class="section-sub">Have questions? We'd love to hear from you.</p>
+  <div class="contact-box">
+    <input type="text" id="contact-name" placeholder="Your Name">
+    <input type="email" id="contact-email" placeholder="Your Email">
+    <textarea rows="5" id="contact-message" placeholder="Message"></textarea>
+    <button class="btn join" onclick="sendWhatsApp()" style="text-align:center;">
+      <svg style="display:inline;vertical-align:middle;margin-right:10px;" width="18" height="18" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.126.553 4.116 1.523 5.851L.057 23.535a.75.75 0 0 0 .906.919l5.857-1.479A11.952 11.952 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-1.891 0-3.66-.52-5.17-1.425l-.36-.217-3.738.943.998-3.63-.236-.374A9.96 9.96 0 0 1 2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/></svg>
+      Send via WhatsApp
+    </button>
+  </div>
+</section>
+
+<!-- JOIN -->
+<section id="join">
+  <h2 class="section-title">Join <span>Our Club</span></h2>
+  <p class="section-sub">Become part of SRM Automation Club and build the future of robotics and automation.</p>
+  <div style="text-align:center;margin-top:36px;">
+    <a class="btn join" href="https://docs.google.com/forms/d/e/1FAIpQLSeAPRZf73SssV6-XCnSM2-Of2YzZsopnOdSvR6pfJZT_lovuA/viewform?usp=header" target="_blank">Apply Now</a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer-grid">
+    <div>
+      <h3>SRM Automation Club</h3>
+      <p>Empowering the next generation of robotics and automation innovators.</p>
+      <div class="footer-logos">
+        <img src="srm automation club.png" alt="SRM Automation Club" class="footer-logo-img">
+        <img src="srm logo.png" alt="SRM IST" class="footer-logo-img">
+      </div>
+      <p class="footer-social-label">Social Media</p>
+      <div class="footer-socials">
+        <a href="#" target="_blank" class="social-btn"><svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg></a>
+        <a href="#" target="_blank" class="social-btn"><svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg></a>
+        <a href="#" target="_blank" class="social-btn"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg></a>
+        <a href="#" target="_blank" class="social-btn"><svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.95-1.96C18.88 4 12 4 12 4s-6.88 0-8.59.46a2.78 2.78 0 0 0-1.95 1.96A29 29 0 0 0 1 12a29 29 0 0 0 .46 5.58A2.78 2.78 0 0 0 3.41 19.6C5.12 20 12 20 12 20s6.88 0 8.59-.46a2.78 2.78 0 0 0 1.95-1.95A29 29 0 0 0 23 12a29 29 0 0 0-.46-5.58z"/><polygon points="9.75 15.02 15.5 12 9.75 8.98 9.75 15.02" fill="white"/></svg></a>
+      </div>
+    </div>
+    <div>
+      <h3>Quick Links</h3>
+      <ul>
+        <li><a href="#home">Home</a></li>
+        <li><a href="#about">About</a></li>
+        <li><a href="#achievements">Achievements</a></li>
+        <li><a href="#projects">Projects</a></li>
+        <li><a href="#faculty">Faculty</a></li>
+        <li><a href="#team">Team</a></li>
+        <li><a href="#events">Events</a></li>
+        <li><a href="#contact">Contact</a></li>
+        <li><a href="#join">Join Us</a></li>
+      </ul>
+    </div>
+    <div>
+      <h3>Get In Touch</h3>
+      <p>srmautomationclub@gmail.com</p>
+      <p style="margin-top:8px;">pg 301, Main campus</p>
+      <p style="margin-top:4px;">SRM IST Kattankulathur, Chennai</p>
+    </div>
+  </div>
+  <p class="footer-copy">© 2026 SRM Automation Club. All rights reserved.</p>
+</footer>
+
+<script>
+/* MOBILE NAV */
+function toggleMobileNav(){
+  const nav=document.getElementById('mobile-nav');
+  const hamburger=document.getElementById('hamburger');
+  nav.classList.toggle('open');
+  hamburger.classList.toggle('open');
+  document.body.style.overflow=nav.classList.contains('open')?'hidden':'';
+}
+function closeMobileNav(){
+  document.getElementById('mobile-nav').classList.remove('open');
+  document.getElementById('hamburger').classList.remove('open');
+  document.body.style.overflow='';
+}
+
+/* MODAL — TEAM DOMAINS */
+function openModal(domain){document.getElementById('modal-'+domain).classList.add('open');document.body.style.overflow='hidden';}
+function closeModal(domain){document.getElementById('modal-'+domain).classList.remove('open');document.body.style.overflow='';}
+document.querySelectorAll('.modal-overlay').forEach(o=>{o.addEventListener('click',function(e){if(e.target===this){this.classList.remove('open');document.body.style.overflow='';}});});
+
+/* ACHIEVEMENT MODALS */
+function openAchieveModal(id){document.getElementById('achievemodal-'+id).classList.add('open');document.body.style.overflow='hidden';}
+function closeAchieveModal(id){document.getElementById('achievemodal-'+id).classList.remove('open');document.body.style.overflow='';}
+document.querySelectorAll('.achieve-modal-overlay').forEach(o=>{o.addEventListener('click',function(e){if(e.target===this){this.classList.remove('open');document.body.style.overflow='';}});});
+
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){document.querySelectorAll('.modal-overlay.open,.achieve-modal-overlay.open').forEach(m=>{m.classList.remove('open');document.body.style.overflow='';})}});
+
+/* ACTIVE NAVBAR */
+const navLinks=document.querySelectorAll(".navbar nav a:not(.join-btn)");
+const orderedIds=["home","about","achievements","projects","faculty","team","events","gallery","contact","join"];
+window.addEventListener("scroll",()=>{
+  let current="home";
+  orderedIds.forEach(id=>{
+    const el=document.getElementById(id);
+    if(!el)return;
+    if(window.scrollY>=el.getBoundingClientRect().top+window.scrollY-180)current=id;
+  });
+  navLinks.forEach(link=>{
+    link.classList.remove("active");
+    if(link.getAttribute("href")==="#"+current)link.classList.add("active");
+  });
+});
+
+/* HERO CANVAS */
+const heroEl=document.getElementById('home');
+const warpCanvas=document.getElementById('hero-canvas');
+const warpCtx=warpCanvas.getContext('2d');
+function resizeHeroCanvas(){warpCanvas.width=heroEl.offsetWidth;warpCanvas.height=heroEl.offsetHeight;}
+resizeHeroCanvas();
+
+let stars=[];
+function initStars(){stars=[];for(let i=0;i<500;i++){stars.push({x:Math.random()*warpCanvas.width,y:Math.random()*warpCanvas.height,r:Math.random()*1.8+0.2,alpha:Math.random(),speed:Math.random()*0.02+0.005,dir:Math.random()>0.5?1:-1});}}
+initStars();
+
+let asteroids=[];
+function spawnAsteroid(){return{x:Math.random()*warpCanvas.width,y:-40,size:Math.random()*20+7,speedX:(Math.random()-0.5)*0.6,speedY:Math.random()*0.4+0.15,rotation:Math.random()*Math.PI*2,rotSpeed:(Math.random()-0.5)*0.014,alpha:Math.random()*0.45+0.2,sides:Math.floor(Math.random()*3)+6};}
+for(let i=0;i<14;i++){const a=spawnAsteroid();a.y=Math.random()*warpCanvas.height;asteroids.push(a);}
+
+function drawAsteroid(a){warpCtx.save();warpCtx.translate(a.x,a.y);warpCtx.rotate(a.rotation);warpCtx.globalAlpha=a.alpha;warpCtx.beginPath();for(let i=0;i<a.sides;i++){const angle=(i/a.sides)*Math.PI*2;const wobble=a.size*(0.72+Math.sin(i*2.1)*0.28);i===0?warpCtx.moveTo(Math.cos(angle)*wobble,Math.sin(angle)*wobble):warpCtx.lineTo(Math.cos(angle)*wobble,Math.sin(angle)*wobble);}warpCtx.closePath();warpCtx.strokeStyle='rgba(120,200,255,0.6)';warpCtx.lineWidth=1;warpCtx.stroke();warpCtx.fillStyle='rgba(0,120,255,0.06)';warpCtx.fill();warpCtx.restore();warpCtx.globalAlpha=1;}
+
+let sparkles=[];
+function spawnSparkle(){return{x:Math.random()*warpCanvas.width,y:Math.random()*warpCanvas.height,size:Math.random()*3+1,life:0,maxLife:Math.random()*60+40,color:Math.random()>0.5?'rgba(180,240,255,':'rgba(255,255,255,'};}
+for(let i=0;i<40;i++){const s=spawnSparkle();s.life=Math.floor(Math.random()*s.maxLife);sparkles.push(s);}
+
+function drawSparkle(s){const p=s.life/s.maxLife;const a=p<0.5?p*2:(1-p)*2;warpCtx.save();warpCtx.globalAlpha=a*0.9;warpCtx.translate(s.x,s.y);warpCtx.beginPath();for(let i=0;i<8;i++){const angle=(i/8)*Math.PI*2;const r=i%2===0?s.size*2.5:s.size*0.5;i===0?warpCtx.moveTo(Math.cos(angle)*r,Math.sin(angle)*r):warpCtx.lineTo(Math.cos(angle)*r,Math.sin(angle)*r);}warpCtx.closePath();warpCtx.fillStyle=s.color+a+')';warpCtx.fill();warpCtx.restore();warpCtx.globalAlpha=1;}
+
+let shootingStars=[];
+function spawnShootingStar(){return{x:Math.random()*warpCanvas.width*0.7,y:Math.random()*warpCanvas.height*0.4,len:Math.random()*120+60,speed:Math.random()*6+4,alpha:1,angle:Math.PI/5,thickness:Math.random()*1.5+0.5};}
+for(let i=0;i<3;i++){const s=spawnShootingStar();s.x=Math.random()*warpCanvas.width;s.y=Math.random()*warpCanvas.height;shootingStars.push(s);}
+
+let nebulas=[];
+function spawnNebula(){return{x:Math.random()*warpCanvas.width,y:Math.random()*warpCanvas.height,r:Math.random()*60+30,alpha:0,growing:true,speed:Math.random()*0.003+0.001};}
+for(let i=0;i<5;i++){const n=spawnNebula();n.alpha=Math.random()*0.08;nebulas.push(n);}
+
+function animateWarp(){
+  warpCtx.clearRect(0,0,warpCanvas.width,warpCanvas.height);
+  nebulas.forEach((n,i)=>{const grad=warpCtx.createRadialGradient(n.x,n.y,0,n.x,n.y,n.r);grad.addColorStop(0,`rgba(0,180,255,${n.alpha})`);grad.addColorStop(0.5,`rgba(0,100,255,${n.alpha*0.4})`);grad.addColorStop(1,'rgba(0,0,255,0)');warpCtx.beginPath();warpCtx.arc(n.x,n.y,n.r,0,Math.PI*2);warpCtx.fillStyle=grad;warpCtx.fill();if(n.growing){n.alpha+=n.speed;if(n.alpha>=0.1)n.growing=false;}else{n.alpha-=n.speed;if(n.alpha<=0)nebulas[i]=spawnNebula();}});
+  stars.forEach(s=>{s.alpha+=s.speed*s.dir;if(s.alpha>=1){s.alpha=1;s.dir=-1;}if(s.alpha<=0){s.alpha=0;s.dir=1;}warpCtx.beginPath();warpCtx.arc(s.x,s.y,s.r,0,Math.PI*2);warpCtx.fillStyle=`rgba(200,235,255,${s.alpha})`;warpCtx.fill();});
+  sparkles.forEach((s,i)=>{drawSparkle(s);s.life++;if(s.life>=s.maxLife)sparkles[i]=spawnSparkle();});
+  shootingStars.forEach((s,i)=>{warpCtx.save();warpCtx.globalAlpha=s.alpha;const grad=warpCtx.createLinearGradient(s.x,s.y,s.x-Math.cos(s.angle)*s.len,s.y-Math.sin(s.angle)*s.len);grad.addColorStop(0,'rgba(200,240,255,0.9)');grad.addColorStop(1,'rgba(200,240,255,0)');warpCtx.beginPath();warpCtx.moveTo(s.x,s.y);warpCtx.lineTo(s.x-Math.cos(s.angle)*s.len,s.y-Math.sin(s.angle)*s.len);warpCtx.strokeStyle=grad;warpCtx.lineWidth=s.thickness;warpCtx.stroke();warpCtx.restore();warpCtx.globalAlpha=1;s.x+=Math.cos(s.angle)*s.speed;s.y+=Math.sin(s.angle)*s.speed;s.alpha-=0.012;if(s.alpha<=0||s.x>warpCanvas.width+100||s.y>warpCanvas.height+100)shootingStars[i]=spawnShootingStar();});
+  asteroids.forEach((a,i)=>{drawAsteroid(a);a.x+=a.speedX;a.y+=a.speedY;a.rotation+=a.rotSpeed;if(a.y>warpCanvas.height+40||a.x<-60||a.x>warpCanvas.width+60)asteroids[i]=spawnAsteroid();});
+  requestAnimationFrame(animateWarp);
+}
+animateWarp();
+
+/* MESH PARTICLES */
+const meshCanvas=document.getElementById("mesh");
+const meshCtx=meshCanvas.getContext("2d");
+meshCanvas.width=window.innerWidth;meshCanvas.height=window.innerHeight;
+let particles=[];
+let mouse={x:null,y:null};
+window.addEventListener("mousemove",e=>{mouse.x=e.x;mouse.y=e.y;});
+class Particle{constructor(){this.x=Math.random()*meshCanvas.width;this.y=Math.random()*meshCanvas.height;this.radius=Math.random()*1.5+0.5;this.dx=(Math.random()-0.5)*1;this.dy=(Math.random()-0.5)*1;this.color="rgba(200,230,255,0.7)";}draw(){meshCtx.beginPath();meshCtx.arc(this.x,this.y,this.radius,0,Math.PI*2);meshCtx.fillStyle=this.color;meshCtx.fill();}update(){this.x+=this.dx;this.y+=this.dy;if(this.x>meshCanvas.width||this.x<0)this.dx*=-1;if(this.y>meshCanvas.height||this.y<0)this.dy*=-1;this.draw();}}
+function initMesh(){particles=[];for(let i=0;i<280;i++)particles.push(new Particle());}
+function connect(){for(let a=0;a<particles.length;a++){for(let b=a+1;b<particles.length;b++){const dx=particles[a].x-particles[b].x,dy=particles[a].y-particles[b].y,d=dx*dx+dy*dy;if(d<17000){meshCtx.strokeStyle="rgba(100,160,255,0.12)";meshCtx.lineWidth=1;meshCtx.beginPath();meshCtx.moveTo(particles[a].x,particles[a].y);meshCtx.lineTo(particles[b].x,particles[b].y);meshCtx.stroke();}}}}
+function animateMesh(){meshCtx.clearRect(0,0,meshCanvas.width,meshCanvas.height);particles.forEach(p=>p.update());connect();requestAnimationFrame(animateMesh);}
+initMesh();animateMesh();
+
+window.addEventListener("resize",()=>{resizeHeroCanvas();initStars();meshCanvas.width=window.innerWidth;meshCanvas.height=window.innerHeight;initMesh();});
+
+/* STATS COUNTER */
+const statsRow=document.getElementById('stats-row');
+let counted=false;
+const observer=new IntersectionObserver((entries)=>{
+  if(entries[0].isIntersecting&&!counted){
+    counted=true;
+    document.querySelectorAll('.stat-number').forEach(el=>{
+      const target=parseInt(el.getAttribute('data-target'));
+      const step=Math.ceil(target/(1800/16));
+      let current=0;
+      const timer=setInterval(()=>{current+=step;if(current>=target){current=target;clearInterval(timer);}el.textContent=current;},16);
+    });
+  }
+},{threshold:0.5});
+observer.observe(statsRow);
+
+/* WHATSAPP */
+function sendWhatsApp(){
+  const name=document.getElementById('contact-name').value.trim();
+  const email=document.getElementById('contact-email').value.trim();
+  const message=document.getElementById('contact-message').value.trim();
+  if(!name||!message){alert('Please enter your name and message!');return;}
+  const text=`Hello SRM Automation Club!%0A%0A*Name:* ${encodeURIComponent(name)}%0A*Email:* ${encodeURIComponent(email)}%0A%0A*Message:*%0A${encodeURIComponent(message)}`;
+  window.open(`https://wa.me/919944755123?text=${text}`,'_blank');
+}
+
+/* GALLERY SLIDER with TOUCH SUPPORT */
+let galleryIndex=0;
+const gallerySlides=document.querySelectorAll('.gallery-slide');
+const galleryTotal=gallerySlides.length;
+const galleryDotsEl=document.getElementById('gallery-dots');
+const galleryCurrent=document.getElementById('gallery-current');
+document.getElementById('gallery-total').textContent=galleryTotal;
+
+gallerySlides.forEach((_,i)=>{
+  const dot=document.createElement('div');
+  dot.className='gallery-dot'+(i===0?' active':'');
+  dot.onclick=()=>galleryGoTo(i);
+  galleryDotsEl.appendChild(dot);
+});
+
+function galleryGoTo(n){
+  gallerySlides[galleryIndex].classList.remove('active');
+  document.querySelectorAll('.gallery-dot')[galleryIndex].classList.remove('active');
+  galleryIndex=(n+galleryTotal)%galleryTotal;
+  gallerySlides[galleryIndex].classList.add('active');
+  document.querySelectorAll('.gallery-dot')[galleryIndex].classList.add('active');
+  galleryCurrent.textContent=galleryIndex+1;
+}
+function galleryMove(dir){galleryGoTo(galleryIndex+dir);}
+
+document.addEventListener('keydown',e=>{if(e.key==='ArrowRight')galleryMove(1);if(e.key==='ArrowLeft')galleryMove(-1);});
+
+/* TOUCH SWIPE FOR GALLERY */
+let touchStartX=0,touchStartY=0;
+const galleryTrack=document.getElementById('gallery-track');
+galleryTrack.addEventListener('touchstart',e=>{touchStartX=e.touches[0].clientX;touchStartY=e.touches[0].clientY;},{passive:true});
+galleryTrack.addEventListener('touchend',e=>{
+  const dx=e.changedTouches[0].clientX-touchStartX;
+  const dy=e.changedTouches[0].clientY-touchStartY;
+  if(Math.abs(dx)>Math.abs(dy)&&Math.abs(dx)>40){dx<0?galleryMove(1):galleryMove(-1);}
+},{passive:true});
+
+let galleryTimer=setInterval(()=>galleryMove(1),5000);
+const gallerySliderEl=document.getElementById('gallery-slider');
+gallerySliderEl.addEventListener('mouseenter',()=>clearInterval(galleryTimer));
+gallerySliderEl.addEventListener('mouseleave',()=>{galleryTimer=setInterval(()=>galleryMove(1),5000);});
+</script>
+</body>
+</html>

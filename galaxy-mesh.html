@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Cosmic Background</title>
+<style>
+  /* =========================
+UI LAYER ABOVE CANVAS
+========================= */
+/* ========================
+UI LAYER
+======================== */
+/* ================= UI LAYER ================= */
+
+#ui{
+  position:relative;
+  z-index:5;
+  color:white;
+  font-family:Arial, sans-serif;
+}
+
+/* NAVBAR */
+
+nav{
+  position:fixed;
+  top:30px;
+  right:60px;
+  display:flex;
+  gap:40px;
+  z-index:6;
+}
+
+nav a{
+  color:#9ad6ff;
+  text-decoration:none;
+  font-size:16px;
+  transition:0.3s;
+}
+
+nav a:hover{
+  color:white;
+  text-shadow:0 0 10px #4daaff;
+}
+
+/* ================= PENTAGON ================= */
+
+.hero-pentagon{
+
+  position:absolute;
+  left:80px;
+  top:110px;
+
+  width:50vw;
+  height:60vh;
+
+  clip-path:polygon(
+  8% 35%,
+  25% 8%,
+  95% 8%,
+  100% 35%,
+  85% 95%,
+  20% 95%
+  );
+
+  border:2px solid rgba(130,200,255,0.7);
+
+  overflow:hidden;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  background:rgba(0,30,70,0.2);
+}
+
+/* IMAGE CLIPPED PERFECTLY */
+
+.hero-pentagon img{
+
+  width:100%;
+  height:100%;
+  object-fit:contain;
+
+  clip-path:inherit; /* ensures same pentagon shape */
+
+  filter:brightness(1); /* keep original brightness */
+}
+
+/* ================= LOGO ================= */
+
+.logo{
+
+  position:absolute;
+  top:30px;
+  left:60px;
+
+  font-size:28px;
+  font-weight:bold;
+
+  color:#79c6ff;
+
+  opacity:0;
+  transform:translateY(-120px);
+
+  animation:logoDrop 1.4s ease forwards,
+             glow 2s infinite alternate;
+}
+
+@keyframes logoDrop{
+  to{
+    opacity:1;
+    transform:translateY(0);
+  }
+}
+
+@keyframes glow{
+  from{
+    text-shadow:0 0 6px #4daaff;
+  }
+  to{
+    text-shadow:0 0 20px #4daaff;
+  }
+}
+
+/* ================= BUTTONS ================= */
+
+.actions{
+
+  position:absolute;
+  right:120px;
+  bottom:80px;
+
+  display:flex;
+  gap:25px;
+
+  z-index:6; /* ensures above pentagon */
+}
+
+.btn{
+
+  padding:14px 28px;
+
+  border-radius:12px;
+
+  border:1px solid #58b7ff;
+
+  background:rgba(0,0,0,0.25);
+
+  color:white;
+
+  cursor:pointer;
+
+  transition:0.3s;
+}
+
+.btn:hover{
+
+  background:#4daaff;
+
+  color:black;
+
+  box-shadow:0 0 15px #4daaff;
+}
+
+/* ================= QUOTE ================= */
+
+.quote{
+
+  position:absolute;
+
+  bottom:40px;
+  left:50%;
+  transform:translateX(-50%);
+
+  padding:14px 40px;
+
+  border:1px solid #4daaff;
+
+  border-radius:40px;
+
+  font-style:italic;
+
+  color:#9ad6ff;
+
+  background:rgba(0,30,80,0.15);
+}
+#ui{
+  position:relative;
+  z-index:5;
+  color:white;
+  font-family:Arial, sans-serif;
+}
+
+/* NAVBAR (TOP RIGHT) */
+
+nav{
+  position:fixed;
+  top:30px;
+  right:60px;
+  display:flex;
+  gap:40px;
+  z-index:6;
+}
+
+nav a{
+  color:#8fd3ff;
+  text-decoration:none;
+  font-size:16px;
+  transition:0.3s;
+}
+
+nav a:hover{
+  color:white;
+  text-shadow:0 0 10px #4daaff;
+}
+
+/* LARGE PENTAGON */
+
+.hero-pentagon{
+
+  position:absolute;
+  left:60px;
+  top:100px;
+
+  width:50vw;
+  height:70vh;
+
+  border:2px solid rgba(120,200,255,0.6);
+  background:rgba(0,40,90,0.2);
+  backdrop-filter:blur(6px);
+
+  clip-path:polygon(
+  8% 35%,
+  25% 8%,
+  95% 8%,
+  100% 35%,
+  85% 95%,
+  20% 95%
+  );
+
+  overflow:hidden;
+
+  box-shadow:0 0 40px rgba(0,150,255,0.2);
+
+  display:flex;
+  justify-content:center;
+  align-items:center;
+}
+
+/* IMAGE INSIDE PENTAGON */
+
+.hero-pentagon img{
+
+  width:100%;
+  height:100%;
+  object-fit:cover;
+
+  opacity:0.35;
+}
+
+/* LOGO DROP */
+
+.logo{
+  position:absolute;
+  top:30px;
+  left:40px;
+
+  font-size:26px;
+  font-weight:bold;
+
+  color:#79c6ff;
+
+  opacity:0;
+  transform:translateY(-120px);
+
+  animation:drop 1.4s ease forwards,
+             glow 2s infinite alternate;
+}
+
+@keyframes drop{
+  to{
+    opacity:1;
+    transform:translateY(0);
+  }
+}
+
+@keyframes glow{
+  from{
+    text-shadow:0 0 5px #4daaff;
+  }
+  to{
+    text-shadow:0 0 20px #4daaff;
+  }
+}
+
+/* BUTTONS RIGHT BOTTOM */
+
+.actions{
+
+  position:absolute;
+  right:120px;
+  bottom:120px;
+
+  display:flex;
+  gap:25px;
+}
+
+.btn{
+
+  padding:14px 28px;
+
+  border-radius:14px;
+
+  border:1px solid #58b7ff;
+
+  background:rgba(0,0,0,0.25);
+
+  color:white;
+
+  cursor:pointer;
+
+  transition:0.3s;
+}
+
+.btn:hover{
+
+  background:#4daaff;
+
+  color:black;
+
+  box-shadow:0 0 15px #4daaff;
+}
+#ui{
+  position:relative;
+  z-index:5;
+  color:white;
+  font-family:Arial, sans-serif;
+}
+
+/* NAV BAR */
+
+nav{
+  position:fixed;
+  top:30px;
+  right:60px;
+  display:flex;
+  gap:40px;
+  z-index:6;
+}
+
+nav a{
+  color:#7ec8ff;
+  text-decoration:none;
+  font-size:16px;
+  transition:0.3s;
+}
+
+nav a:hover{
+  color:white;
+  text-shadow:0 0 10px #4daaff;
+}
+
+/* PENTAGON HERO SHAPE */
+
+.hero-shape{
+  position:absolute;
+  top:90px;
+  left:80px;
+  width:650px;
+  height:420px;
+  padding:40px;
+  background:rgba(0,40,90,0.18);
+  border:2px solid rgba(120,200,255,0.6);
+  backdrop-filter:blur(6px);
+  
+  clip-path:polygon(
+  8% 30%,
+  28% 6%,
+  90% 6%,
+  100% 30%,
+  90% 90%,
+  25% 90%
+  );
+
+  box-shadow:0 0 40px rgba(0,140,255,0.2);
+}
+
+/* LOGO DROP */
+
+.hero-logo{
+  width:90px;
+  opacity:0;
+  transform:translateY(-150px);
+  animation:drop 1.5s ease forwards;
+}
+
+@keyframes drop{
+  to{
+    opacity:1;
+    transform:translateY(0);
+  }
+}
+
+/* TITLE */
+
+.hero-title{
+  font-size:36px;
+  margin-top:20px;
+  line-height:1.4;
+}
+
+/* WORD BY WORD GLOW */
+
+.hero-title span{
+  color:#5dbdff;
+  opacity:0;
+  animation:wordGlow 0.8s forwards;
+}
+
+.hero-title span:nth-child(1){animation-delay:0.4s;}
+.hero-title span:nth-child(2){animation-delay:0.8s;}
+.hero-title span:nth-child(3){animation-delay:1.2s;}
+.hero-title span:nth-child(4){animation-delay:1.6s;}
+
+@keyframes wordGlow{
+  0%{
+    opacity:0;
+    text-shadow:none;
+  }
+  100%{
+    opacity:1;
+    text-shadow:0 0 10px #4daaff,0 0 20px #4daaff;
+  }
+}
+
+/* BUTTONS */
+
+.buttons{
+  position:absolute;
+  left:120px;
+  bottom:130px;
+  display:flex;
+  gap:30px;
+}
+
+.btn{
+  padding:14px 28px;
+  border-radius:12px;
+  border:1px solid #58b7ff;
+  background:rgba(0,0,0,0.2);
+  color:white;
+  cursor:pointer;
+  transition:0.3s;
+}
+.btn:hover{
+  box-shadow:0 0 15px #4daaff;
+  background:#4daaff;
+  color:black;
+}
+
+/* QUOTE CURVED BOX */
+
+.quote{
+  position:absolute;
+  bottom:80px;
+  left:400px;
+  padding:14px 40px;
+  border:1px solid #4daaff;
+  border-radius:40px;
+  font-style:italic;
+  color:#9ad6ff;
+  background:rgba(0,30,80,0.15);
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  overflow: hidden;
+  background: #03091a;
+}
+canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+}
+#warp { z-index: 0; }
+#mesh { z-index: 1; }
+
+/* Center vignette — dark edges, lighter center */
+#vignette {
+  position: fixed;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  background: radial-gradient(
+    ellipse at center,
+    transparent 0%,
+    transparent 35%,
+    rgba(1, 6, 20, 0.55) 65%,
+    rgba(1, 6, 20, 0.88) 100%
+  );
+}
+</style>
+</head>
+<body>
+
+<canvas id="warp"></canvas>
+<canvas id="mesh"></canvas>
+<div id="vignette"></div>
+<div id="ui">
+
+<nav>
+<a href="#">Home</a>
+<a href="#">Projects</a>
+<a href="#">Team</a>
+<a href="#">Events</a>
+<a href="#">Contact</a>
+<a href="#">Join Us</a>
+</nav>
+
+<div class="logo">
+SRM Automation Club
+</div>
+
+<div class="hero-pentagon">
+
+<img src="srm automation club logo.png">
+
+</div>
+
+<div class="actions">
+
+<button class="btn">Explore Projects</button>
+<button class="btn">Join Community</button>
+
+</div>
+<div class="quote">
+"Engineering the future through intelligent automation"
+</div>
+</div>
+</h1>
+
+</div>
+
+<div class="buttons">
+<button class="btn">Explore Projects</button>
+<button class="btn">Join Community</button>
+</div>
+
+<div class="quote">
+"Engineering the future through intelligent automation"
+</div>
+
+</div>
+<script>
+// ============================
+// SPACE TRAVEL WARP EFFECT
+// ============================
+const warpCanvas = document.getElementById("warp");
+const warpCtx = warpCanvas.getContext("2d");
+
+warpCanvas.width = window.innerWidth;
+warpCanvas.height = window.innerHeight;
+
+let stars = [];
+const starCount = 600;
+
+class Star {
+  constructor() { this.reset(); }
+
+  reset() {
+    this.x = Math.random() * warpCanvas.width - warpCanvas.width / 2;
+    this.y = Math.random() * warpCanvas.height - warpCanvas.height / 2;
+    this.z = Math.random() * warpCanvas.width;
+  }
+
+  update() {
+    this.z -= 4;
+    if (this.z <= 0) this.reset();
+  }
+
+  draw() {
+    let px = (this.x / this.z) * warpCanvas.width + warpCanvas.width / 2;
+    let py = (this.y / this.z) * warpCanvas.height + warpCanvas.height / 2;
+    let size = (1 - this.z / warpCanvas.width) * 3;
+    warpCtx.fillStyle = "white";
+    warpCtx.fillRect(px, py, size, size);
+  }
+}
+
+for (let i = 0; i < starCount; i++) stars.push(new Star());
+
+function animateWarp() {
+  warpCtx.fillStyle = "rgba(3, 9, 26, 0.35)";
+  warpCtx.fillRect(0, 0, warpCanvas.width, warpCanvas.height);
+  stars.forEach(s => { s.update(); s.draw(); });
+  requestAnimationFrame(animateWarp);
+}
+animateWarp();
+
+
+// ============================
+// COLORFUL MESH
+// ============================
+const canvas = document.getElementById("mesh");
+const ctx = canvas.getContext("2d");
+
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+let particles = [];
+const particleCount = 280;
+let mouse = { x: null, y: null };
+
+window.addEventListener("mousemove", e => {
+  mouse.x = e.x;
+  mouse.y = e.y;
+});
+
+const colors = [
+  "rgba(0,180,255,0.7)",
+  "rgba(50,100,255,0.7)",
+  "rgba(0,220,200,0.7)",
+  "rgba(80,0,255,0.7)",
+  "rgba(0,150,255,0.7)"
+];
+
+class Particle {
+  constructor() {
+    this.x = Math.random() * canvas.width;
+    this.y = Math.random() * canvas.height;
+    this.radius = Math.random() * 1.5 + 0.5;
+    this.dx = (Math.random() - 0.5) * 1;
+    this.dy = (Math.random() - 0.5) * 1;
+    this.color = colors[Math.floor(Math.random() * colors.length)];
+  }
+
+  draw() {
+    ctx.beginPath();
+    ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+    ctx.fillStyle = this.color;
+    ctx.shadowBlur = 9;
+    ctx.shadowColor = this.color;
+    ctx.fill();
+    ctx.shadowBlur = 0;
+  }
+
+  update() {
+    this.x += this.dx;
+    this.y += this.dy;
+    if (this.x > canvas.width || this.x < 0) this.dx *= -1;
+    if (this.y > canvas.height || this.y < 0) this.dy *= -1;
+    this.draw();
+  }
+}
+
+function init() {
+  particles = [];
+  for (let i = 0; i < particleCount; i++) particles.push(new Particle());
+}
+
+function connect() {
+  for (let a = 0; a < particles.length; a++) {
+    for (let b = a + 1; b < particles.length; b++) {
+      let dx = particles[a].x - particles[b].x;
+      let dy = particles[a].y - particles[b].y;
+      let dist = dx * dx + dy * dy;
+      if (dist < 17000) {
+        ctx.strokeStyle = "rgba(100,160,255,0.12)";
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(particles[a].x, particles[a].y);
+        ctx.lineTo(particles[b].x, particles[b].y);
+        ctx.stroke();
+      }
+    }
+
+    if (mouse.x && mouse.y) {
+      let dx = mouse.x - particles[a].x;
+      let dy = mouse.y - particles[a].y;
+      let dist = dx * dx + dy * dy;
+      if (dist < 30000) {
+        particles[a].x += dx * 0.015;
+        particles[a].y += dy * 0.015;
+      }
+    }
+  }
+}
+
+function animate() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  particles.forEach(p => p.update());
+  connect();
+  requestAnimationFrame(animate);
+}
+
+init();
+animate();
+
+window.addEventListener("resize", () => {
+  warpCanvas.width = window.innerWidth;
+  warpCanvas.height = window.innerHeight;
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  init();
+});
+</script>
+</body>
+</html>

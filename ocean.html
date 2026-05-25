@@ -1,0 +1,808 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<title>SRM Automation Club</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Audiowide&family=Orbitron:wght@400;600;800&display=swap" rel="stylesheet">
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+}
+
+body{
+overflow-x:hidden;
+overflow-y:auto;
+background:#03091a;
+font-family:'Orbitron',sans-serif;
+}
+
+canvas{
+position:fixed;
+top:0;
+left:0;
+}
+
+#warp{z-index:0;}
+#mesh{z-index:1;}
+
+/* vignette */
+
+#vignette{
+position:fixed;
+inset:0;
+z-index:2;
+pointer-events:none;
+background: radial-gradient(
+ellipse at center,
+transparent 0%,
+transparent 35%,
+rgba(1,6,20,0.55) 65%,
+rgba(1,6,20,0.88) 100%
+);
+}
+
+/* NAVBAR */
+
+.navbar{
+
+position:fixed;
+top:0;
+left:0;
+width:100%;
+
+display:flex;
+justify-content:space-between;
+align-items:center;
+
+padding:25px 80px;
+
+z-index:10;
+
+}
+
+.nav-logo{
+
+font-family:'Audiowide',sans-serif;
+font-size:22px;
+
+color:#7ddfff;
+
+text-shadow:0 0 12px #00c3ff;
+
+}
+
+.navbar nav{
+
+display:flex;
+gap:40px;
+align-items:center;
+
+}
+
+.navbar nav a{
+
+text-decoration:none;
+color:#b7d9ff;
+
+font-size:15px;
+
+transition:.3s;
+
+}
+
+.navbar nav a:hover{
+
+color:#7ddfff;
+text-shadow:0 0 10px #00c3ff;
+
+}
+
+.join-btn{
+
+padding:10px 22px;
+border-radius:25px;
+
+background:linear-gradient(90deg,#1fb6ff,#008cff);
+
+color:white;
+
+box-shadow:0 0 12px #008cff;
+
+}
+
+
+/* HERO */
+
+.hero{
+
+position:relative;
+z-index:5;
+
+height:100vh;
+
+display:flex;
+align-items:center;
+justify-content:space-between;
+
+padding:0 8%;
+
+}
+
+
+/* LEFT */
+
+.hero-left{
+
+flex:1;
+
+display:flex;
+justify-content:center;
+
+}
+
+
+/* PENTAGON */
+
+.pentagon{
+
+width:520px;
+height:520px;
+
+clip-path: polygon(
+22% 8%,
+78% 8%,
+95% 65%,
+50% 100%,
+5% 65%
+);
+
+background:linear-gradient(135deg,#0b1e3c,#071426);
+
+display:flex;
+align-items:center;
+justify-content:center;
+
+box-shadow:
+0 0 60px rgba(0,180,255,.35),
+inset 0 0 25px rgba(0,180,255,.2);
+
+/* entrance + floating animation */
+animation: pentagonEntrance 1.2s ease-out,
+           pentagonFloat 6s ease-in-out infinite 1.2s;
+
+
+      
+}
+
+.pentagon img{
+
+width:100%;
+height:auto;
+object-fit:contain;
+
+filter:drop-shadow(0 0 30px rgba(0,255,255,.4));
+
+}
+@keyframes pentagonEntrance{
+
+0%{
+transform:translateX(-600px) scale(.7);
+opacity:0;
+}
+
+60%{
+transform:translateX(40px) scale(1.05);
+opacity:1;
+}
+
+100%{
+transform:translateX(0px) scale(1);
+}
+}
+
+/* RIGHT SIDE */
+
+.hero-right{
+
+flex:1.2;
+
+color:white;
+
+}
+
+@keyframes pentagonFloat{
+
+0%{transform:translateY(0px) rotate(0deg);}
+50%{transform:translateY(-12px) rotate(.5deg);}
+100%{transform:translateY(0px) rotate(0deg);}
+
+}
+/* TITLE */
+
+.club-title{
+
+font-family:'Audiowide',sans-serif;
+
+font-size:70px;
+
+letter-spacing:3px;
+
+background:linear-gradient(90deg,#7af3ff,#00bfff,#008cff);
+
+background-clip:text;
+-webkit-background-clip:text;
+
+color:transparent;
+-webkit-text-fill-color:transparent;
+
+text-shadow:
+0 0 20px rgba(0,200,255,.6),
+0 0 40px rgba(0,120,255,.5);
+
+margin-bottom:20px;
+
+animation: glowPulse 2s infinite alternate;
+
+}
+
+@keyframes glowPulse{
+
+from{
+text-shadow:0 0 15px rgba(0,200,255,.4);
+}
+
+to{
+text-shadow:0 0 35px rgba(0,200,255,.9);
+}
+
+}
+
+
+/* QUOTE */
+
+.club-quote{
+
+font-size:20px;
+
+color:#b8d9ff;
+
+max-width:550px;
+
+line-height:1.6;
+
+margin-bottom:40px;
+
+}
+
+
+/* BUTTONS */
+
+.hero-buttons{
+
+display:flex;
+gap:25px;
+
+}
+
+.btn{
+
+padding:14px 32px;
+
+border-radius:40px;
+
+text-decoration:none;
+
+font-size:15px;
+
+letter-spacing:2px;
+
+transition:.35s;
+
+backdrop-filter:blur(6px);
+
+}
+
+
+/* EXPLORE */
+
+.explore{
+
+color:#7fe4ff;
+
+border:1px solid #00c3ff;
+
+box-shadow:
+0 0 10px #00c3ff,
+inset 0 0 10px rgba(0,200,255,.2);
+
+}
+
+.explore:hover{
+
+transform:scale(1.05);
+
+box-shadow:0 0 25px #00c3ff;
+
+}
+
+
+/* JOIN */
+
+.join{
+
+background:linear-gradient(90deg,#1fb6ff,#008cff);
+
+color:white;
+
+box-shadow:0 0 18px rgba(0,150,255,.6);
+
+}
+
+.join:hover{
+
+transform:scale(1.05);
+
+box-shadow:0 0 35px rgba(0,150,255,1);
+
+}
+/*hero ends*/
+/* ================= SECTION STYLES ================= */
+
+section{
+position:relative;
+z-index:5;
+padding:120px 10%;
+color:white;
+}
+
+/* titles */
+
+.section-title{
+
+font-family:'Audiowide',sans-serif;
+
+font-size:50px;
+text-align:center;
+margin-bottom:20px;
+
+color:#2099bb;
+
+}
+
+.section-title span{
+
+color:#e2e4e5;
+
+text-shadow:0 0 15px  #00c3ff;
+
+}
+
+.section-sub{
+
+text-align:center;
+max-width:700px;
+margin:auto;
+margin-bottom:60px;
+color:#b8d9ff;
+font-size:18px;
+
+}
+
+
+/* ================= ABOUT ================= */
+
+.about-grid{
+
+display:grid;
+grid-template-columns:repeat(2,1fr);
+gap:40px;
+
+}
+
+.about-card{
+
+padding:35px;
+
+border-radius:20px;
+
+background:rgba(0,30,60,.45);
+
+border:1px solid rgba(0,191,255,.25);
+
+backdrop-filter:blur(10px);
+
+box-shadow:
+0 0 20px rgba(0,200,255,.15);
+
+transition:.4s;
+
+}
+
+.about-card:hover{
+
+transform:translateY(-8px);
+
+box-shadow:
+0 0 35px rgba(0,191,255,.4);
+
+}
+
+.about-card h3{
+
+color:#1272bc;
+margin-bottom:10px;
+
+}
+
+/* ================= PROJECTS ================= */
+
+.project-grid{
+
+display:grid;
+grid-template-columns:repeat(3,1fr);
+gap:30px;
+
+}
+
+.project-card{
+
+padding:30px;
+
+border-radius:20px;
+
+background:rgba(0,30,60,.45);
+
+border:1px solid rgba(8, 86, 150, 0.25);
+
+backdrop-filter:blur(10px);
+
+box-shadow:
+0 0 20px rgba(34, 175, 218, 0.2);
+
+transition:.35s;
+
+}
+
+.project-card:hover{
+
+transform:translateY(-10px);
+
+box-shadow:
+0 0 40px rgba(0,191,255,.5);
+
+}
+
+.project-card h3{
+
+color:#1272bc;
+margin-bottom:10px;
+
+}
+</style>
+
+</head>
+
+<body>
+
+<header class="navbar">
+
+<div class="nav-logo">
+SRM Automation Club
+</div>
+
+<nav>
+
+<a href="#">Home</a>
+<a href="#">Projects</a>
+<a href="#">Team</a>
+<a href="#">Events</a>
+<a href="#">Contact</a>
+
+<a class="join-btn" href="#">
+Join Us
+</a>
+
+</nav>
+
+</header>
+
+
+<canvas id="warp"></canvas>
+<canvas id="mesh"></canvas>
+<div id="vignette"></div>
+
+
+<div class="hero">
+
+<div class="hero-left">
+
+<div class="pentagon">
+<img src="srm automation club.png">
+<svg class="neon-border" viewBox="0 0 520 520">
+<polygon points="260,10 480,180 390,500 130,500 40,180"/>
+</svg>
+</div>
+
+</div>
+
+
+<div class="hero-right">
+
+<h1 class="club-title">
+SRM Automation Club
+</h1>
+
+<p class="club-quote">
+
+Engineering intelligent machines and building the future of robotics,
+automation and innovation through collaborative technology.
+
+</p>
+
+<div class="hero-buttons">
+
+<a class="btn explore">
+&lt; Explore Projects &gt;
+</a>
+
+<a class="btn join">
+Join Our Community
+</a>
+
+</div>
+
+</div>
+
+</div>
+
+
+<!-- ================= ABOUT SECTION ================= -->
+
+<section class="about-section">
+
+<h2 class="section-title">
+About <span>Our Club</span>
+</h2>
+
+<p class="section-sub">
+Driving innovation in robotics and automation through passion,
+collaboration, and cutting-edge technology
+</p>
+
+<div class="about-grid">
+
+<div class="about-card">
+<h3>Who We Are</h3>
+<p>
+A vibrant community of passionate tech and robotics enthusiasts at SRM,
+united by our love for innovation and automation.
+</p>
+</div>
+
+<div class="about-card">
+<h3>What We Do</h3>
+<p>
+Building cutting-edge robots, automation systems, and AI-integrated
+projects that push the boundaries of technology.
+</p>
+</div>
+
+<div class="about-card">
+<h3>Our Mission</h3>
+<p>
+Empowering students to transform ideas into reality through hands-on
+learning and collaboration.
+</p>
+</div>
+
+<div class="about-card">
+<h3>Innovation Hub</h3>
+<p>
+Creating a space where creativity meets technology, fostering the
+next generation of engineers and innovators.
+</p>
+</div>
+
+</div>
+
+</section>
+
+
+<!-- ================= PROJECTS SECTION ================= -->
+
+<section class="projects-section">
+
+<h2 class="section-title">
+Our <span>Projects</span>
+</h2>
+
+<p class="section-sub">
+Explore our cutting-edge robotics and automation projects built by
+passionate students
+</p>
+
+<div class="project-grid">
+
+<div class="project-card">
+<h3>Autonomous Rover</h3>
+<p>
+Self-navigating robot with obstacle detection and mapping using
+LIDAR and computer vision.
+</p>
+</div>
+
+<div class="project-card">
+<h3>Industrial Arm</h3>
+<p>
+6-DOF robotic arm designed for precision manufacturing tasks with
+AI motion planning.
+</p>
+</div>
+
+<div class="project-card">
+<h3>Smart Agriculture Bot</h3>
+<p>
+Automated farming solution with crop monitoring, irrigation
+control and pest detection using IoT sensors.
+</p>
+</div>
+
+</div>
+
+</section>
+<script>
+
+/* YOUR ORIGINAL WARP + MESH CODE (UNCHANGED) */
+
+const warpCanvas = document.getElementById("warp");
+const warpCtx = warpCanvas.getContext("2d");
+
+warpCanvas.width = window.innerWidth;
+warpCanvas.height = window.innerHeight;
+
+let stars = [];
+const starCount = 600;
+
+class Star {
+constructor(){this.reset();}
+reset(){
+this.x=Math.random()*warpCanvas.width-warpCanvas.width/2;
+this.y=Math.random()*warpCanvas.height-warpCanvas.height/2;
+this.z=Math.random()*warpCanvas.width;
+}
+update(){
+this.z-=4;
+if(this.z<=0)this.reset();
+}
+draw(){
+let px=(this.x/this.z)*warpCanvas.width+warpCanvas.width/2;
+let py=(this.y/this.z)*warpCanvas.height+warpCanvas.height/2;
+let size=(1-this.z/warpCanvas.width)*3;
+warpCtx.fillStyle="white";
+warpCtx.fillRect(px,py,size,size);
+}
+}
+
+for(let i=0;i<starCount;i++)stars.push(new Star());
+
+function animateWarp(){
+warpCtx.fillStyle="rgba(3,9,26,0.35)";
+warpCtx.fillRect(0,0,warpCanvas.width,warpCanvas.height);
+stars.forEach(s=>{s.update();s.draw();});
+requestAnimationFrame(animateWarp);
+}
+
+animateWarp();
+
+
+const canvas=document.getElementById("mesh");
+const ctx=canvas.getContext("2d");
+
+canvas.width=window.innerWidth;
+canvas.height=window.innerHeight;
+
+let particles=[];
+const particleCount=280;
+let mouse={x:null,y:null};
+
+window.addEventListener("mousemove",e=>{
+mouse.x=e.x;
+mouse.y=e.y;
+});
+
+const colors=[
+"rgba(0,180,255,0.7)",
+"rgba(50,100,255,0.7)",
+"rgba(0,220,200,0.7)",
+"rgba(80,0,255,0.7)",
+"rgba(0,150,255,0.7)"
+];
+
+class Particle{
+constructor(){
+this.x=Math.random()*canvas.width;
+this.y=Math.random()*canvas.height;
+this.radius=Math.random()*1.5+0.5;
+this.dx=(Math.random()-0.5)*1;
+this.dy=(Math.random()-0.5)*1;
+this.color=colors[Math.floor(Math.random()*colors.length)];
+}
+draw(){
+ctx.beginPath();
+ctx.arc(this.x,this.y,this.radius,0,Math.PI*2);
+ctx.fillStyle=this.color;
+ctx.shadowBlur=9;
+ctx.shadowColor=this.color;
+ctx.fill();
+ctx.shadowBlur=0;
+}
+update(){
+this.x+=this.dx;
+this.y+=this.dy;
+if(this.x>canvas.width||this.x<0)this.dx*=-1;
+if(this.y>canvas.height||this.y<0)this.dy*=-1;
+this.draw();
+}
+}
+
+function init(){
+particles=[];
+for(let i=0;i<particleCount;i++)particles.push(new Particle());
+}
+
+function connect(){
+for(let a=0;a<particles.length;a++){
+for(let b=a+1;b<particles.length;b++){
+let dx=particles[a].x-particles[b].x;
+let dy=particles[a].y-particles[b].y;
+let dist=dx*dx+dy*dy;
+if(dist<17000){
+ctx.strokeStyle="rgba(100,160,255,0.12)";
+ctx.lineWidth=1;
+ctx.beginPath();
+ctx.moveTo(particles[a].x,particles[a].y);
+ctx.lineTo(particles[b].x,particles[b].y);
+ctx.stroke();
+}
+}
+if(mouse.x&&mouse.y){
+let dx=mouse.x-particles[a].x;
+let dy=mouse.y-particles[a].y;
+let dist=dx*dx+dy*dy;
+if(dist<30000){
+particles[a].x+=dx*0.015;
+particles[a].y+=dy*0.015;
+}
+}
+}
+}
+
+function animate(){
+ctx.clearRect(0,0,canvas.width,canvas.height);
+particles.forEach(p=>p.update());
+connect();
+requestAnimationFrame(animate);
+}
+
+init();
+animate();
+
+window.addEventListener("resize",()=>{
+warpCanvas.width=window.innerWidth;
+warpCanvas.height=window.innerHeight;
+canvas.width=window.innerWidth;
+canvas.height=window.innerHeight;
+init();
+});
+
+</script>
+
+</body>
+</html>

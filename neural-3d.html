@@ -1,0 +1,1111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><link href="https://fonts.googleapis.com/css2?family=Audiowide&family=Orbitron:wght@400;600;800&display=swap" rel="stylesheet">
+<meta charset="UTF-8">
+<title>Cosmic Background</title>
+<style>
+  @keyframes pentagonFloat{
+
+0%{
+transform:translateY(0px) rotate(0deg);
+}
+
+50%{
+transform:translateY(-14px) rotate(0.6deg);
+}
+
+100%{transform:translateY(0px) rotate(0deg);
+}
+
+}
+  .club-title{
+
+font-family:'Audiowide',sans-serif;
+
+font-size:72px;
+
+letter-spacing:3px;
+
+background:linear-gradient(90deg,#7af3ff,#00bfff,#008cff);
+
+background-clip:text;
+-webkit-background-clip:text;
+
+color:transparent;
+-webkit-text-fill-color:transparent;
+
+text-shadow:
+0 0 20px rgba(0,200,255,.6),
+0 0 40px rgba(0,120,255,.5);
+
+animation: glowPulse 2s infinite alternate;
+
+margin-bottom:25px;
+
+}
+  /* ===========================
+HERO LAYOUT
+=========================== */
+/* ================= NAVBAR ================= */
+
+.navbar{
+
+position:fixed;
+top:0;
+left:0;
+
+width:100%;
+
+z-index:10;
+
+display:flex;
+justify-content:space-between;
+align-items:center;
+
+padding:25px 80px;
+
+font-family:'Orbitron',sans-serif;
+color:white;
+
+}
+
+.nav-logo{
+
+font-size:22px;
+color:#7ddfff;
+
+text-shadow:0 0 12px #00c3ff;
+
+}
+
+.navbar nav{
+
+display:flex;
+align-items:center;
+gap:40px;
+
+}
+
+.navbar nav a{
+
+text-decoration:none;
+color:#b7d9ff;
+
+font-size:15px;
+
+transition:.3s;
+
+}
+
+.navbar nav a:hover{
+
+color:#7ddfff;
+text-shadow:0 0 8px #00c3ff;
+
+}
+
+.join-btn{
+
+padding:10px 22px;
+
+border-radius:25px;
+
+background:linear-gradient(90deg,#1fb6ff,#008cff);
+
+color:white;
+
+box-shadow:0 0 12px #008cff;
+
+}
+
+
+/* ================= HERO ================= */
+
+.hero{
+
+position:relative;
+
+z-index:5;
+
+height:100vh;
+
+display:flex;
+align-items:center;
+justify-content:space-between;
+
+padding:0 8%;
+
+}
+
+
+/* LEFT */
+
+.hero-left{
+
+flex:1;
+
+display:flex;
+justify-content:center;
+
+}
+
+
+/* REAL PENTAGON */
+
+.pentagon{
+
+width:420px;
+height:420px;
+
+clip-path: polygon(
+50% 0%,
+95% 35%,
+78% 92%,
+22% 92%,
+5% 35%
+);
+
+background:linear-gradient(135deg,#0b1e3c,#071426);
+
+display:flex;
+align-items:center;
+justify-content:center;
+
+box-shadow:
+
+0 0 40px rgba(0,180,255,.35),
+inset 0 0 20px rgba(0,180,255,.15);
+
+}
+@keyframes pentagonFloat{
+
+0%{
+transform:translateY(0px) rotate(0deg);
+}
+
+50%{
+transform:translateY(-14px) rotate(0.6deg);
+}
+
+100%{
+transform:translateY(0px) rotate(0deg);
+}
+
+}
+.pentagon img{
+
+width:85%;
+filter:drop-shadow(0 0 20px rgba(0,255,255,.4));
+
+}
+
+
+/* RIGHT */
+
+.hero-right{
+
+flex:1.2;
+
+font-family:'Orbitron',sans-serif;
+
+color:white;
+
+}
+
+
+/* TITLE */
+
+.club-title{
+
+font-size:64px;
+
+background:linear-gradient(90deg,#69e6ff,#00bfff);
+
+background-clip:text;
+-webkit-background-clip:text;
+
+color:transparent;
+-webkit-text-fill-color:transparent;
+
+text-shadow:0 0 25px rgba(0,200,255,.5);
+
+animation: glowPulse 2s infinite alternate;
+
+margin-bottom:20px;
+
+}
+
+
+/* QUOTE */
+
+.club-quote{
+
+font-family:'Exo 2',sans-serif;
+
+font-size:20px;
+
+color:#b8d9ff;
+
+max-width:550px;
+
+line-height:1.6;
+
+margin-bottom:40px;
+
+}
+
+
+/* BUTTONS */
+
+.hero-buttons{
+
+display:flex;
+gap:25px;
+
+}
+
+
+.btn{
+
+padding:14px 32px;
+
+border-radius:40px;
+
+text-decoration:none;
+
+font-size:15px;
+
+letter-spacing:1px;
+
+transition:.3s;
+
+}
+
+
+/* EXPLORE */
+
+.explore{
+
+color:#7fe4ff;
+
+border:1px solid #00c3ff;
+
+box-shadow:0 0 10px #00c3ff;
+
+}
+
+.explore:hover{
+
+box-shadow:0 0 25px #00c3ff;
+transform:scale(1.05);
+
+}
+
+
+/* JOIN */
+
+.join{
+
+background:linear-gradient(90deg,#1fb6ff,#008cff);
+
+color:white;
+
+box-shadow:0 0 15px #008cff;
+
+}
+
+.join:hover{
+
+transform:scale(1.05);
+box-shadow:0 0 30px #008cff;
+
+}
+
+
+/* GLOW ANIMATION */
+
+@keyframes glowPulse{
+
+from{
+
+text-shadow:0 0 10px rgba(0,200,255,.4);
+
+}
+
+to{
+
+text-shadow:0 0 35px rgba(0,200,255,.9);
+
+}
+
+}/* ================= NAVBAR ================= */
+
+.navbar{
+
+position:fixed;
+top:0;
+left:0;
+
+width:100%;
+
+z-index:10;
+
+display:flex;
+justify-content:space-between;
+align-items:center;
+
+padding:25px 80px;
+
+font-family:'Orbitron',sans-serif;
+color:white;
+
+}
+
+.nav-logo{
+
+font-size:22px;
+color:#7ddfff;
+
+text-shadow:0 0 12px #00c3ff;
+
+}
+
+.navbar nav{
+
+display:flex;
+align-items:center;
+gap:40px;
+
+}
+
+.navbar nav a{
+
+text-decoration:none;
+color:#b7d9ff;
+
+font-size:15px;
+
+transition:.3s;
+
+}
+
+.navbar nav a:hover{
+
+color:#7ddfff;
+text-shadow:0 0 8px #00c3ff;
+
+}
+
+.join-btn{
+
+padding:10px 22px;
+
+border-radius:25px;
+
+background:linear-gradient(90deg,#1fb6ff,#008cff);
+
+color:white;
+
+box-shadow:0 0 12px #008cff;
+
+}
+
+
+/* ================= HERO ================= */
+
+.hero{
+
+position:relative;
+
+z-index:5;
+
+height:100vh;
+
+display:flex;
+align-items:center;
+justify-content:space-between;
+
+padding:0 8%;
+
+}
+
+
+/* LEFT */
+
+.hero-left{
+
+flex:1;
+
+display:flex;
+justify-content:center;
+
+}
+
+
+/* REAL PENTAGON */
+
+.pentagon{
+
+width:420px;
+height:420px;
+
+clip-path: polygon(
+50% 0%,
+95% 35%,
+78% 92%,
+22% 92%,
+5% 35%
+);
+
+background:linear-gradient(135deg,#0b1e3c,#071426);
+
+display:flex;
+align-items:center;
+justify-content:center;
+
+box-shadow:
+
+0 0 40px rgba(0,180,255,.35),
+inset 0 0 20px rgba(0,180,255,.15);
+
+}
+
+.pentagon img{
+
+width:85%;
+filter:drop-shadow(0 0 20px rgba(0,255,255,.4));
+
+}
+
+
+/* RIGHT */
+
+.hero-right{
+
+flex:1.2;
+
+font-family:'Orbitron',sans-serif;
+
+color:white;
+
+}
+
+
+/* TITLE */
+
+.club-title{
+
+font-size:64px;
+
+background:linear-gradient(90deg,#69e6ff,#00bfff);
+
+background-clip:text;
+-webkit-background-clip:text;
+
+color:transparent;
+-webkit-text-fill-color:transparent;
+
+text-shadow:0 0 25px rgba(0,200,255,.5);
+
+animation: glowPulse 2s infinite alternate;
+
+margin-bottom:20px;
+
+}
+
+
+/* QUOTE */
+
+.club-quote{
+
+font-family:'Exo 2',sans-serif;
+
+font-size:20px;
+
+color:#b8d9ff;
+
+max-width:550px;
+
+line-height:1.6;
+
+margin-bottom:40px;
+
+}
+
+
+/* BUTTONS */
+
+.hero-buttons{
+
+display:flex;
+gap:25px;
+
+}
+
+
+.btn{
+
+padding:14px 32px;
+
+border-radius:40px;
+
+text-decoration:none;
+
+font-size:15px;
+
+letter-spacing:1px;
+
+transition:.3s;
+
+}
+
+
+/* EXPLORE */
+
+.explore{
+
+color:#7fe4ff;
+
+border:1px solid #00c3ff;
+
+box-shadow:0 0 10px #00c3ff;
+
+}
+
+.explore:hover{
+
+box-shadow:0 0 25px #00c3ff;
+transform:scale(1.05);
+
+}
+
+
+/* JOIN */
+
+.join{
+
+background:linear-gradient(90deg,#1fb6ff,#008cff);
+
+color:white;
+
+box-shadow:0 0 15px #008cff;
+
+}
+
+.join:hover{
+
+transform:scale(1.05);
+box-shadow:0 0 30px #008cff;
+
+}
+
+.hero-line{
+
+width:220px;
+height:2px;
+
+background:linear-gradient(90deg,
+transparent,
+#00c3ff,
+transparent
+);
+
+margin:20px 0;
+
+box-shadow:0 0 10px #00c3ff;
+
+}
+/* GLOW ANIMATION */
+
+@keyframes glowPulse{
+
+from{
+
+text-shadow:0 0 10px rgba(0,200,255,.4);
+
+}
+
+to{
+
+text-shadow:0 0 35px rgba(0,200,255,.9);
+
+}
+
+}
+.hero{
+  position: relative;
+  z-index: 5;
+
+  height: 100vh;
+  width: 100%;
+
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+
+  padding-left:6%;
+  padding-right:8%;
+}
+
+/* LEFT SIDE */
+
+.hero-left{
+  flex:1;
+  display:flex;
+  justify-content:center;
+}
+
+.logo-frame{
+
+  width:420px;
+
+  animation: floatLogo 6s ease-in-out infinite;
+}
+
+.logo-frame img{
+  width:100%;
+  filter: drop-shadow(0 0 25px rgba(0,200,255,0.4));
+}
+.btn{
+
+font-family:'Orbitron',sans-serif;
+
+padding:15px 34px;
+
+border-radius:40px;
+
+letter-spacing:2px;
+
+transition:.35s;
+
+backdrop-filter:blur(6px);
+
+}
+
+/* RIGHT SIDE */
+
+.hero-right{
+  flex:1.2;
+  color:white;
+}
+
+
+/* TITLE */
+
+.club-title{
+
+  font-size:64px;
+  font-weight:700;
+
+  background: linear-gradient(90deg,#59dfff,#3fb5ff,#008cff);
+ background-clip: text;
+  -webkit-background-clip: text;
+
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+
+  text-shadow:0 0 20px rgba(0,200,255,0.5);
+
+  margin-bottom:25px;
+
+  animation: glowPulse 2s infinite alternate;
+}
+
+
+/* QUOTE */
+
+.club-quote{
+
+  font-size:20px;
+
+  color:#b7d9ff;
+
+  line-height:1.7;
+
+  max-width:550px;
+
+  margin-bottom:40px;
+
+  opacity:0.9;
+}
+
+
+/* BUTTONS */
+
+.hero-buttons{
+  display:flex;
+  gap:25px;
+}
+
+
+.btn{
+
+  padding:14px 30px;
+
+  border-radius:40px;
+
+  text-decoration:none;
+
+  font-size:16px;
+
+  letter-spacing:1px;
+
+  transition:0.35s;
+
+  border:1px solid rgba(0,200,255,0.4);
+
+}
+
+
+.explore{
+
+  color:#7fe4ff;
+
+  box-shadow:
+  0 0 10px rgba(0,200,255,0.4),
+  inset 0 0 10px rgba(0,200,255,0.2);
+
+}
+
+.explore:hover{
+
+  transform:scale(1.07);
+
+  box-shadow:
+  0 0 25px rgba(0,200,255,0.8);
+
+}
+
+
+.join{
+
+  background:linear-gradient(90deg,#1fb6ff,#008cff);
+
+  color:white;
+
+  border:none;
+
+  box-shadow:0 0 18px rgba(0,150,255,0.6);
+
+}
+
+.join:hover{
+
+  transform:scale(1.07);
+
+  box-shadow:0 0 35px rgba(0,150,255,1);
+
+}
+
+
+
+/* ===========================
+ANIMATIONS
+=========================== */
+
+@keyframes glowPulse{
+
+  from{
+    text-shadow:0 0 15px rgba(0,200,255,0.4);
+  }
+
+  to{
+    text-shadow:0 0 35px rgba(0,200,255,0.9);
+  }
+
+}
+
+
+@keyframes floatLogo{
+
+  0%{ transform:translateY(0px); }
+
+  50%{ transform:translateY(-12px); }
+
+  100%{ transform:translateY(0px); }
+
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  overflow: hidden;
+  background: #03091a;
+}
+canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+}
+#warp { z-index: 0; }
+#mesh { z-index: 1; }
+
+/* Center vignette — dark edges, lighter center */
+#vignette {
+  position: fixed;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  background: radial-gradient(
+    ellipse at center,
+    transparent 0%,
+    transparent 35%,
+    rgba(1, 6, 20, 0.55) 65%,
+    rgba(1, 6, 20, 0.88) 100%
+  );
+}
+</style>
+</head>
+<body>
+  <header class="navbar">
+
+<div class="nav-logo">
+SRM Automation Club
+</div>
+
+<nav>
+
+<a href="#">Home</a>
+<a href="#">Projects</a>
+<a href="#">Team</a>
+<a href="#">Events</a>
+<a href="#">Contact</a>
+
+<a class="join-btn" href="#">
+Join Us
+</a>
+
+</nav>
+
+</header>
+
+<canvas id="warp"></canvas>
+<canvas id="mesh"></canvas>
+<div id="vignette"></div>
+<div class="hero">
+
+<div class="hero-left">
+
+<div class="pentagon">
+
+<img src="srm automation club logo.png">
+
+</div>
+<div class="hero-line"></div>
+</div>
+
+<div class="hero-right">
+
+<h1 class="club-title">
+SRM Automation Club
+</h1>
+
+<p class="club-quote">
+
+Engineering intelligent machines and building the future of robotics, automation, and innovation through collaborative technology.
+
+</p>
+
+<div class="hero-buttons">
+
+<a class="btn explore">
+&lt; Explore Projects &gt;
+</a>
+
+<a class="btn join">
+Join Our Community
+</a>
+
+</div>
+
+</div>
+
+</div>
+<div class="hero">
+
+    <!-- LEFT : LOGO -->
+    <div class="hero-left">
+        <div class="logo-frame">
+            <img src="srm automation club logo.png" alt="SRM Automation Club">
+        </div>
+    </div>
+
+    <!-- RIGHT : CONTENT -->
+    <div class="hero-right">
+
+        <h1 class="club-title">
+            SRM Automation Club
+        </h1>
+
+        <p class="club-quote">
+            Designing intelligent machines, building the future of robotics and automation through innovation and collaboration.
+        </p>
+
+        <div class="hero-buttons">
+
+            <a href="#" class="btn explore">
+                &lt; Explore Projects &gt;
+            </a>
+
+            <a href="#" class="btn join">
+                Join Our Community
+            </a>
+
+        </div>
+
+    </div>
+
+</div>
+<script>
+// ============================
+// SPACE TRAVEL WARP EFFECT
+// ============================
+const warpCanvas = document.getElementById("warp");
+const warpCtx = warpCanvas.getContext("2d");
+
+warpCanvas.width = window.innerWidth;
+warpCanvas.height = window.innerHeight;
+
+let stars = [];
+const starCount = 600;
+
+class Star {
+  constructor() { this.reset(); }
+
+  reset() {
+    this.x = Math.random() * warpCanvas.width - warpCanvas.width / 2;
+    this.y = Math.random() * warpCanvas.height - warpCanvas.height / 2;
+    this.z = Math.random() * warpCanvas.width;
+  }
+
+  update() {
+    this.z -= 4;
+    if (this.z <= 0) this.reset();
+  }
+
+  draw() {
+    let px = (this.x / this.z) * warpCanvas.width + warpCanvas.width / 2;
+    let py = (this.y / this.z) * warpCanvas.height + warpCanvas.height / 2;
+    let size = (1 - this.z / warpCanvas.width) * 3;
+    warpCtx.fillStyle = "white";
+    warpCtx.fillRect(px, py, size, size);
+  }
+}
+
+for (let i = 0; i < starCount; i++) stars.push(new Star());
+
+function animateWarp() {
+  warpCtx.fillStyle = "rgba(3, 9, 26, 0.35)";
+  warpCtx.fillRect(0, 0, warpCanvas.width, warpCanvas.height);
+  stars.forEach(s => { s.update(); s.draw(); });
+  requestAnimationFrame(animateWarp);
+}
+animateWarp();
+
+
+// ============================
+// COLORFUL MESH
+// ============================
+const canvas = document.getElementById("mesh");
+const ctx = canvas.getContext("2d");
+
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+let particles = [];
+const particleCount = 280;
+let mouse = { x: null, y: null };
+
+window.addEventListener("mousemove", e => {
+  mouse.x = e.x;
+  mouse.y = e.y;
+});
+
+const colors = [
+  "rgba(0,180,255,0.7)",
+  "rgba(50,100,255,0.7)",
+  "rgba(0,220,200,0.7)",
+  "rgba(80,0,255,0.7)",
+  "rgba(0,150,255,0.7)"
+];
+
+class Particle {
+  constructor() {
+    this.x = Math.random() * canvas.width;
+    this.y = Math.random() * canvas.height;
+    this.radius = Math.random() * 1.5 + 0.5;
+    this.dx = (Math.random() - 0.5) * 1;
+    this.dy = (Math.random() - 0.5) * 1;
+    this.color = colors[Math.floor(Math.random() * colors.length)];
+  }
+
+  draw() {
+    ctx.beginPath();
+    ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+    ctx.fillStyle = this.color;
+    ctx.shadowBlur = 9;
+    ctx.shadowColor = this.color;
+    ctx.fill();
+    ctx.shadowBlur = 0;
+  }
+
+  update() {
+    this.x += this.dx;
+    this.y += this.dy;
+    if (this.x > canvas.width || this.x < 0) this.dx *= -1;
+    if (this.y > canvas.height || this.y < 0) this.dy *= -1;
+    this.draw();
+  }
+}
+
+function init() {
+  particles = [];
+  for (let i = 0; i < particleCount; i++) particles.push(new Particle());
+}
+
+function connect() {
+  for (let a = 0; a < particles.length; a++) {
+    for (let b = a + 1; b < particles.length; b++) {
+      let dx = particles[a].x - particles[b].x;
+      let dy = particles[a].y - particles[b].y;
+      let dist = dx * dx + dy * dy;
+      if (dist < 17000) {
+        ctx.strokeStyle = "rgba(100,160,255,0.12)";
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(particles[a].x, particles[a].y);
+        ctx.lineTo(particles[b].x, particles[b].y);
+        ctx.stroke();
+      }
+    }
+
+    if (mouse.x && mouse.y) {
+      let dx = mouse.x - particles[a].x;
+      let dy = mouse.y - particles[a].y;
+      let dist = dx * dx + dy * dy;
+      if (dist < 30000) {
+        particles[a].x += dx * 0.015;
+        particles[a].y += dy * 0.015;
+      }
+    }
+  }
+}
+
+function animate() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  particles.forEach(p => p.update());
+  connect();
+  requestAnimationFrame(animate);
+}
+
+init();
+animate();
+
+window.addEventListener("resize", () => {
+  warpCanvas.width = window.innerWidth;
+  warpCanvas.height = window.innerHeight;
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  init();
+});
+</script>
+</body>
+</html>
