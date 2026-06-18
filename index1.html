@@ -1,0 +1,1949 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>SRM Automation Club</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Bebas+Neue&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
+<style>
+/* ─── TOKENS ─────────────────────────────────────────── */
+:root{
+  --ink:#0a0a0a;
+  --paper:#f0ede8;
+  --paper2:#e8e4de;
+  --accent:#d4a017;
+  --accent2:#c0392b;
+  --mid:#7a7570;
+  --rule:rgba(10,10,10,0.15);
+  --mono:'Space Mono',monospace;
+  --display:'Bebas Neue',sans-serif;
+  --body:'DM Sans',sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  background:var(--paper);
+  color:var(--ink);
+  font-family:var(--body);
+  overflow-x:hidden;
+  cursor:none;
+}
+
+/* ─── CUSTOM CURSOR ───────────────────────────────────── */
+.cursor{
+  position:fixed;width:10px;height:10px;background:var(--ink);
+  border-radius:50%;pointer-events:none;z-index:9999;
+  transform:translate(-50%,-50%);transition:transform 0.08s,background 0.2s;
+  mix-blend-mode:multiply;
+}
+.cursor-ring{
+  position:fixed;width:36px;height:36px;border:1px solid var(--ink);
+  border-radius:50%;pointer-events:none;z-index:9998;
+  transform:translate(-50%,-50%);transition:all 0.18s ease;
+  mix-blend-mode:multiply;
+}
+body:hover .cursor{opacity:1;}
+
+/* ─── NOISE OVERLAY ───────────────────────────────────── */
+body::after{
+  content:'';position:fixed;inset:0;pointer-events:none;z-index:9990;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+  opacity:0.35;
+}
+
+/* ─── NAVBAR ──────────────────────────────────────────── */
+.navbar{
+  position:fixed;top:0;left:0;right:0;z-index:500;
+  display:flex;align-items:stretch;justify-content:space-between;
+  background:var(--ink);border-bottom:1px solid rgba(255,255,255,0.06);
+  height:52px;
+}
+.nav-logo{
+  display:flex;align-items:center;
+  padding:0 24px;
+  font-family:var(--mono);font-size:11px;letter-spacing:0.08em;
+  color:var(--paper);border-right:1px solid rgba(255,255,255,0.1);
+  white-space:nowrap;
+}
+.nav-logo span{color:var(--accent);margin-right:6px;}
+.navbar nav{display:flex;align-items:stretch;}
+.navbar nav a{
+  display:flex;align-items:center;
+  padding:0 16px;
+  font-family:var(--mono);font-size:10px;letter-spacing:0.12em;text-transform:uppercase;
+  color:rgba(240,237,232,0.55);text-decoration:none;
+  border-right:1px solid rgba(255,255,255,0.06);
+  transition:color 0.2s,background 0.2s;
+  position:relative;
+}
+.navbar nav a:hover,.navbar nav a.active{color:var(--paper);background:rgba(255,255,255,0.05);}
+.navbar nav a.active::after{
+  content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:var(--accent);
+}
+.nav-join{
+  display:flex;align-items:center;padding:0 24px;
+  font-family:var(--mono);font-size:10px;letter-spacing:0.12em;text-transform:uppercase;
+  background:var(--accent);color:var(--ink);text-decoration:none;
+  font-weight:700;transition:opacity 0.2s;
+}
+.nav-join:hover{opacity:0.85;}
+
+/* ─── HAMBURGER ───────────────────────────────────────── */
+.hamburger{
+  display:none;align-items:center;justify-content:center;
+  padding:0 20px;cursor:none;border-left:1px solid rgba(255,255,255,0.1);
+}
+.hamburger span{
+  display:block;width:20px;height:1.5px;background:var(--paper);
+  transition:0.3s;
+}
+.hamburger span+span{margin-top:5px;}
+.hamburger.open span:nth-child(1){transform:translateY(6.5px) rotate(45deg);}
+.hamburger.open span:nth-child(2){opacity:0;}
+.hamburger.open span:nth-child(3){transform:translateY(-6.5px) rotate(-45deg);}
+
+/* ─── MOBILE DRAWER ───────────────────────────────────── */
+.mobile-nav{
+  display:none;position:fixed;inset:0;z-index:490;
+  background:var(--ink);
+  flex-direction:column;padding:80px 40px 40px;gap:4px;
+}
+.mobile-nav.open{display:flex;}
+.mobile-nav a{
+  font-family:var(--display);font-size:clamp(40px,10vw,72px);
+  color:rgba(240,237,232,0.35);text-decoration:none;
+  letter-spacing:0.04em;line-height:1.1;
+  transition:color 0.2s;border-bottom:1px solid rgba(255,255,255,0.05);
+  padding-bottom:8px;
+}
+.mobile-nav a:hover{color:var(--paper);}
+.mobile-nav a.join-mob{color:var(--accent);}
+
+/* ─── HERO ────────────────────────────────────────────── */
+.hero{
+  min-height:100vh;padding-top:52px;
+  display:grid;grid-template-columns:1fr 1fr;
+  position:relative;overflow:hidden;
+}
+.hero-left{
+  padding:80px 60px;
+  display:flex;flex-direction:column;justify-content:space-between;
+  border-right:1px solid var(--rule);
+  position:relative;z-index:2;
+}
+.hero-eyebrow{
+  font-family:var(--mono);font-size:10px;letter-spacing:0.18em;
+  text-transform:uppercase;color:var(--mid);
+  display:flex;align-items:center;gap:12px;
+}
+.hero-eyebrow::before{content:'';width:24px;height:1px;background:var(--mid);}
+.hero-main{flex:1;display:flex;flex-direction:column;justify-content:center;padding:40px 0;}
+.hero-number{
+  font-family:var(--mono);font-size:11px;color:var(--accent);
+  letter-spacing:0.12em;margin-bottom:16px;
+}
+h1.hero-title{
+  font-family:var(--display);
+  font-size:clamp(72px,9vw,140px);
+  line-height:0.9;letter-spacing:0.02em;
+  color:var(--ink);
+}
+h1.hero-title em{
+  font-style:italic;color:var(--mid);
+  font-family:var(--display);
+}
+.hero-sub{
+  margin-top:28px;
+  font-family:var(--body);font-size:15px;line-height:1.7;
+  color:var(--mid);max-width:360px;font-weight:300;
+}
+.hero-actions{
+  display:flex;gap:12px;flex-wrap:wrap;
+}
+.btn-raw{
+  font-family:var(--mono);font-size:10px;letter-spacing:0.14em;text-transform:uppercase;
+  padding:14px 28px;text-decoration:none;
+  border:1px solid var(--ink);color:var(--ink);
+  transition:background 0.2s,color 0.2s;
+  cursor:none;
+  display:inline-block;
+}
+.btn-raw:hover{background:var(--ink);color:var(--paper);}
+.btn-raw.filled{background:var(--ink);color:var(--paper);}
+.btn-raw.filled:hover{background:var(--accent);border-color:var(--accent);color:var(--ink);}
+
+.hero-right{
+  position:relative;overflow:hidden;background:var(--ink);
+}
+.hero-right img{
+  width:100%;height:100%;object-fit:cover;
+  opacity:0.6;mix-blend-mode:luminosity;
+  display:block;
+}
+.hero-right-overlay{
+  position:absolute;inset:0;
+  background:linear-gradient(135deg,rgba(10,10,10,0.4) 0%,transparent 60%);
+}
+.hero-logos-strip{
+  position:absolute;bottom:32px;right:32px;
+  display:flex;gap:12px;align-items:center;
+}
+.hero-logos-strip img{
+  width:52px;height:52px;object-fit:cover;border-radius:50%;
+  border:1px solid rgba(240,237,232,0.3);opacity:0.85;
+}
+.hero-index{
+  position:absolute;top:32px;right:32px;
+  font-family:var(--mono);font-size:9px;letter-spacing:0.16em;
+  color:rgba(240,237,232,0.45);text-transform:uppercase;
+  writing-mode:vertical-rl;
+}
+.hero-canvas-wrap{
+  position:absolute;inset:0;pointer-events:none;
+}
+canvas#hero-canvas{width:100%;height:100%;}
+
+/* ─── TICKER ──────────────────────────────────────────── */
+.ticker{
+  background:var(--accent);color:var(--ink);
+  overflow:hidden;height:36px;display:flex;align-items:center;
+  border-top:1px solid rgba(10,10,10,0.1);
+  border-bottom:1px solid rgba(10,10,10,0.1);
+}
+.ticker-track{
+  display:flex;gap:0;white-space:nowrap;
+  animation:tickerMove 18s linear infinite;
+}
+.ticker-item{
+  font-family:var(--mono);font-size:11px;letter-spacing:0.1em;text-transform:uppercase;
+  padding:0 40px;border-right:1px solid rgba(10,10,10,0.15);
+  display:flex;align-items:center;gap:12px;
+}
+.ticker-item::before{content:'★';font-size:8px;}
+@keyframes tickerMove{0%{transform:translateX(0);}100%{transform:translateX(-50%);}}
+
+/* ─── SECTION BASE ────────────────────────────────────── */
+.section{
+  position:relative;
+  border-top:1px solid var(--rule);
+}
+.section-label{
+  font-family:var(--mono);font-size:9px;letter-spacing:0.18em;text-transform:uppercase;
+  color:var(--mid);
+  display:flex;align-items:center;gap:10px;
+}
+.section-label::after{content:'';flex:1;height:1px;background:var(--rule);}
+
+/* ─── ABOUT ───────────────────────────────────────────── */
+#about{padding:100px 60px;}
+.about-header{display:flex;align-items:flex-start;gap:80px;margin-bottom:80px;}
+.about-title-col{flex:0 0 auto;}
+.about-h2{
+  font-family:var(--display);
+  font-size:clamp(80px,10vw,160px);
+  line-height:0.88;letter-spacing:0.02em;
+  color:var(--ink);
+}
+.about-h2 .outline{
+  -webkit-text-stroke:1.5px var(--ink);color:transparent;
+}
+.about-desc-col{flex:1;padding-top:16px;max-width:500px;}
+.about-desc-col p{font-size:17px;line-height:1.75;color:var(--mid);font-weight:300;}
+
+.about-grid{
+  display:grid;grid-template-columns:repeat(4,1fr);
+  border-left:1px solid var(--rule);
+}
+.about-card{
+  padding:40px 32px;border-right:1px solid var(--rule);border-top:1px solid var(--rule);
+  position:relative;transition:background 0.3s;
+}
+.about-card:hover{background:var(--ink);}
+.about-card:hover .about-card-h{color:var(--accent);}
+.about-card:hover .about-card-p{color:rgba(240,237,232,0.6);}
+.about-card:hover .about-card-num{color:rgba(240,237,232,0.15);}
+.about-card-num{
+  font-family:var(--display);font-size:80px;line-height:1;
+  color:rgba(10,10,10,0.06);position:absolute;top:16px;right:20px;
+  transition:color 0.3s;
+}
+.about-card-h{
+  font-family:var(--mono);font-size:11px;letter-spacing:0.12em;text-transform:uppercase;
+  color:var(--ink);margin-bottom:16px;transition:color 0.3s;
+}
+.about-card-p{
+  font-size:13px;line-height:1.7;color:var(--mid);
+  transition:color 0.3s;font-weight:300;
+}
+
+/* STATS */
+.stats-strip{
+  display:grid;grid-template-columns:repeat(4,1fr);
+  border-top:1px solid var(--rule);border-left:1px solid var(--rule);
+  margin-top:80px;
+}
+.stat-block{
+  padding:40px 32px;border-right:1px solid var(--rule);
+  display:flex;flex-direction:column;gap:6px;
+}
+.stat-block-num{
+  font-family:var(--display);font-size:clamp(56px,6vw,88px);
+  line-height:1;color:var(--ink);
+}
+.stat-block-label{
+  font-family:var(--mono);font-size:10px;letter-spacing:0.14em;
+  text-transform:uppercase;color:var(--mid);
+}
+
+/* ─── ACHIEVEMENTS ────────────────────────────────────── */
+#achievements{padding:100px 60px;}
+.achieve-header{
+  display:grid;grid-template-columns:auto 1fr;
+  gap:60px;align-items:end;margin-bottom:60px;
+}
+.achieve-h2{
+  font-family:var(--display);
+  font-size:clamp(60px,8vw,120px);
+  line-height:0.9;letter-spacing:0.02em;
+}
+.achieve-meta{
+  padding-bottom:12px;
+  font-family:var(--mono);font-size:11px;letter-spacing:0.1em;
+  color:var(--mid);line-height:1.8;
+}
+
+.achieve-list{display:flex;flex-direction:column;border-top:1px solid var(--rule);}
+.achieve-row{
+  display:grid;grid-template-columns:80px 1fr auto;
+  align-items:center;gap:40px;
+  padding:28px 0;border-bottom:1px solid var(--rule);
+  cursor:none;transition:background 0.2s;
+  position:relative;
+}
+.achieve-row::before{
+  content:'';position:absolute;left:-60px;right:-60px;top:0;bottom:0;
+  background:var(--ink);opacity:0;transition:opacity 0.2s;z-index:0;
+}
+.achieve-row:hover::before{opacity:1;}
+.achieve-row:hover .ach-num,.achieve-row:hover .ach-name,.achieve-row:hover .ach-year,.achieve-row:hover .ach-badge{
+  color:var(--paper);border-color:rgba(240,237,232,0.25);
+}
+.achieve-row:hover .ach-arrow{opacity:1;transform:translateX(0);}
+.ach-num{
+  font-family:var(--mono);font-size:11px;color:var(--mid);
+  letter-spacing:0.1em;position:relative;z-index:1;transition:color 0.2s;
+}
+.ach-name{
+  font-family:var(--display);font-size:clamp(24px,3vw,40px);
+  letter-spacing:0.03em;position:relative;z-index:1;transition:color 0.2s;
+}
+.ach-right{
+  display:flex;align-items:center;gap:24px;
+  position:relative;z-index:1;
+}
+.ach-year{
+  font-family:var(--mono);font-size:11px;color:var(--mid);
+  letter-spacing:0.1em;transition:color 0.2s;
+}
+.ach-badge{
+  font-family:var(--mono);font-size:9px;letter-spacing:0.14em;text-transform:uppercase;
+  padding:6px 14px;border:1px solid var(--rule);color:var(--mid);
+  transition:color 0.2s,border-color 0.2s;
+}
+.ach-badge.gold{border-color:var(--accent);color:var(--accent);}
+.ach-badge.silver{border-color:var(--mid);color:var(--mid);}
+.ach-arrow{
+  font-size:20px;color:var(--paper);opacity:0;
+  transform:translateX(-8px);transition:all 0.2s;
+}
+
+/* ─── ACHIEVEMENT MODAL ───────────────────────────────── */
+.achieve-modal-overlay{
+  display:none;position:fixed;inset:0;z-index:800;
+  background:rgba(10,10,10,0.95);
+  align-items:center;justify-content:center;padding:20px;
+}
+.achieve-modal-overlay.open{display:flex;}
+.achieve-modal-box{
+  background:var(--paper);
+  max-width:840px;width:100%;max-height:90vh;overflow-y:auto;
+  position:relative;
+}
+.achieve-modal-top{
+  padding:40px 40px 24px;
+  border-bottom:1px solid var(--rule);
+  display:flex;justify-content:space-between;align-items:flex-start;
+}
+.achieve-modal-title{
+  font-family:var(--display);font-size:clamp(28px,4vw,48px);
+  letter-spacing:0.03em;line-height:1;
+}
+.achieve-modal-close{
+  background:none;border:none;cursor:none;
+  font-family:var(--mono);font-size:11px;letter-spacing:0.12em;
+  text-transform:uppercase;color:var(--mid);
+  padding:8px 16px;border:1px solid var(--rule);
+  transition:background 0.2s,color 0.2s;
+}
+.achieve-modal-close:hover{background:var(--ink);color:var(--paper);}
+.achieve-modal-meta{
+  display:flex;gap:16px;align-items:center;margin-top:12px;
+}
+.achieve-modal-year{
+  font-family:var(--mono);font-size:10px;letter-spacing:0.14em;color:var(--mid);
+}
+.achieve-modal-badge{
+  font-family:var(--mono);font-size:9px;letter-spacing:0.14em;text-transform:uppercase;
+  padding:5px 12px;border:1px solid;
+}
+.achieve-modal-badge.winner{border-color:var(--accent);color:var(--accent);}
+.achieve-modal-badge.runner-up{border-color:var(--mid);color:var(--mid);}
+.achieve-modal-badge.participant{border-color:var(--mid);color:var(--mid);}
+
+.achieve-modal-slider{position:relative;background:var(--ink);}
+.achieve-modal-slides{display:flex;transition:transform 0.4s cubic-bezier(0.22,1,0.36,1);}
+.achieve-modal-slide{min-width:100%;display:flex;align-items:center;justify-content:center;max-height:55vh;}
+.achieve-modal-slide img{width:100%;height:100%;max-height:55vh;object-fit:contain;display:block;}
+.achieve-modal-nav{
+  position:absolute;top:50%;transform:translateY(-50%);
+  background:var(--paper);border:none;
+  width:40px;height:40px;font-size:18px;cursor:none;
+  display:flex;align-items:center;justify-content:center;
+  transition:background 0.2s;
+}
+.achieve-modal-nav:hover{background:var(--accent);}
+.achieve-modal-nav-prev{left:0;}
+.achieve-modal-nav-next{right:0;}
+.achieve-modal-bottom{
+  padding:16px 40px;
+  display:flex;justify-content:space-between;align-items:center;
+  border-top:1px solid var(--rule);
+}
+.achieve-modal-counter{font-family:var(--mono);font-size:11px;color:var(--mid);letter-spacing:0.1em;}
+.achieve-modal-dots{display:flex;gap:6px;}
+.achieve-modal-dot{
+  width:20px;height:2px;background:var(--rule);cursor:none;transition:background 0.2s;
+}
+.achieve-modal-dot.active{background:var(--ink);}
+
+/* ─── PROJECTS ────────────────────────────────────────── */
+#projects{padding:100px 60px;}
+.projects-header{margin-bottom:60px;}
+.projects-h2{
+  font-family:var(--display);
+  font-size:clamp(60px,8vw,120px);
+  line-height:0.9;letter-spacing:0.02em;
+}
+.projects-h2 .strike{
+  position:relative;display:inline-block;
+}
+.projects-h2 .strike::after{
+  content:'';position:absolute;left:0;right:0;top:50%;
+  height:3px;background:var(--accent2);
+}
+.project-grid{
+  display:grid;grid-template-columns:repeat(3,1fr);
+  border-left:1px solid var(--rule);border-top:1px solid var(--rule);
+}
+.project-card{
+  padding:40px 32px;
+  border-right:1px solid var(--rule);border-bottom:1px solid var(--rule);
+  display:flex;flex-direction:column;gap:20px;
+  transition:background 0.3s;
+  position:relative;overflow:hidden;
+}
+.project-card::after{
+  content:attr(data-index);
+  position:absolute;top:-10px;right:20px;
+  font-family:var(--display);font-size:120px;
+  color:rgba(10,10,10,0.04);line-height:1;
+  pointer-events:none;transition:color 0.3s;
+}
+.project-card:hover{background:var(--ink);}
+.project-card:hover::after{color:rgba(240,237,232,0.05);}
+.project-card:hover .proj-icon-wrap{background:var(--accent);border-color:var(--accent);}
+.project-card:hover .proj-h{color:var(--paper);}
+.project-card:hover .proj-p{color:rgba(240,237,232,0.55);}
+.project-card:hover .proj-tag{border-color:rgba(240,237,232,0.2);color:rgba(240,237,232,0.5);}
+.proj-icon-wrap{
+  width:44px;height:44px;
+  border:1px solid var(--rule);
+  display:flex;align-items:center;justify-content:center;
+  font-size:20px;
+  transition:background 0.3s,border-color 0.3s;
+}
+.proj-h{
+  font-family:var(--mono);font-size:13px;letter-spacing:0.08em;
+  font-weight:700;transition:color 0.3s;
+}
+.proj-p{font-size:13px;line-height:1.7;color:var(--mid);font-weight:300;flex:1;transition:color 0.3s;}
+.proj-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:auto;}
+.proj-tag{
+  font-family:var(--mono);font-size:9px;letter-spacing:0.12em;text-transform:uppercase;
+  padding:4px 10px;border:1px solid var(--rule);color:var(--mid);
+  transition:border-color 0.3s,color 0.3s;
+}
+
+/* ─── FACULTY ─────────────────────────────────────────── */
+#faculty{padding:100px 60px;background:var(--ink);color:var(--paper);}
+.faculty-h2{
+  font-family:var(--display);
+  font-size:clamp(60px,8vw,120px);
+  line-height:0.9;letter-spacing:0.02em;
+  color:var(--paper);margin-bottom:60px;
+}
+.faculty-h2 span{color:var(--accent);}
+.faculty-layout{
+  display:grid;grid-template-columns:300px 1fr;gap:80px;align-items:start;
+}
+.faculty-img-wrap{
+  position:relative;
+}
+.faculty-img-wrap img{
+  width:100%;aspect-ratio:3/4;object-fit:cover;display:block;
+  filter:grayscale(0.3) contrast(1.05);
+}
+.faculty-img-wrap::after{
+  content:'';position:absolute;bottom:0;left:0;right:0;height:3px;background:var(--accent);
+}
+.faculty-img-label{
+  margin-top:16px;
+  font-family:var(--mono);font-size:9px;letter-spacing:0.16em;text-transform:uppercase;
+  color:rgba(240,237,232,0.4);
+}
+.faculty-info{padding-top:8px;}
+.faculty-badge-tag{
+  font-family:var(--mono);font-size:9px;letter-spacing:0.18em;text-transform:uppercase;
+  color:var(--accent);border:1px solid var(--accent);
+  padding:5px 12px;display:inline-block;margin-bottom:24px;
+}
+.faculty-name{
+  font-family:var(--display);font-size:clamp(36px,4vw,64px);
+  line-height:0.95;letter-spacing:0.02em;color:var(--paper);margin-bottom:20px;
+}
+.faculty-dept{
+  font-family:var(--mono);font-size:11px;letter-spacing:0.1em;
+  color:rgba(240,237,232,0.45);line-height:1.9;
+  padding-left:16px;border-left:2px solid rgba(240,237,232,0.15);
+  margin-bottom:28px;
+}
+.faculty-desc{
+  font-size:15px;line-height:1.8;color:rgba(240,237,232,0.65);
+  font-weight:300;max-width:520px;margin-bottom:32px;
+}
+.faculty-link{
+  display:inline-flex;align-items:center;gap:10px;
+  font-family:var(--mono);font-size:10px;letter-spacing:0.14em;text-transform:uppercase;
+  color:var(--paper);text-decoration:none;
+  border-bottom:1px solid rgba(240,237,232,0.3);padding-bottom:4px;
+  transition:border-color 0.2s,color 0.2s;
+}
+.faculty-link:hover{color:var(--accent);border-color:var(--accent);}
+
+/* ─── TEAM ────────────────────────────────────────────── */
+#team{padding:100px 60px;}
+.team-h2{
+  font-family:var(--display);
+  font-size:clamp(60px,8vw,120px);
+  line-height:0.9;letter-spacing:0.02em;
+  margin-bottom:60px;
+}
+/* PRESIDENT */
+.president-strip{
+  display:grid;grid-template-columns:260px 1fr;gap:0;
+  border:1px solid var(--rule);margin-bottom:60px;overflow:hidden;
+}
+.president-img-side{position:relative;overflow:hidden;}
+.president-img-side img{
+  width:100%;height:100%;object-fit:cover;object-position:top;
+  display:block;filter:grayscale(0.2);
+  transition:filter 0.4s;
+}
+.president-img-side:hover img{filter:grayscale(0.2) brightness(0.4);}
+.president-img-side .pres-hover{
+  position:absolute;inset:0;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:12px;
+  opacity:0;transition:opacity 0.3s;
+}
+.president-img-side:hover .pres-hover{opacity:1;}
+.pres-social{
+  font-family:var(--mono);font-size:9px;letter-spacing:0.14em;text-transform:uppercase;
+  color:var(--paper);text-decoration:none;
+  border:1px solid rgba(240,237,232,0.4);padding:8px 20px;
+  transition:background 0.2s;cursor:none;
+}
+.pres-social:hover{background:rgba(240,237,232,0.1);}
+.president-info-side{
+  padding:48px;border-left:1px solid var(--rule);
+  display:flex;flex-direction:column;justify-content:center;
+}
+.pres-badge{
+  font-family:var(--mono);font-size:9px;letter-spacing:0.18em;text-transform:uppercase;
+  color:var(--accent);border:1px solid var(--accent);
+  padding:5px 12px;display:inline-block;margin-bottom:24px;align-self:flex-start;
+}
+.pres-name{
+  font-family:var(--display);font-size:clamp(40px,5vw,80px);
+  line-height:0.95;letter-spacing:0.02em;margin-bottom:12px;
+}
+.pres-role{
+  font-family:var(--mono);font-size:10px;letter-spacing:0.14em;
+  text-transform:uppercase;color:var(--mid);
+}
+
+/* DOMAINS */
+.domain-grid{
+  display:grid;grid-template-columns:repeat(4,1fr);
+  border-left:1px solid var(--rule);border-top:1px solid var(--rule);
+  margin-bottom:60px;
+}
+.domain-card{
+  border-right:1px solid var(--rule);border-bottom:1px solid var(--rule);
+  overflow:hidden;cursor:none;
+  position:relative;
+}
+.domain-img{width:100%;height:200px;object-fit:cover;display:block;filter:grayscale(1) contrast(1.1);transition:filter 0.4s;}
+.domain-card:hover .domain-img{filter:grayscale(0) brightness(0.5);}
+.domain-card-info{padding:24px;background:var(--paper);border-top:1px solid var(--rule);}
+.domain-card-title{
+  font-family:var(--mono);font-size:11px;letter-spacing:0.12em;text-transform:uppercase;
+  font-weight:700;margin-bottom:6px;
+}
+.domain-card-desc{font-size:12px;color:var(--mid);line-height:1.6;}
+.domain-tap{
+  font-family:var(--mono);font-size:9px;letter-spacing:0.12em;text-transform:uppercase;
+  color:var(--mid);margin-top:12px;
+  display:flex;align-items:center;gap:6px;
+}
+.domain-tap::after{content:'→';transition:transform 0.2s;}
+.domain-card:hover .domain-tap{color:var(--ink);}
+.domain-card:hover .domain-tap::after{transform:translateX(4px);}
+
+/* Mentors row */
+.mentors-row{margin-top:0;}
+.mentors-label{
+  font-family:var(--mono);font-size:9px;letter-spacing:0.18em;text-transform:uppercase;
+  color:var(--mid);margin-bottom:24px;
+  display:flex;align-items:center;gap:12px;
+}
+.mentors-label::after{content:'';flex:1;height:1px;background:var(--rule);}
+.mentors-strip{
+  display:flex;gap:0;
+  border-left:1px solid var(--rule);border-top:1px solid var(--rule);
+  max-width:50%;
+}
+.domain-card.mentor-card{flex:1;}
+
+/* ─── MODAL ───────────────────────────────────────────── */
+.modal-overlay{
+  display:none;position:fixed;inset:0;z-index:800;
+  background:rgba(10,10,10,0.95);
+  align-items:center;justify-content:center;padding:20px;
+}
+.modal-overlay.open{display:flex;}
+.modal-box{
+  background:var(--paper);
+  max-width:720px;width:100%;max-height:90vh;overflow-y:auto;
+}
+.modal-top{
+  padding:40px 40px 0;
+  display:flex;justify-content:space-between;align-items:flex-start;
+}
+.modal-title{
+  font-family:var(--display);font-size:clamp(28px,4vw,48px);
+  letter-spacing:0.03em;line-height:1;
+}
+.modal-close-btn{
+  background:none;border:1px solid var(--rule);cursor:none;
+  font-family:var(--mono);font-size:10px;letter-spacing:0.12em;text-transform:uppercase;
+  color:var(--mid);padding:8px 16px;transition:background 0.2s,color 0.2s;
+}
+.modal-close-btn:hover{background:var(--ink);color:var(--paper);}
+.modal-members-label{
+  font-family:var(--mono);font-size:9px;letter-spacing:0.18em;text-transform:uppercase;
+  color:var(--mid);padding:24px 40px;
+  display:flex;align-items:center;gap:12px;
+}
+.modal-members-label::after{content:'';flex:1;height:1px;background:var(--rule);}
+.modal-members-grid{
+  display:grid;grid-template-columns:repeat(2,1fr);
+  border-left:1px solid var(--rule);border-top:1px solid var(--rule);
+  margin:0 40px 40px;
+}
+.member-card{
+  border-right:1px solid var(--rule);border-bottom:1px solid var(--rule);
+  overflow:hidden;position:relative;
+}
+.member-img-wrap{position:relative;overflow:hidden;aspect-ratio:1/1;}
+.member-img-wrap img{
+  width:100%;height:100%;object-fit:cover;display:block;
+  filter:grayscale(0.3);transition:filter 0.3s;
+}
+.member-card:hover .member-img-wrap img{filter:grayscale(0.3) brightness(0.35);}
+.member-hover-overlay{
+  position:absolute;inset:0;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:8px;
+  opacity:0;transition:opacity 0.3s;
+}
+.member-card:hover .member-hover-overlay{opacity:1;}
+.member-hover-overlay a{
+  font-family:var(--mono);font-size:9px;letter-spacing:0.14em;text-transform:uppercase;
+  color:var(--paper);text-decoration:none;
+  border:1px solid rgba(240,237,232,0.4);padding:7px 16px;
+  transition:background 0.2s;cursor:none;
+}
+.member-hover-overlay a:hover{background:rgba(240,237,232,0.1);}
+.member-name-bar{
+  padding:14px 16px;background:var(--paper);
+  border-top:1px solid var(--rule);
+  font-family:var(--mono);font-size:11px;letter-spacing:0.06em;
+}
+
+/* ─── EVENTS ──────────────────────────────────────────── */
+#events{padding:100px 60px;background:var(--paper2);}
+.events-h2{
+  font-family:var(--display);
+  font-size:clamp(60px,8vw,120px);
+  line-height:0.9;letter-spacing:0.02em;margin-bottom:60px;
+}
+.events-list{border-top:1px solid var(--rule);}
+.event-row{
+  display:grid;grid-template-columns:100px 1fr auto;gap:40px;
+  align-items:center;padding:32px 0;
+  border-bottom:1px solid var(--rule);
+  position:relative;
+}
+.event-row::before{
+  content:'';position:absolute;left:-60px;right:-60px;top:0;bottom:0;
+  background:var(--ink);opacity:0;transition:opacity 0.25s;z-index:0;
+}
+.event-row:hover::before{opacity:1;}
+.event-row:hover .ev-num,.event-row:hover .ev-title,.event-row:hover .ev-sub,.event-row:hover .ev-date,.event-row:hover .ev-loc{color:rgba(240,237,232,0.7);}
+.event-row:hover .ev-title{color:var(--paper);}
+.event-row:hover .ev-badge-upcoming{border-color:var(--accent);color:var(--accent);}
+.event-row:hover .ev-badge-done{border-color:rgba(240,237,232,0.3);color:rgba(240,237,232,0.45);}
+.ev-num{
+  font-family:var(--mono);font-size:11px;color:var(--mid);
+  letter-spacing:0.1em;position:relative;z-index:1;transition:color 0.25s;
+}
+.ev-info{position:relative;z-index:1;}
+.ev-title{
+  font-family:var(--display);font-size:clamp(20px,2.5vw,36px);
+  letter-spacing:0.03em;transition:color 0.25s;margin-bottom:6px;
+}
+.ev-sub{font-size:13px;color:var(--mid);font-weight:300;transition:color 0.25s;}
+.ev-meta{display:flex;gap:16px;margin-top:8px;}
+.ev-date,.ev-loc{
+  font-family:var(--mono);font-size:10px;letter-spacing:0.1em;
+  color:var(--mid);transition:color 0.25s;
+}
+.ev-right{display:flex;align-items:center;gap:16px;position:relative;z-index:1;}
+.ev-badge-upcoming,.ev-badge-done{
+  font-family:var(--mono);font-size:9px;letter-spacing:0.14em;text-transform:uppercase;
+  padding:6px 14px;border:1px solid;transition:color 0.25s,border-color 0.25s;
+}
+.ev-badge-upcoming{border-color:var(--ink);color:var(--ink);}
+.ev-badge-done{border-color:var(--rule);color:var(--mid);}
+
+/* ─── GALLERY ─────────────────────────────────────────── */
+#gallery{padding:100px 60px;}
+.gallery-h2{
+  font-family:var(--display);
+  font-size:clamp(60px,8vw,120px);
+  line-height:0.9;letter-spacing:0.02em;margin-bottom:60px;
+}
+.gallery-slider{position:relative;}
+.gallery-slider-track{
+  position:relative;overflow:hidden;
+  background:var(--ink);border:1px solid rgba(240,237,232,0.1);
+  min-height:420px;display:flex;align-items:center;justify-content:center;
+}
+.gallery-slide{position:absolute;inset:0;opacity:0;transition:opacity 0.5s;display:flex;align-items:center;justify-content:center;}
+.gallery-slide.active{opacity:1;}
+.gallery-slide img{width:100%;height:auto;max-height:65vh;object-fit:contain;display:block;}
+.gallery-controls{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:20px 0;border-bottom:1px solid var(--rule);
+}
+.gallery-btn-row{display:flex;gap:0;}
+.gallery-btn{
+  width:48px;height:48px;background:var(--paper);border:1px solid var(--rule);
+  font-size:20px;cursor:none;display:flex;align-items:center;justify-content:center;
+  transition:background 0.2s,color 0.2s;
+}
+.gallery-btn:hover{background:var(--ink);color:var(--paper);}
+.gallery-btn+.gallery-btn{border-left:none;}
+.gallery-counter{font-family:var(--mono);font-size:11px;letter-spacing:0.1em;color:var(--mid);}
+.gallery-dots{display:flex;gap:4px;}
+.gallery-dot{
+  width:24px;height:2px;background:var(--rule);cursor:none;transition:background 0.2s;
+}
+.gallery-dot.active{background:var(--ink);}
+
+/* ─── CONTACT ─────────────────────────────────────────── */
+#contact{padding:100px 60px;background:var(--ink);color:var(--paper);}
+.contact-h2{
+  font-family:var(--display);
+  font-size:clamp(60px,8vw,120px);
+  line-height:0.9;letter-spacing:0.02em;
+  color:var(--paper);margin-bottom:60px;
+}
+.contact-h2 span{color:var(--accent);}
+.contact-layout{display:grid;grid-template-columns:1fr 1fr;gap:80px;}
+.contact-info{display:flex;flex-direction:column;gap:40px;}
+
+.contact-info-label{
+  font-family:var(--mono);font-size:9px;letter-spacing:0.18em;text-transform:uppercase;
+  color:rgba(240,237,232,0.4);margin-bottom:8px;
+}
+.contact-info-val{
+  font-family:var(--mono);font-size:14px;color:var(--paper);letter-spacing:0.06em;
+}
+.contact-form{display:flex;flex-direction:column;gap:0;border:1px solid rgba(240,237,232,0.12);}
+.contact-form input,.contact-form textarea{
+  background:transparent;border:none;border-bottom:1px solid rgba(240,237,232,0.12);
+  padding:20px 24px;color:var(--paper);
+  font-family:var(--mono);font-size:12px;letter-spacing:0.06em;
+  outline:none;width:100%;transition:background 0.2s;
+}
+.contact-form input:focus,.contact-form textarea:focus{background:rgba(240,237,232,0.03);}
+.contact-form input::placeholder,.contact-form textarea::placeholder{color:rgba(240,237,232,0.25);}
+.contact-submit{
+  padding:20px 24px;background:var(--accent);border:none;cursor:none;
+  font-family:var(--mono);font-size:11px;letter-spacing:0.16em;text-transform:uppercase;
+  color:var(--ink);font-weight:700;transition:opacity 0.2s;text-align:left;
+  display:flex;align-items:center;justify-content:space-between;
+}
+.contact-submit:hover{opacity:0.85;}
+
+/* ─── JOIN ────────────────────────────────────────────── */
+#join{
+  padding:120px 60px;
+  background:var(--ink);color:var(--paper);
+  border-top:1px solid rgba(240,237,232,0.08);
+  text-align:center;display:flex;flex-direction:column;align-items:center;gap:40px;
+}
+.join-h2{
+  font-family:var(--display);
+  font-size:clamp(60px,10vw,160px);
+  line-height:0.88;letter-spacing:0.02em;
+  color:var(--paper);
+}
+.join-h2 span{-webkit-text-stroke:1.5px var(--paper);color:transparent;}
+.join-sub{
+  font-family:var(--mono);font-size:12px;letter-spacing:0.12em;color:rgba(240,237,232,0.45);
+}
+.join-btn-link{
+  font-family:var(--mono);font-size:12px;letter-spacing:0.16em;text-transform:uppercase;
+  padding:18px 48px;background:var(--accent);color:var(--ink);text-decoration:none;
+  font-weight:700;transition:opacity 0.2s;cursor:none;display:inline-block;
+}
+.join-btn-link:hover{opacity:0.85;}
+
+/* ─── SPONSORS ────────────────────────────────────────── */
+.sponsors-section{
+  padding:80px 60px;
+  border-top:1px solid var(--rule);
+  background:var(--paper);
+}
+.sponsors-label{
+  font-family:var(--mono);font-size:9px;letter-spacing:0.2em;text-transform:uppercase;
+  color:var(--mid);text-align:center;margin-bottom:48px;
+  display:flex;align-items:center;gap:20px;justify-content:center;
+}
+.sponsors-label::before,.sponsors-label::after{content:'';flex:1;height:1px;background:var(--rule);}
+.sponsors-marquee-wrap{
+  width:100%;overflow:hidden;height:100px;display:flex;align-items:center;
+  position:relative;
+}
+.sponsors-marquee-wrap::before,.sponsors-marquee-wrap::after{
+  content:'';position:absolute;top:0;bottom:0;width:120px;z-index:2;
+}
+.sponsors-marquee-wrap::before{left:0;background:linear-gradient(to right,var(--paper),transparent);}
+.sponsors-marquee-wrap::after{right:0;background:linear-gradient(to left,var(--paper),transparent);}
+.sponsors-track{display:flex;align-items:center;gap:80px;animation:sponsorMove 18s linear infinite;width:max-content;}
+@keyframes sponsorMove{0%{transform:translateX(0);}100%{transform:translateX(-50%);}}
+.sponsors-marquee-wrap:hover .sponsors-track{animation-play-state:paused;}
+.sponsor-item{display:flex;flex-direction:column;align-items:center;gap:12px;min-width:180px;}
+.sponsor-logo-box{
+  width:140px;height:60px;display:flex;align-items:center;justify-content:center;
+  filter:grayscale(1) opacity(0.5);transition:filter 0.3s;
+}
+.sponsor-logo-box:hover{filter:grayscale(0) opacity(1);}
+.sponsor-logo-box img{max-width:100%;max-height:100%;object-fit:contain;}
+.sponsor-name{font-family:var(--mono);font-size:9px;letter-spacing:0.16em;text-transform:uppercase;color:var(--mid);}
+
+/* ─── FOOTER ──────────────────────────────────────────── */
+footer{
+  background:var(--ink);padding:80px 60px 40px;
+  border-top:1px solid rgba(240,237,232,0.08);
+}
+.footer-top{
+  display:grid;grid-template-columns:1fr 1fr 1fr;gap:60px;
+  padding-bottom:60px;border-bottom:1px solid rgba(240,237,232,0.08);
+}
+
+
+.footer-brand-name{
+  font-family:var(--display);font-size:28px;letter-spacing:0.04em;
+  color:var(--paper);margin-bottom:12px;
+}
+.footer-brand-desc{font-size:13px;color:rgba(240,237,232,0.45);line-height:1.7;font-weight:300;margin-bottom:24px;}
+.footer-logos-row{display:flex;gap:10px;}
+.footer-logo-img{
+  width:44px;height:44px;object-fit:contain;border-radius:50%;
+  border:1px solid rgba(240,237,232,0.15);padding:4px;
+  filter:grayscale(0.3);
+}
+.footer-section-h{
+  font-family:var(--mono);font-size:10px;letter-spacing:0.16em;text-transform:uppercase;
+  color:rgba(240,237,232,0.4);margin-bottom:20px;
+}
+.footer-links{list-style:none;display:flex;flex-direction:column;gap:10px;}
+.footer-links a{
+  font-size:13px;color:rgba(240,237,232,0.55);text-decoration:none;
+  transition:color 0.2s;font-family:var(--mono);letter-spacing:0.06em;
+}
+.footer-links a:hover{color:var(--paper);}
+.footer-contact-item{margin-bottom:12px;}
+.footer-contact-label{
+  font-family:var(--mono);font-size:9px;letter-spacing:0.14em;text-transform:uppercase;
+  color:rgba(240,237,232,0.3);margin-bottom:4px;
+}
+.footer-contact-val{font-size:13px;color:rgba(240,237,232,0.6);font-family:var(--mono);}
+.footer-socials{display:flex;gap:8px;margin-top:20px;}
+.social-btn{
+  width:36px;height:36px;border:1px solid rgba(240,237,232,0.15);
+  display:flex;align-items:center;justify-content:center;
+  color:rgba(240,237,232,0.55);text-decoration:none;font-size:13px;
+  transition:background 0.2s,border-color 0.2s,color 0.2s;cursor:none;
+}
+.social-btn:hover{background:rgba(240,237,232,0.08);border-color:rgba(240,237,232,0.35);color:var(--paper);}
+.footer-copy{
+  padding-top:32px;
+  display:flex;justify-content:space-between;align-items:center;
+  font-family:var(--mono);font-size:10px;letter-spacing:0.12em;
+  color:rgba(240,237,232,0.25);
+}
+
+/* ─── RESPONSIVE ──────────────────────────────────────── */
+@media(max-width:1024px){
+  .hero{grid-template-columns:1fr;}
+  .hero-right{display:none;}
+  .hero-left{padding:80px 40px;}
+  #about,.about-grid,.stats-strip{grid-template-columns:1fr 1fr;}
+  .about-header{flex-direction:column;gap:24px;}
+  .achieve-row{grid-template-columns:60px 1fr auto;}
+  .project-grid{grid-template-columns:1fr 1fr;}
+  .faculty-layout{grid-template-columns:1fr;gap:40px;}
+  .faculty-img-wrap{max-width:280px;}
+  .domain-grid{grid-template-columns:1fr 1fr;}
+  .contact-layout{grid-template-columns:1fr;}
+  .footer-top{grid-template-columns:1fr 1fr;gap:40px;}
+}
+@media(max-width:768px){
+  .navbar nav{display:none;}
+  .hamburger{display:flex;flex-direction:column;gap:5px;}
+  #about,#achievements,#projects,#faculty,#team,#events,#gallery,#contact,#join{padding:72px 32px;}
+  .about-grid,.stats-strip{grid-template-columns:1fr;}
+  .achieve-row{grid-template-columns:1fr;gap:8px;}
+  .ach-num{display:none;}
+  .ach-right{flex-wrap:wrap;}
+  .project-grid{grid-template-columns:1fr;}
+  .president-strip{grid-template-columns:1fr;}
+  .president-img-side{height:300px;}
+  .domain-grid{grid-template-columns:1fr 1fr;}
+  .modal-members-grid{grid-template-columns:1fr 1fr;}
+  .footer-top{grid-template-columns:1fr;}
+  .footer-copy{flex-direction:column;gap:8px;text-align:center;}
+  .gallery-controls{flex-wrap:wrap;gap:12px;}
+  .event-row{grid-template-columns:1fr;gap:12px;}
+  .ev-num{display:none;}
+  .contact-layout{grid-template-columns:1fr;}
+  .mentors-strip{max-width:100%;}
+}
+@media(max-width:480px){
+  .hero-left{padding:72px 24px;}
+  #about,#achievements,#projects,#faculty,#team,#events,#gallery,#contact,#join{padding:60px 24px;}
+  .domain-grid{grid-template-columns:1fr;}
+  .modal-members-grid{grid-template-columns:1fr;}
+  .modal-top{padding:24px 24px 0;}
+  .modal-members-label{padding:16px 24px;}
+  .modal-members-grid{margin:0 24px 24px;}
+  .achieve-modal-top{padding:24px 24px 16px;}
+  .achieve-modal-bottom{padding:12px 24px;}
+}
+</style>
+</head>
+<body>
+
+<!-- CURSOR -->
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursor-ring"></div>
+
+<!-- NAVBAR -->
+<header class="navbar">
+  <div class="nav-logo"><span>[</span>SRM AUTOMATION CLUB<span>]</span></div>
+  <nav>
+    <a href="#home">Home</a>
+    <a href="#about">About</a>
+    <a href="#achievements">Wins</a>
+    <a href="#projects">Projects</a>
+    <a href="#faculty">Faculty</a>
+    <a href="#team">Team</a>
+    <a href="#events">Events</a>
+    <a href="#contact">Contact</a>
+  </nav>
+  <a class="nav-join" href="#join">Join Us</a>
+  <div class="hamburger" id="hamburger" onclick="toggleMobileNav()">
+    <span></span><span></span><span></span>
+  </div>
+</header>
+
+<!-- MOBILE NAV -->
+<div class="mobile-nav" id="mobile-nav">
+  <a href="#home" onclick="closeMobileNav()">Home</a>
+  <a href="#about" onclick="closeMobileNav()">About</a>
+  <a href="#achievements" onclick="closeMobileNav()">Achievements</a>
+  <a href="#projects" onclick="closeMobileNav()">Projects</a>
+  <a href="#faculty" onclick="closeMobileNav()">Faculty</a>
+  <a href="#team" onclick="closeMobileNav()">Team</a>
+  <a href="#events" onclick="closeMobileNav()">Events</a>
+  <a href="#contact" onclick="closeMobileNav()">Contact</a>
+  <a href="#join" class="join-mob" onclick="closeMobileNav()">Join Us →</a>
+</div>
+
+<!-- HERO -->
+<div class="hero" id="home">
+  <div class="hero-left">
+    <div class="hero-eyebrow">SRM IST Kattankulathur &mdash; Est. 2023</div>
+    <div class="hero-main">
+      <div class="hero-number">001 / OVERVIEW</div>
+      <h1 class="hero-title">SRM<br><em>AUTO</em><br>MATION<br>CLUB</h1>
+      <p class="hero-sub">Engineering intelligent machines. Building the future of robotics, automation and innovation through collaborative technology.</p>
+    </div>
+    <div class="hero-actions">
+      <a class="btn-raw" href="#projects">&lt; Explore Projects &gt;</a>
+      <a class="btn-raw filled" href="#join">Join Us →</a>
+    </div>
+  </div>
+  <div class="hero-right">
+    <img src="clubbbb.png" alt="SRM Automation Club">
+    <div class="hero-right-overlay"></div>
+    <div class="hero-logos-strip">
+      <img src="srm automation club logo1.png" alt="Club Logo">
+      <img src="srm logo.png" alt="SRM IST">
+    </div>
+    <div class="hero-index">Learn · Build · Automate</div>
+    <div class="hero-canvas-wrap"><canvas id="hero-canvas"></canvas></div>
+  </div>
+</div>
+
+<!-- TICKER -->
+<div class="ticker">
+  <div class="ticker-track" id="ticker-track">
+    <span class="ticker-item">SRM Automation Club</span>
+    <span class="ticker-item">Robotics &amp; Automation</span>
+    <span class="ticker-item">IEEC'26 Winners</span>
+    <span class="ticker-item">India Engineers Elite Challenge</span>
+    <span class="ticker-item">Best Innovation Award</span>
+    <span class="ticker-item">Technoxian'25</span>
+    <span class="ticker-item">Indian Automation Challenge — Top 10</span>
+    <span class="ticker-item">25+ Members</span>
+    <span class="ticker-item">10+ Projects</span>
+    <!-- duplicate for seamless loop -->
+    <span class="ticker-item">SRM Automation Club</span>
+    <span class="ticker-item">Robotics &amp; Automation</span>
+    <span class="ticker-item">IEEC'26 Winners</span>
+    <span class="ticker-item">India Engineers Elite Challenge</span>
+    <span class="ticker-item">Best Innovation Award</span>
+    <span class="ticker-item">Technoxian'25</span>
+    <span class="ticker-item">Indian Automation Challenge — Top 10</span>
+    <span class="ticker-item">25+ Members</span>
+    <span class="ticker-item">10+ Projects</span>
+  </div>
+</div>
+
+<!-- ABOUT -->
+<section class="section" id="about">
+  <div style="padding:100px 60px;">
+    <div class="about-header">
+      <div class="about-title-col">
+        <div class="about-h2">WHO<br><span class="outline">WE</span><br>ARE</div>
+      </div>
+      <div class="about-desc-col">
+        <div class="section-label" style="margin-bottom:20px;">002 / About</div>
+        <p>A vibrant community of passionate tech and robotics enthusiasts at SRM, united by our love for innovation and automation. We build cutting-edge robots, automation systems, and AI-integrated projects that push the boundaries of what's possible.</p>
+      </div>
+    </div>
+    <div class="about-grid">
+      <div class="about-card">
+        <div class="about-card-num">01</div>
+        <div class="about-card-h">Who We Are</div>
+        <p class="about-card-p">A vibrant community of passionate tech and robotics enthusiasts at SRM, united by our love for innovation and automation.</p>
+      </div>
+      <div class="about-card">
+        <div class="about-card-num">02</div>
+        <div class="about-card-h">What We Do</div>
+        <p class="about-card-p">Building cutting-edge robots, automation systems, and AI-integrated projects that push the boundaries of technology.</p>
+      </div>
+      <div class="about-card">
+        <div class="about-card-num">03</div>
+        <div class="about-card-h">Our Mission</div>
+        <p class="about-card-p">Empowering students to transform ideas into reality through hands-on learning and collaboration.</p>
+      </div>
+      <div class="about-card">
+        <div class="about-card-num">04</div>
+        <div class="about-card-h">Innovation Hub</div>
+        <p class="about-card-p">Creating a space where creativity meets technology, fostering the next generation of engineers and innovators.</p>
+      </div>
+    </div>
+    <div class="stats-strip" id="stats-row">
+      <div class="stat-block">
+        <div class="stat-block-num"><span class="stat-number" data-target="25">0</span>+</div>
+        <div class="stat-block-label">Members</div>
+      </div>
+      <div class="stat-block">
+        <div class="stat-block-num"><span class="stat-number" data-target="10">0</span>+</div>
+        <div class="stat-block-label">Projects</div>
+      </div>
+      <div class="stat-block">
+        <div class="stat-block-num"><span class="stat-number" data-target="5">0</span>+</div>
+        <div class="stat-block-label">Events</div>
+      </div>
+      <div class="stat-block">
+        <div class="stat-block-num"><span class="stat-number" data-target="5">0</span>+</div>
+        <div class="stat-block-label">Awards</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ACHIEVEMENTS -->
+<section class="section" id="achievements">
+  <div style="padding:100px 60px;">
+    <div class="achieve-header">
+      <div class="achieve-h2">OUR<br>WINS</div>
+      <div class="achieve-meta">
+        <div class="section-label" style="margin-bottom:16px;">003 / Achievements</div>
+        5 Major Competitions<br>
+        National-level recognition<br>
+        Growing stronger every year
+      </div>
+    </div>
+    <div class="achieve-list">
+      <div class="achieve-row" onclick="openAchieveModal('achieve1')">
+        <div class="ach-num">01</div>
+        <div class="ach-name">India Engineers Elite Challenge</div>
+        <div class="ach-right">
+          <span class="ach-year">2024</span>
+          <span class="ach-badge gold">🏆 Winner</span>
+          <span class="ach-arrow">→</span>
+        </div>
+      </div>
+      <div class="achieve-row" onclick="openAchieveModal('achieve2')">
+        <div class="ach-num">02</div>
+        <div class="ach-name">Best Innovation Award — SRM Techfest</div>
+        <div class="ach-right">
+          <span class="ach-year">2024</span>
+          <span class="ach-badge gold">🏆 Winner</span>
+          <span class="ach-arrow">→</span>
+        </div>
+      </div>
+      <div class="achieve-row" onclick="openAchieveModal('achieve3')">
+        <div class="ach-num">03</div>
+        <div class="ach-name">Technoxian'25</div>
+        <div class="ach-right">
+          <span class="ach-year">2025</span>
+          <span class="ach-badge silver">Participant</span>
+          <span class="ach-arrow">→</span>
+        </div>
+      </div>
+      <div class="achieve-row" onclick="openAchieveModal('achieve4')">
+        <div class="ach-num">04</div>
+        <div class="ach-name">IEEC'26</div>
+        <div class="ach-right">
+          <span class="ach-year">2026</span>
+          <span class="ach-badge gold">🏆 Winner</span>
+          <span class="ach-arrow">→</span>
+        </div>
+      </div>
+      <div class="achieve-row" onclick="openAchieveModal('achieve5')">
+        <div class="ach-num">05</div>
+        <div class="ach-name">Indian Automation Challenge</div>
+        <div class="ach-right">
+          <span class="ach-year">2025</span>
+          <span class="ach-badge silver">Top 10</span>
+          <span class="ach-arrow">→</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ACHIEVEMENT MODALS -->
+<div class="achieve-modal-overlay" id="achievemodal-achieve1">
+  <div class="achieve-modal-box">
+    <div class="achieve-modal-top">
+      <div>
+        <div class="achieve-modal-title">India Engineers Elite Challenge</div>
+        <div class="achieve-modal-meta">
+          <span class="achieve-modal-year">2024</span>
+          <span class="achieve-modal-badge winner">🏆 Winner</span>
+        </div>
+      </div>
+      <button class="achieve-modal-close" onclick="closeAchieveModal('achieve1')">Close ✕</button>
+    </div>
+    <div class="achieve-modal-slider" id="aslider-achieve1">
+      <div class="achieve-modal-slides" id="aslides-achieve1">
+        <div class="achieve-modal-slide"><img src="ieee25.1.jpeg" alt="Photo 1"></div>
+      </div>
+    </div>
+    <div class="achieve-modal-bottom">
+      <div class="achieve-modal-counter"><span id="acur-achieve1">1</span> / <span id="atot-achieve1">1</span></div>
+      <div class="achieve-modal-dots" id="adots-achieve1"></div>
+    </div>
+  </div>
+</div>
+
+<div class="achieve-modal-overlay" id="achievemodal-achieve2">
+  <div class="achieve-modal-box">
+    <div class="achieve-modal-top">
+      <div>
+        <div class="achieve-modal-title">Best Innovation Award — SRM Techfest</div>
+        <div class="achieve-modal-meta">
+          <span class="achieve-modal-year">2024</span>
+          <span class="achieve-modal-badge winner">🏆 Winner</span>
+        </div>
+      </div>
+      <button class="achieve-modal-close" onclick="closeAchieveModal('achieve2')">Close ✕</button>
+    </div>
+    <div class="achieve-modal-slider" id="aslider-achieve2">
+      <div class="achieve-modal-slides" id="aslides-achieve2">
+        <div class="achieve-modal-slide">
+          <a href="https://drive.google.com/file/d/1x3r7m8Ct6OxDV-2vUV14bGp-eO1Z-Tv_/view?usp=sharing" target="_blank" style="font-family:var(--mono);font-size:12px;letter-spacing:0.1em;color:var(--paper);border:1px solid rgba(240,237,232,0.4);padding:16px 32px;text-decoration:none;display:inline-block;margin:40px;">▶ Watch Event Video</a>
+        </div>
+        <div class="achieve-modal-slide"><img src="techfest1.jpeg" alt="Photo 1"></div>
+        <div class="achieve-modal-slide"><img src="techfest2.jpeg" alt="Photo 2"></div>
+      </div>
+      <button class="achieve-modal-nav achieve-modal-nav-prev" onclick="aSlide('achieve2',-1)">&#8249;</button>
+      <button class="achieve-modal-nav achieve-modal-nav-next" onclick="aSlide('achieve2',1)">&#8250;</button>
+    </div>
+    <div class="achieve-modal-bottom">
+      <div class="achieve-modal-counter"><span id="acur-achieve2">1</span> / <span id="atot-achieve2">3</span></div>
+      <div class="achieve-modal-dots" id="adots-achieve2"></div>
+    </div>
+  </div>
+</div>
+
+<div class="achieve-modal-overlay" id="achievemodal-achieve3">
+  <div class="achieve-modal-box">
+    <div class="achieve-modal-top">
+      <div>
+        <div class="achieve-modal-title">Technoxian'25</div>
+        <div class="achieve-modal-meta"><span class="achieve-modal-year">2025</span></div>
+      </div>
+      <button class="achieve-modal-close" onclick="closeAchieveModal('achieve3')">Close ✕</button>
+    </div>
+    <div class="achieve-modal-slider" id="aslider-achieve3">
+      <div class="achieve-modal-slides" id="aslides-achieve3">
+        <div class="achieve-modal-slide"><img src="technoxian1.jpeg" alt="Photo 1"></div>
+        <div class="achieve-modal-slide"><img src="technoxian2.jpeg" alt="Photo 2"></div>
+        <div class="achieve-modal-slide"><img src="technoxian3.jpeg" alt="Photo 3"></div>
+      </div>
+      <button class="achieve-modal-nav achieve-modal-nav-prev" onclick="aSlide('achieve3',-1)">&#8249;</button>
+      <button class="achieve-modal-nav achieve-modal-nav-next" onclick="aSlide('achieve3',1)">&#8250;</button>
+    </div>
+    <div class="achieve-modal-bottom">
+      <div class="achieve-modal-counter"><span id="acur-achieve3">1</span> / <span id="atot-achieve3">3</span></div>
+      <div class="achieve-modal-dots" id="adots-achieve3"></div>
+    </div>
+  </div>
+</div>
+
+<div class="achieve-modal-overlay" id="achievemodal-achieve4">
+  <div class="achieve-modal-box">
+    <div class="achieve-modal-top">
+      <div>
+        <div class="achieve-modal-title">IEEC'26</div>
+        <div class="achieve-modal-meta">
+          <span class="achieve-modal-year">2026</span>
+          <span class="achieve-modal-badge winner">🏆 Winner</span>
+        </div>
+      </div>
+      <button class="achieve-modal-close" onclick="closeAchieveModal('achieve4')">Close ✕</button>
+    </div>
+    <div class="achieve-modal-slider" id="aslider-achieve4">
+      <div class="achieve-modal-slides" id="aslides-achieve4">
+        <div class="achieve-modal-slide"><img src="ieee26.1.png" alt="Photo 1"></div>
+        <div class="achieve-modal-slide"><img src="ieee26.2.png" alt="Photo 2"></div>
+      </div>
+      <button class="achieve-modal-nav achieve-modal-nav-prev" onclick="aSlide('achieve4',-1)">&#8249;</button>
+      <button class="achieve-modal-nav achieve-modal-nav-next" onclick="aSlide('achieve4',1)">&#8250;</button>
+    </div>
+    <div class="achieve-modal-bottom">
+      <div class="achieve-modal-counter"><span id="acur-achieve4">1</span> / <span id="atot-achieve4">2</span></div>
+      <div class="achieve-modal-dots" id="adots-achieve4"></div>
+    </div>
+  </div>
+</div>
+
+<div class="achieve-modal-overlay" id="achievemodal-achieve5">
+  <div class="achieve-modal-box">
+    <div class="achieve-modal-top">
+      <div>
+        <div class="achieve-modal-title">Indian Automation Challenge</div>
+        <div class="achieve-modal-meta">
+          <span class="achieve-modal-year">2025</span>
+          <span class="achieve-modal-badge runner-up">Top 10</span>
+        </div>
+      </div>
+      <button class="achieve-modal-close" onclick="closeAchieveModal('achieve5')">Close ✕</button>
+    </div>
+    <div class="achieve-modal-slider" id="aslider-achieve5">
+      <div class="achieve-modal-slides" id="aslides-achieve5">
+        <div class="achieve-modal-slide"><img src="iac8.jpeg" alt="Photo 1"></div>
+        <div class="achieve-modal-slide"><img src="iac9.jpeg" alt="Photo 2"></div>
+        <div class="achieve-modal-slide"><img src="iac2.jpeg" alt="Photo 3"></div>
+        <div class="achieve-modal-slide"><img src="iac1.jpeg" alt="Photo 4"></div>
+        <div class="achieve-modal-slide"><img src="iac3.jpeg" alt="Photo 5"></div>
+        <div class="achieve-modal-slide"><img src="iac4.jpeg" alt="Photo 6"></div>
+        <div class="achieve-modal-slide"><img src="iac5.jpeg" alt="Photo 7"></div>
+        <div class="achieve-modal-slide"><img src="iac6.jpeg" alt="Photo 8"></div>
+        <div class="achieve-modal-slide"><img src="iac7.jpeg" alt="Photo 9"></div>
+      </div>
+      <button class="achieve-modal-nav achieve-modal-nav-prev" onclick="aSlide('achieve5',-1)">&#8249;</button>
+      <button class="achieve-modal-nav achieve-modal-nav-next" onclick="aSlide('achieve5',1)">&#8250;</button>
+    </div>
+    <div class="achieve-modal-bottom">
+      <div class="achieve-modal-counter"><span id="acur-achieve5">1</span> / <span id="atot-achieve5">9</span></div>
+      <div class="achieve-modal-dots" id="adots-achieve5"></div>
+    </div>
+  </div>
+</div>
+
+<!-- PROJECTS -->
+<section class="section" id="projects">
+  <div style="padding:100px 60px;">
+    <div class="projects-header">
+      <div class="section-label" style="margin-bottom:20px;">004 / Projects</div>
+      <div class="projects-h2">WHAT<br>WE <span class="strike">BUILD</span></div>
+    </div>
+    <div class="project-grid">
+      <div class="project-card" data-index="01">
+        <div class="proj-icon-wrap">🌱</div>
+        <div class="proj-h">Smart Agriculture Bot</div>
+        <p class="proj-p">Automated farming solution with crop monitoring, irrigation control and pest detection using IoT sensors.</p>
+        <div class="proj-tags">
+          <span class="proj-tag">IoT</span>
+          <span class="proj-tag">Machine Learning</span>
+          <span class="proj-tag">Sensors</span>
+        </div>
+      </div>
+      <div class="project-card" data-index="02">
+        <div class="proj-icon-wrap">🚁</div>
+        <div class="proj-h">Drone</div>
+        <p class="proj-p">Coordinated multi-drone system for search and rescue operations with real-time communication protocols.</p>
+        <div class="proj-tags">
+          <span class="proj-tag">Flight Control</span>
+          <span class="proj-tag">Networking</span>
+          <span class="proj-tag">AI</span>
+        </div>
+      </div>
+      <div class="project-card" data-index="03">
+        <div class="proj-icon-wrap">🏎️</div>
+        <div class="proj-h">Line Following Bot</div>
+        <p class="proj-p">High-speed line follower with PID control optimization for competitive racing and industrial applications.</p>
+        <div class="proj-tags">
+          <span class="proj-tag">Embedded Systems</span>
+          <span class="proj-tag">Control Theory</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FACULTY -->
+<section class="section" id="faculty">
+  <div style="padding:100px 60px;background:var(--ink);">
+    <div class="section-label" style="margin-bottom:20px;border-color:rgba(240,237,232,0.1);">
+      <span style="color:rgba(240,237,232,0.35);font-family:var(--mono);font-size:9px;letter-spacing:0.18em;text-transform:uppercase;">005 / Faculty Advisor</span>
+    </div>
+    <div class="faculty-h2">FACULTY<br><span>ADVISOR</span></div>
+    <div class="faculty-layout">
+      <div>
+        <div class="faculty-img-wrap">
+          <img src="faculty.png" alt="Mr. Joselin Retna Kumar">
+        </div>
+        <div class="faculty-img-label">EIE Department Head</div>
+      </div>
+      <div class="faculty-info">
+        <div class="faculty-badge-tag">★ Faculty Advisor</div>
+        <div class="faculty-name">Mr. Joselin<br>Retna Kumar</div>
+        <div class="faculty-dept">
+          Head of Department<br>
+          EIE — Electronics and Instrumentation Engineering<br>
+          SRM Institute of Science and Technology
+        </div>
+        <p class="faculty-desc">A visionary mentor and dedicated educator who has been the guiding force behind SRM Automation Club. His unwavering support, technical expertise and passion for innovation has empowered our students to push the boundaries of robotics and automation.</p>
+        <a href="https://www.linkedin.com/in/joselin-retna-kumar-3947b913b/" target="_blank" class="faculty-link">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+          View LinkedIn Profile
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TEAM -->
+<section class="section" id="team">
+  <div style="padding:100px 60px;">
+    <div class="section-label" style="margin-bottom:20px;">006 / Team</div>
+    <div class="team-h2">MEET THE<br>TEAM</div>
+
+    <!-- President -->
+    <div class="president-strip">
+      <div class="president-img-side">
+        <img src="vishnu.jpeg" alt="Vishnu D">
+        <div class="pres-hover">
+          <a href="https://www.linkedin.com/in/d-vishnu-pradap-0780052a3/" target="_blank" class="pres-social">LinkedIn</a>
+          <a href="https://www.instagram.com/vishnu__pradap/?utm_source=ig_web_button_share_sheet" target="_blank" class="pres-social">Instagram</a>
+        </div>
+      </div>
+      <div class="president-info-side">
+        <div class="pres-badge">★ Club President</div>
+        <div class="pres-name">Vishnu. D</div>
+        <div class="pres-role">Club President — SRM Automation Club</div>
+      </div>
+    </div>
+
+    <!-- Domain cards -->
+    <div class="domain-grid">
+      <div class="domain-card" onclick="openModal('coding')">
+        <img class="domain-img" src="coding.png" alt="Coding Domain">
+        <div class="domain-card-info">
+          <div class="domain-card-title">Coding Domain</div>
+          <div class="domain-card-desc">Software, algorithms & intelligent systems.</div>
+          <div class="domain-tap">View Members</div>
+        </div>
+      </div>
+      <div class="domain-card" onclick="openModal('electronics')">
+        <img class="domain-img" src="electronics.png" alt="Electronics Domain">
+        <div class="domain-card-info">
+          <div class="domain-card-title">Electronics Domain</div>
+          <div class="domain-card-desc">Circuits, sensors & embedded systems.</div>
+          <div class="domain-tap">View Members</div>
+        </div>
+      </div>
+      <div class="domain-card" onclick="openModal('mechanical')">
+        <img class="domain-img" src="mechanical.png" alt="Mechanical Domain">
+        <div class="domain-card-info">
+          <div class="domain-card-title">Mechanical Domain</div>
+          <div class="domain-card-desc">Design, fabrication & structural engineering.</div>
+          <div class="domain-tap">View Members</div>
+        </div>
+      </div>
+      <div class="domain-card" onclick="openModal('corporate')">
+        <img class="domain-img" src="corporate.png" alt="Corporate Domain">
+        <div class="domain-card-info">
+          <div class="domain-card-title">Corporate Domain</div>
+          <div class="domain-card-desc">Outreach, events & industry partnerships.</div>
+          <div class="domain-tap">View Members</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mentors -->
+    <div class="mentors-row">
+      <div class="mentors-label">Mentors</div>
+      <div class="mentors-strip">
+        <div class="domain-card mentor-card" onclick="openModal('mentors')">
+          <img class="domain-img" src="mentors.png" alt="Mentors">
+          <div class="domain-card-info">
+            <div class="domain-card-title">Mentors</div>
+            <div class="domain-card-desc">Senior members guiding our club.</div>
+            <div class="domain-tap">View Mentors</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MODALS: TEAM DOMAINS -->
+<div class="modal-overlay" id="modal-coding">
+  <div class="modal-box">
+    <div class="modal-top">
+      <div class="modal-title">Coding Domain</div>
+      <button class="modal-close-btn" onclick="closeModal('coding')">Close ✕</button>
+    </div>
+    <div class="modal-members-label">Members</div>
+    <div class="modal-members-grid">
+      <div class="member-card"><div class="member-img-wrap"><img src="maalikha.jpeg" alt="Maalikha G"><div class="member-hover-overlay"><a href="https://www.linkedin.com/in/maalikha-gunasekaran" target="_blank">LinkedIn</a><a href="https://www.instagram.com/i.jkmaaly/?__pwa=1" target="_blank">Instagram</a></div></div><div class="member-name-bar">Maalikha G</div></div>
+      <div class="member-card"><div class="member-img-wrap"><img src="jenita.jpeg" alt="Infanta Jenita I"><div class="member-hover-overlay"><a href="https://www.linkedin.com/in/infanta-jenita-517a46364" target="_blank">LinkedIn</a><a href="https://www.instagram.com/_jeni__2206" target="_blank">Instagram</a></div></div><div class="member-name-bar">Infanta Jenita I</div></div>
+      <div class="member-card"><div class="member-img-wrap"><img src="reetu.jpeg" alt="H Reetu"><div class="member-hover-overlay"><a href="https://www.linkedin.com/in/reetu-hariharan-8013a8356" target="_blank">LinkedIn</a><a href="https://www.instagram.com/reetuhariharan_02" target="_blank">Instagram</a></div></div><div class="member-name-bar">H Reetu</div></div>
+      <div class="member-card"><div class="member-img-wrap"><img src="dharshinee.jpeg" alt="Darsshinee S"><div class="member-hover-overlay"><a href="https://in.linkedin.com/in/darsshinee-s-1307463a1" target="_blank">LinkedIn</a><a href="https://www.instagram.com/ds_viz99" target="_blank">Instagram</a></div></div><div class="member-name-bar">Darsshinee S</div></div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-electronics">
+  <div class="modal-box">
+    <div class="modal-top">
+      <div class="modal-title">Electronics Domain</div>
+      <button class="modal-close-btn" onclick="closeModal('electronics')">Close ✕</button>
+    </div>
+    <div class="modal-members-label">Members</div>
+    <div class="modal-members-grid">
+      <div class="member-card"><div class="member-img-wrap"><img src="pranav.jpeg" alt="Pranavayogesh VG"><div class="member-hover-overlay"><a href="https://www.linkedin.com/in/vg-pranav-yogesh-42ab12256" target="_blank">LinkedIn</a></div></div><div class="member-name-bar">Pranavayogesh VG</div></div>
+      <div class="member-card"><div class="member-img-wrap"><img src="roshini.jpeg" alt="Roshni Sunil"><div class="member-hover-overlay"><a href="https://www.linkedin.com/in/roshni-sunil-43663b345" target="_blank">LinkedIn</a><a href="https://www.instagram.com/val_dez197" target="_blank">Instagram</a></div></div><div class="member-name-bar">Roshni Sunil</div></div>
+      <div class="member-card"><div class="member-img-wrap"><img src="gautam.jpeg" alt="Gautam"><div class="member-hover-overlay"><a href="#" target="_blank">LinkedIn</a></div></div><div class="member-name-bar">Gautam</div></div>
+      <div class="member-card"><div class="member-img-wrap"><img src="dhanishka.jpeg" alt="Dhanishka C"><div class="member-hover-overlay"><a href="https://www.linkedin.com/in/dhanishka-chandrasekaran-8299313a1" target="_blank">LinkedIn</a></div></div><div class="member-name-bar">Dhanishka C</div></div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-mechanical">
+  <div class="modal-box">
+    <div class="modal-top">
+      <div class="modal-title">Mechanical Domain</div>
+      <button class="modal-close-btn" onclick="closeModal('mechanical')">Close ✕</button>
+    </div>
+    <div class="modal-members-label">Members</div>
+    <div class="modal-members-grid">
+      <div class="member-card"><div class="member-img-wrap"><img src="patrick.png" alt="Patric A" style="object-position:center 35%;"><div class="member-hover-overlay"><a href="https://www.linkedin.com/in/patric-a-6b8843323" target="_blank">LinkedIn</a><a href="https://www.instagram.com/patrickkk__05" target="_blank">Instagram</a></div></div><div class="member-name-bar">Patric A</div></div>
+      <div class="member-card"><div class="member-img-wrap"><img src="monish.jpeg" alt="MonishKanna KM"><div class="member-hover-overlay"><a href="https://www.linkedin.com/in/monishkanna-k-m-b3846a320" target="_blank">LinkedIn</a><a href="https://www.instagram.com/m0nish_pvt" target="_blank">Instagram</a></div></div><div class="member-name-bar">MonishKanna KM</div></div>
+      <div class="member-card"><div class="member-img-wrap"><img src="pranesh.jpg" alt="Pranesh"><div class="member-hover-overlay"><a href="https://www.linkedin.com/in/praneshkumar-ramesh-191a03332" target="_blank">LinkedIn</a><a href="https://www.instagram.com/pranesh_155" target="_blank">Instagram</a></div></div><div class="member-name-bar">Pranesh</div></div>
+      <div class="member-card"><div class="member-img-wrap"><img src="jayakrishna.jpg" alt="Jayakrishna"><div class="member-hover-overlay"><a href="https://www.linkedin.com/in/jayakrishnan-s-233783324" target="_blank">LinkedIn</a><a href="https://www.instagram.com/jaya._krish_" target="_blank">Instagram</a></div></div><div class="member-name-bar">Jayakrishna</div></div>
+      <div class="member-card"><div class="member-img-wrap"><img src="brinda.jpeg" alt="Brindamahalakshmi" style="object-position:center 25%;"><div class="member-hover-overlay"><a href="https://www.linkedin.com/in/brindamahalakshmi-sk-a99097324/" target="_blank">LinkedIn</a></div></div><div class="member-name-bar">Brindamahalakshmi</div></div>
+      <div class="member-card"><div class="member-img-wrap"><img src="noid.jpg" alt="Shaik Noid Akbar"><div class="member-hover-overlay"><a href="https://www.linkedin.com/in/noid-akbar-shaik-256435381" target="_blank">LinkedIn</a></div></div><div class="member-name-bar">Shaik Noid Akbar</div></div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-corporate">
+  <div class="modal-box">
+    <div class="modal-top">
+      <div class="modal-title">Corporate Domain</div>
+      <button class="modal-close-btn" onclick="closeModal('corporate')">Close ✕</button>
+    </div>
+    <div class="modal-members-label">Members</div>
+    <div class="modal-members-grid">
+      <div class="member-card"><div class="member-img-wrap"><img src="priyadarshan.jpg" alt="Priyadharshan M"><div class="member-hover-overlay"><a href="https://www.linkedin.com/in/priya-dharshan-349940375" target="_blank">LinkedIn</a></div></div><div class="member-name-bar">Priyadharshan M</div></div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-mentors">
+  <div class="modal-box">
+    <div class="modal-top">
+      <div class="modal-title">Mentors</div>
+      <button class="modal-close-btn" onclick="closeModal('mentors')">Close ✕</button>
+    </div>
+    <div class="modal-members-label">Senior Members</div>
+    <div class="modal-members-grid">
+      <div class="member-card"><div class="member-img-wrap"><img src="trisha.jpeg" alt="Thrisha S" style="object-position:center 30%;"><div class="member-hover-overlay"><a href="https://www.linkedin.com/in/thrisha-s-70640a256/" target="_blank">LinkedIn</a></div></div><div class="member-name-bar">Thrisha S</div></div>
+      <div class="member-card"><div class="member-img-wrap"><img src="sanjayram.png" alt="Sanjay Ram"><div class="member-hover-overlay"><a href="https://www.linkedin.com/in/srs18/" target="_blank">LinkedIn</a></div></div><div class="member-name-bar">Sanjay Ram</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- EVENTS -->
+<section class="section" id="events">
+  <div style="padding:100px 60px;background:var(--paper2);">
+    <div class="section-label" style="margin-bottom:20px;">007 / Events</div>
+    <div class="events-h2">EVENTS &amp;<br>WORKSHOPS</div>
+    <div class="events-list">
+      <div class="event-row">
+        <div class="ev-num">01</div>
+        <div class="ev-info">
+          <div class="ev-title">More Events in 2026 — Stay Tuned</div>
+          <div class="ev-sub">Will be informed soon</div>
+          <div class="ev-meta">
+            <span class="ev-date">📅 SRM University</span>
+            <span class="ev-loc">📍 Main Campus</span>
+          </div>
+        </div>
+        <div class="ev-right"><span class="ev-badge-upcoming">Upcoming</span></div>
+      </div>
+      <div class="event-row">
+        <div class="ev-num">02</div>
+        <div class="ev-info">
+          <div class="ev-title">Automation and Robotics Challenge 2025</div>
+          <div class="ev-sub">Teams from different colleges compete in robotics challenge.</div>
+          <div class="ev-meta">
+            <span class="ev-date">📅 Dec 5, 2024</span>
+            <span class="ev-loc">📍 Main Campus</span>
+            <span class="ev-loc">👥 100+ Attendees</span>
+          </div>
+        </div>
+        <div class="ev-right"><span class="ev-badge-done">Completed</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- GALLERY -->
+<section class="section" id="gallery">
+  <div style="padding:100px 60px;">
+    <div class="section-label" style="margin-bottom:20px;">008 / Gallery</div>
+    <div class="gallery-h2">EVENT<br>GALLERY</div>
+    <div class="gallery-slider" id="gallery-slider">
+      <div class="gallery-slider-track" id="gallery-track">
+        <div class="gallery-slide active"><img src="gallery1.jpeg" alt="Event 1"></div>
+        <div class="gallery-slide"><img src="gallery4.jpeg" alt="Event 4"></div>
+        <div class="gallery-slide"><img src="gallery5.jpeg" alt="Event 5"></div>
+        <div class="gallery-slide"><img src="gallery6.jpeg" alt="Event 6"></div>
+        <div class="gallery-slide"><img src="gallery7.jpeg" alt="Event 7"></div>
+        <div class="gallery-slide"><img src="gallery8.jpeg" alt="Event 8"></div>
+        <div class="gallery-slide"><img src="gallery9.jpeg" alt="Event 9"></div>
+        <div class="gallery-slide"><img src="gallery10.jpeg" alt="Event 10"></div>
+        <div class="gallery-slide"><img src="gallery11.jpeg" alt="Event 11"></div>
+        <div class="gallery-slide"><img src="gallery12.jpeg" alt="Event 12"></div>
+        <div class="gallery-slide"><img src="gallery13.jpeg" alt="Event 13"></div>
+        <div class="gallery-slide"><img src="gallery14.jpeg" alt="Event 14"></div>
+        <div class="gallery-slide"><img src="gallery15.jpeg" alt="Event 15"></div>
+        <div class="gallery-slide"><img src="gallery16.jpeg" alt="Event 16"></div>
+        <div class="gallery-slide"><img src="gallery17.jpeg" alt="Event 17"></div>
+        <div class="gallery-slide"><img src="gallery18.jpeg" alt="Event 18"></div>
+      </div>
+      <div class="gallery-controls">
+        <div class="gallery-counter"><span id="gallery-current">01</span> / <span id="gallery-total">16</span></div>
+        <div class="gallery-dots" id="gallery-dots"></div>
+        <div class="gallery-btn-row">
+          <button class="gallery-btn" onclick="galleryMove(-1)">&#8249;</button>
+          <button class="gallery-btn" onclick="galleryMove(1)">&#8250;</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section class="section" id="contact">
+  <div style="padding:100px 60px;background:var(--ink);">
+    <div style="font-family:var(--mono);font-size:9px;letter-spacing:0.18em;text-transform:uppercase;color:rgba(240,237,232,0.35);margin-bottom:20px;">009 / Contact</div>
+    <div class="contact-h2">GET IN<br><span>TOUCH</span></div>
+    <div class="contact-layout">
+      <div class="contact-info">
+        <div class="contact-info-item">
+          <div class="contact-info-label">Email</div>
+          <div class="contact-info-val">automationclub18@gmail.com</div>
+        </div>
+        <div class="contact-info-item">
+          <div class="contact-info-label">Location</div>
+          <div class="contact-info-val">PG 301, Main Campus<br>SRM IST Kattankulathur<br>Chennai</div>
+        </div>
+        <div class="contact-info-item">
+          <div class="contact-info-label">Social</div>
+          <div style="display:flex;gap:8px;margin-top:8px;">
+            <a href="https://www.instagram.com/srm_automation_club/" target="_blank" class="social-btn">ig</a>
+            <a href="https://www.linkedin.com/in/srm-automation-club-1ab643302/" target="_blank" class="social-btn">in</a>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="contact-form">
+          <input type="text" id="contact-name" placeholder="Your Name">
+          <input type="email" id="contact-email" placeholder="Your Email">
+          <textarea rows="5" id="contact-message" placeholder="Your message..."></textarea>
+          <button class="contact-submit" onclick="sendWhatsApp()">
+            <span>Send via WhatsApp</span>
+            <span>→</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- JOIN -->
+<section id="join">
+  <div class="section-label" style="border-color:rgba(240,237,232,0.1);margin-bottom:0;padding:0 60px 40px;color:rgba(240,237,232,0.35);">
+    <span style="font-family:var(--mono);font-size:9px;letter-spacing:0.18em;text-transform:uppercase;">010 / Join Us</span>
+  </div>
+  <div class="join-h2">JOIN<br><span>THE</span><br>CLUB</div>
+  <p class="join-sub">Become part of SRM Automation Club and build the future.</p>
+  <a class="join-btn-link" href="https://docs.google.com/forms/d/e/1FAIpQLSeAPRZf73SssV6-XCnSM2-Of2YzZsopnOdSvR6pfJZT_lovuA/viewform?usp=header" target="_blank">Apply Now →</a>
+</section>
+
+<!-- SPONSORS -->
+<div class="sponsors-section" id="sponsors">
+  <div class="sponsors-label">Our Sponsors</div>
+  <div class="sponsors-marquee-wrap">
+    <div class="sponsors-track">
+      <div class="sponsor-item"><div class="sponsor-logo-box"><img src="solidworks.png" alt="SolidWorks"></div><div class="sponsor-name">SolidWorks</div></div>
+      <div class="sponsor-item"><div class="sponsor-logo-box"><img src="quantumglide.png" alt="Quantum Guides"></div><div class="sponsor-name">Quantum Guides</div></div>
+      <div class="sponsor-item"><div class="sponsor-logo-box"><img src="ansys.png" alt="Ansys"></div><div class="sponsor-name">Ansys</div></div>
+      <div class="sponsor-item"><div class="sponsor-logo-box"><img src="solidworks.png" alt="SolidWorks"></div><div class="sponsor-name">SolidWorks</div></div>
+      <div class="sponsor-item"><div class="sponsor-logo-box"><img src="quantumglide.png" alt="Quantum Guides"></div><div class="sponsor-name">Quantum Guides</div></div>
+      <div class="sponsor-item"><div class="sponsor-logo-box"><img src="ansys.png" alt="Ansys"></div><div class="sponsor-name">Ansys</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-top">
+    <div class="footer-brand">
+      <div class="footer-brand-name">SRM Automation Club</div>
+      <p class="footer-brand-desc">Empowering the next generation of robotics and automation innovators at SRM IST.</p>
+      <div class="footer-logos-row">
+        <img src="srm automation club.png" alt="SRM Automation Club" class="footer-logo-img">
+        <img src="srm logo.png" alt="SRM IST" class="footer-logo-img">
+      </div>
+    </div>
+    <div>
+      <div class="footer-section-h">Quick Links</div>
+      <ul class="footer-links">
+        <li><a href="#home">Home</a></li>
+        <li><a href="#about">About</a></li>
+        <li><a href="#achievements">Achievements</a></li>
+        <li><a href="#projects">Projects</a></li>
+        <li><a href="#faculty">Faculty</a></li>
+        <li><a href="#team">Team</a></li>
+        <li><a href="#events">Events</a></li>
+        <li><a href="#contact">Contact</a></li>
+        <li><a href="#join">Join Us</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="footer-section-h">Get In Touch</div>
+      <div class="footer-contact-item">
+        <div class="footer-contact-label">Email</div>
+        <div class="footer-contact-val">automationclub18@gmail.com</div>
+      </div>
+      <div class="footer-contact-item">
+        <div class="footer-contact-label">Address</div>
+        <div class="footer-contact-val">PG 301, Main Campus<br>SRM IST Kattankulathur</div>
+      </div>
+      <div class="footer-socials">
+        <a href="https://www.instagram.com/srm_automation_club/" target="_blank" class="social-btn">ig</a>
+        <a href="https://www.linkedin.com/in/srm-automation-club-1ab643302/" target="_blank" class="social-btn">in</a>
+      </div>
+    </div>
+  </div>
+  <div class="footer-copy">
+    <span>© 2026 SRM Automation Club. All rights reserved.</span>
+    <span>Learn · Build · Automate</span>
+  </div>
+</footer>
+
+<script>
+/* ─── CURSOR ─────────────────────────────── */
+const cursor=document.getElementById('cursor');
+const cursorRing=document.getElementById('cursor-ring');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cursor.style.left=mx+'px';cursor.style.top=my+'px';});
+function animRing(){rx+=(mx-rx)*0.12;ry+=(my-ry)*0.12;cursorRing.style.left=rx+'px';cursorRing.style.top=ry+'px';requestAnimationFrame(animRing);}
+animRing();
+document.querySelectorAll('a,button,.achieve-row,.domain-card,.event-row,.project-card,.about-card').forEach(el=>{
+  el.addEventListener('mouseenter',()=>{cursorRing.style.transform='translate(-50%,-50%) scale(1.6)';cursor.style.transform='translate(-50%,-50%) scale(0.5)';});
+  el.addEventListener('mouseleave',()=>{cursorRing.style.transform='translate(-50%,-50%) scale(1)';cursor.style.transform='translate(-50%,-50%) scale(1)';});
+});
+
+/* ─── MOBILE NAV ─────────────────────────── */
+function toggleMobileNav(){
+  const nav=document.getElementById('mobile-nav');
+  const hb=document.getElementById('hamburger');
+  nav.classList.toggle('open');hb.classList.toggle('open');
+  document.body.style.overflow=nav.classList.contains('open')?'hidden':'';
+}
+function closeMobileNav(){
+  document.getElementById('mobile-nav').classList.remove('open');
+  document.getElementById('hamburger').classList.remove('open');
+  document.body.style.overflow='';
+}
+/* MESH PARTICLES */
+const meshCanvas = document.getElementById("mesh");
+const meshCtx = meshCanvas.getContext("2d");
+const isMobile = window.innerWidth <= 900;
+
+if (isMobile) {
+  // On mobile: just a few static faint dots, no animation, no lines
+  meshCanvas.width = window.innerWidth;
+  meshCanvas.height = window.innerHeight;
+  for (let i = 0; i < 60; i++) {
+    const x = Math.random() * meshCanvas.width;
+    const y = Math.random() * meshCanvas.height;
+    const r = Math.random() * 1.2 + 0.3;
+    meshCtx.beginPath();
+    meshCtx.arc(x, y, r, 0, Math.PI * 2);
+    meshCtx.fillStyle = `rgba(180,180,180,${Math.random() * 0.25 + 0.05})`;
+    meshCtx.fill();
+  }
+  // No animation loop on mobile — static only
+} else {
+  meshCanvas.width = window.innerWidth;
+  meshCanvas.height = window.innerHeight;
+  let particles = [];
+
+  class Particle {
+    constructor() {
+      this.x = Math.random() * meshCanvas.width;
+      this.y = Math.random() * meshCanvas.height;
+      this.radius = Math.random() * 1.5 + 0.5;
+      this.dx = (Math.random() - 0.5) * 1;
+      this.dy = (Math.random() - 0.5) * 1;
+      this.color = "rgba(180,180,180,0.5)";
+    }
+    draw() {
+      meshCtx.beginPath();
+      meshCtx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+      meshCtx.fillStyle = this.color;
+      meshCtx.fill();
+    }
+    update() {
+      this.x += this.dx;
+      this.y += this.dy;
+      if (this.x > meshCanvas.width || this.x < 0) this.dx *= -1;
+      if (this.y > meshCanvas.height || this.y < 0) this.dy *= -1;
+      this.draw();
+    }
+  }
+
+  function initMesh() {
+    particles = [];
+    for (let i = 0; i < 280; i++) particles.push(new Particle());
+  }
+
+  function connect() {
+    for (let a = 0; a < particles.length; a++) {
+      for (let b = a + 1; b < particles.length; b++) {
+        const dx = particles[a].x - particles[b].x;
+        const dy = particles[a].y - particles[b].y;
+        const d = dx * dx + dy * dy;
+        if (d < 17000) {
+          meshCtx.strokeStyle = "rgba(160,160,160,0.08)";
+          meshCtx.lineWidth = 1;
+          meshCtx.beginPath();
+          meshCtx.moveTo(particles[a].x, particles[a].y);
+          meshCtx.lineTo(particles[b].x, particles[b].y);
+          meshCtx.stroke();
+        }
+      }
+    }
+  }
+
+  function animateMesh() {
+    meshCtx.clearRect(0, 0, meshCanvas.width, meshCanvas.height);
+    particles.forEach(p => p.update());
+    connect();
+    requestAnimationFrame(animateMesh);
+  }
+
+  initMesh();
+  animateMesh();
+
+  window.addEventListener("resize", () => {
+    meshCanvas.width = window.innerWidth;
+    meshCanvas.height = window.innerHeight;
+    initMesh();
+  });
+}
+/* ─── TEAM MODALS ────────────────────────── */
+function openModal(d){document.getElementById('modal-'+d).classList.add('open');document.body.style.overflow='hidden';}
+function closeModal(d){document.getElementById('modal-'+d).classList.remove('open');document.body.style.overflow='';}
+document.querySelectorAll('.modal-overlay').forEach(o=>{o.addEventListener('click',e=>{if(e.target===o){o.classList.remove('open');document.body.style.overflow='';}});});
+
+/* ─── ACHIEVEMENT MODALS ─────────────────── */
+function openAchieveModal(id){document.getElementById('achievemodal-'+id).classList.add('open');document.body.style.overflow='hidden';if(!aState[id])initASlider(id);else aGoTo(id,0);}
+function closeAchieveModal(id){document.getElementById('achievemodal-'+id).classList.remove('open');document.body.style.overflow='';}
+document.querySelectorAll('.achieve-modal-overlay').forEach(o=>{o.addEventListener('click',e=>{if(e.target===o){o.classList.remove('open');document.body.style.overflow='';}});});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')document.querySelectorAll('.modal-overlay.open,.achieve-modal-overlay.open').forEach(m=>{m.classList.remove('open');document.body.style.overflow='';});});
+
+const aState={};
+function initASlider(id){
+  const slides=document.querySelectorAll(`#aslides-${id} .achieve-modal-slide`);
+  const total=slides.length;
+  aState[id]={index:0,total};
+  const dotsEl=document.getElementById(`adots-${id}`);
+  dotsEl.innerHTML='';
+  document.getElementById(`atot-${id}`).textContent=total;
+  for(let i=0;i<total;i++){const dot=document.createElement('div');dot.className='achieve-modal-dot'+(i===0?' active':'');dot.onclick=()=>aGoTo(id,i);dotsEl.appendChild(dot);}
+}
+function aGoTo(id,n){
+  const s=aState[id];s.index=(n+s.total)%s.total;
+  document.getElementById(`aslides-${id}`).style.transform=`translateX(-${s.index*100}%)`;
+  document.getElementById(`acur-${id}`).textContent=s.index+1;
+  document.querySelectorAll(`#adots-${id} .achieve-modal-dot`).forEach((d,i)=>d.classList.toggle('active',i===s.index));
+}
+function aSlide(id,dir){aGoTo(id,aState[id].index+dir);}
+
+/* ─── ACTIVE NAVBAR ──────────────────────── */
+const navLinks=document.querySelectorAll('.navbar nav a');
+const orderedIds=['home','about','achievements','projects','faculty','team','events','gallery','contact','join'];
+window.addEventListener('scroll',()=>{
+  let current='home';
+  orderedIds.forEach(id=>{const el=document.getElementById(id);if(!el)return;if(window.scrollY>=el.getBoundingClientRect().top+window.scrollY-180)current=id;});
+  navLinks.forEach(l=>{l.classList.remove('active');if(l.getAttribute('href')==='#'+current)l.classList.add('active');});
+});
+
+/* ─── HERO CANVAS ────────────────────────── */
+const hCanvas=document.getElementById('hero-canvas');
+const hCtx=hCanvas.getContext('2d');
+function resizeHCanvas(){hCanvas.width=hCanvas.offsetWidth;hCanvas.height=hCanvas.offsetHeight;}
+resizeHCanvas();
+const dots=[];
+for(let i=0;i<60;i++)dots.push({x:Math.random()*hCanvas.width,y:Math.random()*hCanvas.height,r:Math.random()*1.2+0.3,dx:(Math.random()-.5)*0.3,dy:(Math.random()-.5)*0.3,a:Math.random()});
+function animHero(){
+  hCtx.clearRect(0,0,hCanvas.width,hCanvas.height);
+  dots.forEach(d=>{d.x+=d.dx;d.y+=d.dy;if(d.x<0||d.x>hCanvas.width)d.dx*=-1;if(d.y<0||d.y>hCanvas.height)d.dy*=-1;hCtx.beginPath();hCtx.arc(d.x,d.y,d.r,0,Math.PI*2);hCtx.fillStyle=`rgba(240,237,232,${d.a*0.4})`;hCtx.fill();});
+  for(let a=0;a<dots.length;a++)for(let b=a+1;b<dots.length;b++){const dx=dots[a].x-dots[b].x,dy=dots[a].y-dots[b].y,dist=Math.sqrt(dx*dx+dy*dy);if(dist<100){hCtx.strokeStyle=`rgba(240,237,232,${(1-dist/100)*0.08})`;hCtx.lineWidth=0.5;hCtx.beginPath();hCtx.moveTo(dots[a].x,dots[a].y);hCtx.lineTo(dots[b].x,dots[b].y);hCtx.stroke();}}
+  requestAnimationFrame(animHero);
+}
+animHero();
+window.addEventListener('resize',resizeHCanvas);
+
+/* ─── STATS COUNTER ──────────────────────── */
+const statsRow=document.getElementById('stats-row');
+let counted=false;
+new IntersectionObserver(entries=>{
+  if(entries[0].isIntersecting&&!counted){
+    counted=true;
+    document.querySelectorAll('.stat-number').forEach(el=>{
+      const target=parseInt(el.getAttribute('data-target'));
+      let current=0;const step=Math.ceil(target/(1600/16));
+      const t=setInterval(()=>{current+=step;if(current>=target){current=target;clearInterval(t);}el.textContent=current;},16);
+    });
+  }
+},{threshold:0.5}).observe(statsRow);
+
+/* ─── GALLERY ────────────────────────────── */
+let galIdx=0;
+const galSlides=document.querySelectorAll('.gallery-slide');
+const galTotal=galSlides.length;
+const galDotsEl=document.getElementById('gallery-dots');
+const galCur=document.getElementById('gallery-current');
+document.getElementById('gallery-total').textContent=String(galTotal).padStart(2,'0');
+galSlides.forEach((_,i)=>{const dot=document.createElement('div');dot.className='gallery-dot'+(i===0?' active':'');dot.onclick=()=>galTo(i);galDotsEl.appendChild(dot);});
+function galTo(n){
+  galSlides[galIdx].classList.remove('active');
+  document.querySelectorAll('.gallery-dot')[galIdx].classList.remove('active');
+  galIdx=(n+galTotal)%galTotal;
+  galSlides[galIdx].classList.add('active');
+  document.querySelectorAll('.gallery-dot')[galIdx].classList.add('active');
+  galCur.textContent=String(galIdx+1).padStart(2,'0');
+}
+function galleryMove(dir){galTo(galIdx+dir);}
+document.addEventListener('keydown',e=>{if(!document.querySelector('.modal-overlay.open,.achieve-modal-overlay.open')){if(e.key==='ArrowRight')galleryMove(1);if(e.key==='ArrowLeft')galleryMove(-1);}});
+let galTimer=setInterval(()=>galleryMove(1),5000);
+const galEl=document.getElementById('gallery-slider');
+galEl.addEventListener('mouseenter',()=>clearInterval(galTimer));
+galEl.addEventListener('mouseleave',()=>{galTimer=setInterval(()=>galleryMove(1),5000);});
+let txStart=0;
+document.getElementById('gallery-track').addEventListener('touchstart',e=>{txStart=e.touches[0].clientX;},{passive:true});
+document.getElementById('gallery-track').addEventListener('touchend',e=>{const dx=e.changedTouches[0].clientX-txStart;if(Math.abs(dx)>40)dx<0?galleryMove(1):galleryMove(-1);},{passive:true});
+
+/* ─── WHATSAPP ───────────────────────────── */
+function sendWhatsApp(){
+  const name=document.getElementById('contact-name').value.trim();
+  const email=document.getElementById('contact-email').value.trim();
+  const message=document.getElementById('contact-message').value.trim();
+  if(!name||!message){alert('Please enter your name and message!');return;}
+  const text=`Hello SRM Automation Club!%0A%0A*Name:* ${encodeURIComponent(name)}%0A*Email:* ${encodeURIComponent(email)}%0A%0A*Message:*%0A${encodeURIComponent(message)}`;
+  window.open(`https://wa.me/919944755123?text=${text}`,'_blank');
+}
+</script>
+</body>
+</html>
