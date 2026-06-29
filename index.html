@@ -37,7 +37,7 @@ body{background:#080808;font-family:'Orbitron',sans-serif;}
 
 /* HERO */
 .hero{position:relative;z-index:5;height:100vh;min-height:600px;display:flex;align-items:center;justify-content:flex-end;padding:0;overflow:hidden;}
-.hero::before{content:'';position:absolute;inset:0;background-image:url('clubbbb.png');background-size:cover;background-position:center;background-repeat:no-repeat;filter:brightness(0.85) saturate(1.2);z-index:0;}
+.hero::before{content:'';position:absolute;inset:0;background-image:url('club.png');background-size:cover;background-position:center;background-repeat:no-repeat;filter:brightness(0.85) saturate(1.2);z-index:0;}
 .hero::after{content:'';position:absolute;inset:0;background:linear-gradient(to left,rgba(0,0,0,0.7) 0%,rgba(0,0,0,0.45) 50%,rgba(0,0,0,0.15) 100%);z-index:0;}
 #hero-canvas{position:absolute;top:0;left:0;width:100%;height:100%;z-index:1;pointer-events:none;}
 
@@ -365,7 +365,7 @@ html{scroll-behavior:smooth;}
 <div class="hero" id="home">
   <canvas id="hero-canvas"></canvas>
   <div class="hero-logos">
-    <img src="srm automation club logo1.png" alt="Club Logo">
+    <img src="logo.png" alt="Club Logo">
     <img src="srm logo.png" alt="SRM IST Logo">
   </div>
   <div class="hero-center">
@@ -404,27 +404,27 @@ html{scroll-behavior:smooth;}
   <p class="section-sub">Growing stronger together, one innovation at a time</p>
   <div class="achieve-grid">
     <div class="achieve-card" onclick="openAchieveModal('achieve1')">
-      <img class="achieve-cover" src="ieee25.cover.png" alt="India Engineers Elite Challenge">
+      <img class="achieve-cover" src="ieee25cover.jpeg" alt="India Engineers Elite Challenge">
       <div class="achieve-bottom"><div class="achieve-event-name">India Engineers Elite Challenge</div><div class="achieve-year">2024</div></div>
     </div>
     <div class="achieve-card" onclick="openAchieveModal('achieve2')">
-      <img class="achieve-cover" src="techfest.cover.png" alt="Best Innovation Award">
+      <img class="achieve-cover" src="techfestcover.png" alt="Best Innovation Award">
       <div class="achieve-bottom"><div class="achieve-event-name">Best Innovation Award — SRM Techfest</div><div class="achieve-year">2024</div></div>
     </div>
     <div class="achieve-card" onclick="openAchieveModal('achieve3')">
-      <img class="achieve-cover" src="technoxian24.cover.png" alt="Technoxian 24">
+      <img class="achieve-cover" src="technoxian24cover.jpeg" alt="Technoxian 24">
       <div class="achieve-bottom"><div class="achieve-event-name">Technoxian'24</div><div class="achieve-year">2024</div></div>
     </div>
      <div class="achieve-card" onclick="openAchieveModal('achieve4')">
-      <img class="achieve-cover" src="technoxian25.cover.png" alt="Technoxian 25">
+      <img class="achieve-cover" src="technoxian25cover.jpeg" alt="Technoxian 25">
       <div class="achieve-bottom"><div class="achieve-event-name">Technoxian'25</div><div class="achieve-year">2025</div></div>
     </div>
     <div class="achieve-card" onclick="openAchieveModal('achieve5')">
-      <img class="achieve-cover" src="ieee26.cover.png" alt="IEEC'26">
+      <img class="achieve-cover" src="ieee26cover.jpeg" alt="IEEC'26">
       <div class="achieve-bottom"><div class="achieve-event-name">IEEC'26</div><div class="achieve-year">2026</div></div>
     </div>
     <div class="achieve-card" onclick="openAchieveModal('achieve6')">
-      <img class="achieve-cover" src="iac25.cover.png" alt="Indian Automation Challenge">
+      <img class="achieve-cover" src="iac25cover.jpeg" alt="Indian Automation Challenge">
       <div class="achieve-bottom"><div class="achieve-event-name">Indian Automation Challenge</div><div class="achieve-year">2025</div></div>
     </div>
   </div>
@@ -683,6 +683,8 @@ html{scroll-behavior:smooth;}
       <div class="member-card"><div class="member-img-wrap"><img src="roshini.jpeg" alt="Roshni Sunil"><div class="member-hover-overlay"><a href="https://www.linkedin.com/in/roshni-sunil-43663b345" target="_blank">in LinkedIn</a><a href="https://www.instagram.com/val_dez197" target="_blank">◎ Instagram</a></div></div><div class="member-name-bar"><div class="member-name">Roshni Sunil</div></div></div>
       <div class="member-card"><div class="member-img-wrap"><img src="gautam.jpeg" alt="Gautam"><div class="member-hover-overlay"><a href="https://www.linkedin.com/in/k-goutham-a8a417324?utm_source=share_via&utm_content=profile&utm_medium=member_android" target="_blank">in LinkedIn</a></div></div><div class="member-name-bar"><div class="member-name">Gautam</div></div></div>
       <div class="member-card"><div class="member-img-wrap"><img src="dhanishka.jpeg" alt="Dhanishka C"><div class="member-hover-overlay"><a href="https://www.linkedin.com/in/dhanishka-chandrasekaran-8299313a1" target="_blank">in LinkedIn</a></div></div><div class="member-name-bar"><div class="member-name">Dhanishka C</div></div></div>
+      <div class="member-card"><div class="member-img-wrap"><img src="moundy.jpeg" alt="Moundy Raj"><div class="member-hover-overlay"><a href="https://www.linkedin.com/in/moundy-raj-24374b289/" target="_blank">in LinkedIn</a></div></div><div class="member-name-bar"><div class="member-name">Moundy Raj S</div></div></div>
+      <div class="member-card"><div class="member-img-wrap"><img src="allen.jpeg" alt="Allen Sanjay"><div class="member-hover-overlay"><a href="https://www.linkedin.com/in/allen-sanjai/" target="_blank">in LinkedIn</a></div></div><div class="member-name-bar"><div class="member-name">Allen Sanjay</div></div></div>
     </div>
   </div>
 </div>
@@ -711,16 +713,8 @@ html{scroll-behavior:smooth;}
     <div class="modal-domain-title">⟨ Corporate Domain ⟩</div>
     <div class="modal-members-title">— TEAM MEMBERS —</div>
     <div class="modal-members-grid">
-        <!-- MEMBER 1 -->
-      <div class="member-card">
-        <div class="member-img-wrap">
-          <img src="priya.jpeg" alt="Priyadharshan M">
-          <div class="member-hover-overlay">
-            <a href="https://www.linkedin.com/in/priya-dharshan-349940375" target="_blank">in LinkedIn</a>
-          </div>
-        </div>
-        <div class="member-name-bar">
-          <div class="member-name">Priyadharshan M</div>
+      <div class="member-card"><div class="member-img-wrap"><img src="priya.jpeg" alt="Priyadharshan M"><div class="member-hover-overlay"><a href="https://www.linkedin.com/in/priya-dharshan-349940375" target="_blank">in LinkedIn</a></div></div><div class="member-name-bar"><div class="member-name">Priyadharshan M</div></div></div>
+      <div class="member-card"><div class="member-img-wrap"><img src="naga.jpeg" alt="Shaswath Naga"><div class="member-hover-overlay"><a href="https://www.linkedin.com/in/shaswath-naga-r-41237b364/" target="_blank">in LinkedIn</a></div></div><div class="member-name-bar"><div class="member-name">Shaswath Naga</div></div></div>
         </div>
       </div>
     </div>
@@ -849,6 +843,10 @@ html{scroll-behavior:smooth;}
         <div class="sponsor-logo-box"><img src="ansys.png" alt="Quantum Guides"></div>
         <div class="sponsor-name">Ansys</div>
       </div>
+      <div class="sponsor-item">
+        <div class="sponsor-logo-box"><img src="isa.png" alt="Indian Society of Automation"></div>
+        <div class="sponsor-name">Indian Society of Automation</div>
+      </div>
       <!-- Duplicate set for seamless loop -->
       <div class="sponsor-item">
         <div class="sponsor-logo-box"><img src="solidworks.png" alt="SolidWorks"></div>
@@ -862,6 +860,10 @@ html{scroll-behavior:smooth;}
         <div class="sponsor-logo-box"><img src="ansys.png" alt="Quantum Guides"></div>
         <div class="sponsor-name">Ansys</div>
       </div>
+      <div class="sponsor-item">
+        <div class="sponsor-logo-box"><img src="isa.png" alt="Indian Society of Automation"></div>
+        <div class="sponsor-name">Indian Society of Automation</div>
+      </div>
     </div>
   </div>
 </div>
@@ -873,7 +875,7 @@ html{scroll-behavior:smooth;}
       <h3>SRM Automation Club</h3>
       <p>Empowering the next generation of robotics and automation innovators.</p>
       <div class="footer-logos">
-        <img src="srmautomationclub.png" alt="SRM Automation Club" class="footer-logo-img">
+        <img src="logo1.png" alt="SRM Automation Club" class="footer-logo-img">
         <img src="srmlogo.png" alt="SRM IST" class="footer-logo-img">
       </div>
       <p class="footer-social-label">Social Media</p>
