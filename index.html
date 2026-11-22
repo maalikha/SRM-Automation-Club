@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -57,6 +58,13 @@ body{background:#080808;font-family:'Orbitron',sans-serif;}
 .explore:hover{transform:scale(1.05);}
 .join{background:linear-gradient(90deg,#4a4a4a,#222);color:#e8e8e8;box-shadow:0 0 16px rgba(150,150,150,0.25);border:1px solid rgba(200,200,200,0.2);}
 .join:hover{transform:scale(1.05);}
+
+/* HERO DEPARTMENT LINE + STATUS BADGE */
+.hero-dept{font-size:11px;letter-spacing:2px;color:#bbb;max-width:430px;line-height:1.8;margin-bottom:14px;text-align:right;}
+.hero-dept b{color:#f5c542;font-weight:600;}
+.status-badge{display:inline-flex;align-items:center;gap:6px;align-self:flex-start;font-size:9px;letter-spacing:2px;padding:4px 10px;border-radius:20px;border:1px solid rgba(245,197,66,0.4);color:#f5c542;background:rgba(245,197,66,0.08);margin-bottom:12px;}
+.status-badge::before{content:'';width:6px;height:6px;border-radius:50%;background:#f5c542;animation:pulseDot 1.4s infinite;}
+@keyframes pulseDot{0%,100%{opacity:1;}50%{opacity:0.25;}}
 
 /* SECTIONS */
 section{position:relative;z-index:5;padding:100px 6%;color:white;max-width:1200px;margin:auto;}
@@ -282,6 +290,7 @@ html{scroll-behavior:smooth;}
   .hero-logos{top:70px;right:4%;gap:10px;}
   .hero-center{right:0;left:0;align-items:center;text-align:center;padding:180px 5% 0;max-width:100%;}
   .club-title{white-space:normal;text-align:center;}
+  .hero-dept{text-align:center;}
   .club-quote{text-align:center;font-size:13px;}
   .hero-buttons{justify-content:center;}
   .hero::after{background:rgba(1,6,20,0.55);}
@@ -371,6 +380,7 @@ html{scroll-behavior:smooth;}
   <div class="hero-center">
     <div class="hero-eyebrow">Innovation Through Technology</div>
     <h1 class="club-title">SRM Automation Club</h1>
+    <p class="hero-dept">A student organization under the <b>Department of Electronics and Instrumentation Engineering (EIE)</b>, SRM Institute of Science and Technology, KTR, working on <b>UAVs</b>, <b>Robotics</b> and <b>Automation</b>.</p>
     <div class="hero-tagline">Learn <span>·</span> Build <span>·</span> Automate</div>
     <p class="club-quote">Engineering intelligent machines and building the future of robotics, automation and innovation through collaborative technology.</p>
     <div class="hero-buttons">
@@ -580,10 +590,14 @@ html{scroll-behavior:smooth;}
   <p class="section-sub">Explore our cutting-edge robotics and automation projects built by passionate students</p>
   <div class="project-grid">
     <div class="project-card"><div class="project-icon">🌱</div><h3>Smart Agriculture Bot</h3><p>Automated farming solution with crop monitoring, irrigation control and pest detection using IoT sensors.</p><div class="project-tags"><span class="tag">IoT</span><span class="tag">Machine Learning</span><span class="tag tag-purple">Sensors</span></div></div>
-   
+
     <div class="project-card"><div class="project-icon">🚁</div><h3>Multi-Purpose Drones</h3><p>Advanced drone systems including wall inspection drones for building diagnostics, racing drones for competitive events, surveillance drones, and autonomous delivery platforms with real-time communication.</p><div class="project-tags"><span class="tag">Flight Control</span><span class="tag">Computer Vision</span><span class="tag tag-purple">AI</span></div></div>
-    
+
     <div class="project-card"><div class="project-icon">🤖</div><h3>Maze Solver Robot</h3><p>Intelligent autonomous robot capable of solving complex mazes using advanced pathfinding algorithms, sensor fusion, and AI-based decision making for real-time navigation.</p><div class="project-tags"><span class="tag">Embedded Systems</span><span class="tag">AI Algorithms</span><span class="tag tag-purple">Robotics</span></div></div>
+
+    <div class="project-card"><span class="status-badge">IN PROGRESS</span><div class="project-icon">🛩️</div><h3>Unmanned Aerial Vehicles (UAV)</h3><p>Ongoing development of UAV platforms covering flight control, autonomous navigation and onboard vision for inspection, surveillance and delivery applications.</p><div class="project-tags"><span class="tag">UAV</span><span class="tag">Flight Control</span><span class="tag tag-purple">Autonomy</span></div></div>
+
+    <div class="project-card"><span class="status-badge">IN PROGRESS</span><div class="project-icon">🦾</div><h3>Robotics & Automation Projects</h3><p>Ongoing work on robotic systems and automation solutions, from mobile robots and manipulators to sensor-driven industrial automation.</p><div class="project-tags"><span class="tag">Robotics</span><span class="tag">Automation</span><span class="tag tag-purple">Embedded</span></div></div>
   </div>
 </section>
 
@@ -756,7 +770,7 @@ html{scroll-behavior:smooth;}
     </div>
   </div>
 </div>
-     
+
 
 <!-- EVENTS -->
 <section id="events">
